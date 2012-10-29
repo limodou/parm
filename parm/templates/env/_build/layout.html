@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html>
+<head>
+
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="">
+<meta name="author" content="">
+
+<!--[if lt IE 9]>
+<script type="text/javascript" src="asset/html5.js"></script>
+<![endif]-->
+
+<link rel="stylesheet" href="static/bootstrap/css/bootstrap.min.css"/>
+<!-- <link href="static/bootstrap/css/bootstrap-responsive.min.css" rel="stylesheet">
+ -->
+<link rel="stylesheet" href="static/asset/docs.css"/>
+<link href="static/asset/prettify.css" rel="stylesheet">
+<link href="static/toc/toc.css" rel="stylesheet">
+<link href="static/bootheme.css" rel="stylesheet">
+<link rel="stylesheet" href="static/custom.css"/>
+<link rel="stylesheet" href="static/asset/{{=pre_css}}.css"/>
+    
+<title>{{=title}}</title>
+</head>
+<body>
+
+{{
+def menu(current='home'):
+    for id, caption, link in menus:
+        if id == current:
+            out.write('<li class="active" id="menu_%s"><a href="%s"><span>%s</span></a></li>' % (id, link, caption), escape=False)
+        else:
+            out.write('<li id="menu_%s"><a href="%s"><span>%s</span></a></li>' % (id, link, caption), escape=False)
+        pass
+    pass
+pass
+}}
+
+<!-- Navbar
+================================================== -->
+<div class="navbar navbar-fixed-top">
+  <div class="navbar-inner">
+    <div class="container">
+      <button type="button" class="btn btn-navbar" data-toggle="collapse" data-target=".nav-collapse">
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+      <a class="brand" href="{{=project_url}}">{{=project}}</a>
+      <div class="nav-collapse collapse">
+        <ul class="nav">
+          {{block menu}}
+          {{menu('home')}}
+          {{end}}
+        </ul>
+      </div>
+    </div>
+  </div>
+</div>
+
+{{block content}}
+<div class="container-fluid">
+  <div class="row-fluid">
+    <div class="span3" id="topic">
+      <div id="toc" class="content"></div>
+    </div>
+    <div class="span9" id="article">
+      <div class="outter">
+    
+          <div class="expander">
+            <div>&laquo;</div>
+          </div>
+          
+          <div class="outter-inner">
+            <!-- prev_next_top -->
+
+            {{<< body}}
+            
+            <!-- prev_next_down -->
+          </div>
+          
+          {{<< defined('page_footer') or ''}}
+        
+          {{<< defined('footer') or ''}}
+      </div>
+
+    </div>
+  </div>
+</div>
+{{end}}
+
+<script type="text/javascript" src="static/jquery/jquery-1.7.2.min.js"></script>
+<script type="text/javascript" src="static/bootstrap/js/bootstrap.min.js"></script>
+<script src="static/asset/prettify.js"></script>
+<script src="static/toc/toc.js"></script>
+<script src="static/docs.js"></script>
+<script src="static/comment.js"></script>
+<script src="static/jquery.hotkeys.js"></script>
+
+</body>
+</html>
