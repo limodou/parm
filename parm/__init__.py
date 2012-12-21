@@ -126,7 +126,12 @@ class MakeCommand(Command):
                     
                     #parse header from text
                     h = headers.setdefault(path, [])
-                    data['title'] = unicode(self.parse_headers(path, data['body'], h), 'utf8') + ' - ' + conf.project 
+                    title = self.parse_headers(path, data['body'], h)
+                    if title:
+                        data['title'] = unicode(title, 'utf8') + ' - ' + conf.project 
+                    else:
+                        print 'Error: Heading 1 not found in file %s' % path
+                        continue
 
                     #convert conf attributes to data
                     for k in dir(conf):
