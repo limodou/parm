@@ -14,12 +14,13 @@ from commands import call, register_command, Command, get_answer, get_input
 from optparse import make_option
 import template
 from utils import log
+import shutil
 
 __author__ = 'limodou'
 __author_email__ = 'limodou@gmail.com'
 __url__ = 'https://github.com/limodou/parm'
 __license__ = 'BSD'
-__version__ = '0.1'
+__version__ = '0.2'
 
 #import parm project config module
 try:
@@ -41,7 +42,7 @@ class InitCommand(Command):
         d = {}
         
         d['project'] = 'Parm'
-        d['copyright'] = '2012, Limodou'
+        d['copyright'] = '2013, Limodou'
         d['version'] = '1.0'
         config = get_answer("Create config file", quit='q') == 'Y'
         if config:
@@ -72,7 +73,7 @@ class MakeCommand(Command):
     def handle(self, options, global_options, *args):
         from utils import extract_dirs, copy_dir
         from par.bootstrap_ext import blocks
-        from md_ext import code_comment, toc
+        from md_ext import new_code_comment, toc
         from functools import partial
 
         if not conf:
@@ -89,13 +90,19 @@ class MakeCommand(Command):
         extract_dirs('parm', 'templates/static', 
             os.path.join(options.directory, 'static'))
             
+        #create source directory
+        source_path = os.path.join(options.directory, 'source')
+        if not os.path.exists(source_path):
+            print 'Make directories [%s]' % source_path
+            os.makedirs(source_path)
+        
         #compile markdown files
         files = list(os.listdir('.'))
         headers = {}
         relations = {}
         
         #prepare block process handlers
-        blocks['code-comment'] = code_comment
+        blocks['code-comment'] = new_code_comment
         blocks['toc'] = partial(toc, headers=headers, relations=relations)
 
         output_files = {}
@@ -114,6 +121,7 @@ class MakeCommand(Command):
                 with open(path) as f:
                     
                     data = {}
+                    data['conf'] = conf
                     
                     #process markdown convert
                     data['body'] = parseHtml(f.read(), 
@@ -123,6 +131,7 @@ class MakeCommand(Command):
                     page_nav = relations.get(fname, {})
                     data['prev'] = page_nav.get('prev', {})
                     data['next'] = page_nav.get('next', {})
+                    data['source'] = '<a href="source/%s">%s</a>' % (path, conf.download_source)
                     
                     #parse header from text
                     h = headers.setdefault(path, [])
@@ -146,6 +155,9 @@ class MakeCommand(Command):
                         fh.write(template.template_file(template_file, data, dirs=['_build']))
                 
                     output_files[fname] = hfilename
+                    #copy source file
+                    sfilename = os.path.join(source_path, path)
+                    shutil.copy(path, sfilename)
                     
             elif os.path.isdir(path) and not path.startswith('_'):
                 print 'Copy %s to %s' % (path, options.directory)
@@ -202,9 +214,46 @@ class MakeCommand(Command):
             
 register_command(MakeCommand)
 
+class Rst2MdCommand(Command):
+    name = 'rst2md'
+    help = ("Convert reStructuredText to Markdown. \n\nThis tool can't convert "
+        "everything of rst to markdown very well, so you need to modify the output "
+        "files manually, but it's a good start point")
+    args = '<output_directory>'
+    option_list = (
+        make_option('-e', dest='extension', default='.rst',
+            help='Extension of the reStructuredText file, default is ".rst".'),
+    )
+    
+    def handle(self, options, global_options, *args):
+        from docutils.core import publish_file
+        import glob
+        import markdown_writer
+        
+        source = os.getcwd()
+        destination = None
+        if len(args) == 0:
+            destination = '.'
+        else:
+            destination = args[0]
+        
+        if not os.path.exists(destination):
+            os.makedirs(destination)
+            
+        files = glob.glob(source+'/*'+options.extension)
+        for f in files:
+            nf = os.path.join(destination, os.path.splitext(os.path.basename(f))[0] + '.md')
+            if global_options.verbose:
+                print 'Convert %s...' % f
+            publish_file(source_path=f, 
+                destination_path=nf,
+                writer=markdown_writer.Writer())
+        
+register_command(Rst2MdCommand)
+
 def main():
     if conf:
-        modules = conf.plugins
+        modules = getattr(conf, 'plugins', [])
     else:
         modules = []
     call('parm', __version__, modules)

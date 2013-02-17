@@ -153,3 +153,10 @@ body{font-family: "PT Serif",Georgia,Times,"Times New Roman",serif; font-size:1.
 li {line-height: 1.5em;}
 
 #article .outter-inner{padding-top:30px;}
+
+#markdown-content h2{
+margin: 1.5em 0 1em;
+border-bottom: 1px solid #ddd;
+}
+h1 {line-height:80px;}
+dd {margin-left:30px;margin-top:5px;}

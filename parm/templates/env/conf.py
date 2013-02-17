@@ -52,3 +52,6 @@ footer = """<footer class="footer">
 
 # The master toctree document.
 master_doc = 'index'
+
+#download source display
+download_source = 'View Source'

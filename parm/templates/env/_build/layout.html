@@ -72,12 +72,16 @@ pass
             <div>&laquo;</div>
           </div>
           
-          <div class="outter-inner">
+          <div class="outter-inner" id="markdown-content">
             <!-- prev_next_top -->
 
             {{<< body}}
             
             <!-- prev_next_down -->
+            
+            <div class="source">
+                <i class="icon-download"></i>{{<< source}}
+            </div>
           </div>
           
           {{<< defined('page_footer') or ''}}
