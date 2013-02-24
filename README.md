@@ -111,14 +111,15 @@ Uliweb-doc is written by markdown, and using parm convert to html files. You can
 see http://limodou.github.com/uliweb-doc, and the source code is in 
 https://github.com/limodou/uliweb-doc.
 
-## How to add disqus
+## How to add disqus support
 
-When init the parm project, will include some templates and static files. You may
-want to add disqus support to each page. So let's show you how to do that.
+When initialized the parm project, it'll copy some templates and static files. You may
+want to add disqus support to each page. So let me show you how to do that.
 
 ### Sign in Disqus and got embeded codes
 
-And you'll get two paragraphs, one is html code, the other is js code. For example:
+You should sign in disqus first, and then you'll get two paragraphs, one is 
+html code, the other is js code. For example:
 
 **html code**
 
@@ -157,6 +158,19 @@ And you'll get two paragraphs, one is html code, the other is js code. For examp
 ```
 
 And you should replace two `YOUR_SITE_SHORT_NAME` according your account of disqus.
+
+Write above codes into `conf.py`, for example:
+
+```
+#disqus
+disqus_text = '''
+...<first paragraph>
+'''
+
+disqus_js = '''
+...<second paragraph>
+'''
+```
 
 ### Change layout.html
 
