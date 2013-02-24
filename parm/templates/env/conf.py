@@ -28,7 +28,9 @@ pre_css = 'sons-of-obsidian'
 project = u'{{=project}}'
 project_url = './index.html'
 copyright = u'{{=copyright}}'
-
+# You can add custom css files, just like
+# custom_css = ['/static/custom.css']
+custom_css = []
 # The short X.Y version.
 version = '{{=version}}'
 

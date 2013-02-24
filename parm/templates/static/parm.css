@@ -129,7 +129,6 @@ border-bottom-left-radius:5px;
 -moz-box-shadow:  0px 0px 4px 2px rgba(128, 128, 128, 0.5);
 box-shadow:  0px 0px 4px 2px rgba(128, 128, 128, 0.5);
 background-color: white;
-margin-top: 15px;
 margin-bottom:20px;
 }
 .outter-inner {padding:10px 20px 50px 20px;position:relative;}
@@ -155,8 +154,34 @@ li {line-height: 1.5em;}
 #article .outter-inner{padding-top:30px;}
 
 #markdown-content h2{
-margin: 1.5em 0 1em;
+margin-bottom: 1em;
 border-bottom: 1px solid #ddd;
 }
+#index h2{border-bottom: 1px solid #ddd;}
 h1 {line-height:80px;}
 dd {margin-left:30px;margin-top:5px;}
+
+#index h2{border-bottom: 1px solid #ddd;}
+#index ul.multiple, #index ul.multiple2, #index ul.multiple3 {
+  *zoom: 1;
+}
+
+#index ul.multiple:before,
+#index ul.multiple:after,
+#index ul.multiple2:before,
+#index ul.multiple2:after,
+#index ul.multiple3:before,
+#index ul.multiple3:after{
+  display: table;
+  line-height: 0;
+  content: "";
+}
+
+#index ul.multiple:after,
+#index ul.multiple2:after,
+#index ul.multiple3:after{
+  clear: both;
+}
+#index ul.multiple li,
+#index ul.multiple2 li{float:left; width:48%;}
+#index ul.multiple3 li{float:left; width:33%;}

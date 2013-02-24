@@ -50,10 +50,10 @@ class InitCommand(Command):
             d['copyright'] = get_input("Copyright information [%s]:" % d['copyright'], default=d['copyright'])
             d['version'] = get_input("Version [%s]:" % d['version'], default=d['version'])
         
-        text = template.template_file('conf.py', d).replace('\r\n', '\n')
-        f = open('conf.py', 'wb')
-        f.write(text)
-        f.close()
+            text = template.template_file('conf.py', d).replace('\r\n', '\n')
+            f = open('conf.py', 'wb')
+            f.write(text)
+            f.close()
             
 register_command(InitCommand)
 

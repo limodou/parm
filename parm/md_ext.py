@@ -93,14 +93,18 @@ def toc(visitor, block, headers=None, relations=None):
     """
     Format:
         
-        {% toc max_depth=2 %}
+        {% toc max_depth=2,class=multiple %}
         file1.md
         file2.md
         {% endtoc %}
     """
     s = []
+    s.append('<div class="toc">\n')
     depth = int(block['kwargs'].get('max_depth', '1'))
-    s.append('<ul>\n')
+    if 'class' in block['kwargs']:
+        s.append('<ul class=%s>\n' % block['kwargs']['class'])
+    else:
+        s.append('<ul>\n')
     prev = {'prev':{}, 'next':{}, 'current':{}}
     
     for fname in block['body'].splitlines():
@@ -155,5 +159,5 @@ def toc(visitor, block, headers=None, relations=None):
         prev['next'] = c
         prev = current
     s.append('</ul>\n')
-    
+    s.append('</div>\n')
     return ''.join(s)

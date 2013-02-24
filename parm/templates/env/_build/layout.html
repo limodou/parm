@@ -18,9 +18,11 @@
 <link href="static/asset/prettify.css" rel="stylesheet">
 <link href="static/toc/toc.css" rel="stylesheet">
 <link href="static/bootheme.css" rel="stylesheet">
-<link rel="stylesheet" href="static/custom.css"/>
+<link rel="stylesheet" href="static/parm.css"/>
 <link rel="stylesheet" href="static/asset/{{=pre_css}}.css"/>
-    
+{{for c in custom_css:}}
+<link rel="stylesheet" href="{{=c}}"/>
+{{pass}}
 <title>{{=title}}</title>
 </head>
 <body>
