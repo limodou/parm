@@ -45,7 +45,7 @@ you can write your topic content in `index.md` file. The content just like:
 Document Subject
 ==================
 
-{% toc max_depth=2 %}
+{% toc max_depth=2[,class=multiple] %}
 file1.md
 file2.md
 ...
@@ -56,6 +56,11 @@ You should put all files which you can to be listed in `toc` tag. And you can
 also set `max_depth` argumant, and it means the heading level of each markdown
 file, such as `h1`, `h2`, .etc. You can also skip `max_depth` the default will 
 be `1`.
+
+`,class=multiple` is optional. By default, the toc indexes will be output one column.
+If you want to display multiple columns, you can pass `,class=multiple` . There
+are 3 parameters: `multiple`, `multiple2`, `multiple3`. `multiple` and `multiple2`
+are the same, they'll output indexes for two columns. And `multiple3` for 3 columns.
 
 ## Build
 
@@ -99,3 +104,9 @@ Just try it, hope you enjoy it.
 I found there is a project https://github.com/cgwrench/rst2md in github, and I
 changed the code from it in order to suit the style format of `par`. But I found
 rst2md seem not so matual enough.
+
+## Demo site
+
+Uliweb-doc is written by markdown, and using parm convert to html files. You can
+see http://limodou.github.com/uliweb-doc, and the source code is in 
+https://github.com/limodou/uliweb-doc.
