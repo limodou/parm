@@ -33,9 +33,14 @@ class InitCommand(Command):
     help = "Init a parm project environment. It'll create a config.py file."
     
     def handle(self, options, global_options, *args):
-        from utils import extract_dirs
+        from utils import extract_dirs, pkg, extract_file
+        from shutil import copy
         
-        extract_dirs('parm', 'templates/env', '.')
+        if os.path.exists('conf.py'):
+            has_conf = True
+        else:
+            has_conf = False
+        extract_dirs('parm', 'templates/env', '.', exclude=['conf.py'])
         if not os.path.exists('static'):
             os.makedirs('static')
             
@@ -44,16 +49,20 @@ class InitCommand(Command):
         d['project'] = 'Parm'
         d['copyright'] = '2013, Limodou'
         d['version'] = '1.0'
-        config = get_answer("Create config file", quit='q') == 'Y'
-        if config:
+        
+        if has_conf:
+            create = get_answer("Create config file", quit='q') == 'Y'
+        
+        if not has_conf or (has_conf and create):
             d['project'] = get_input("Project name [Parm]:", default=d['project'])
             d['copyright'] = get_input("Copyright information [%s]:" % d['copyright'], default=d['copyright'])
             d['version'] = get_input("Version [%s]:" % d['version'], default=d['version'])
-        
-        text = template.template_file('conf.py', d).replace('\r\n', '\n')
-        f = open('conf.py', 'wb')
-        f.write(text)
-        f.close()
+
+            extract_file('parm', 'templates/env/conf.py', '.')
+            text = template.template_file('conf.py', d).replace('\r\n', '\n')
+            f = open('conf.py', 'wb')
+            f.write(text)
+            f.close()
             
 register_command(InitCommand)
 
