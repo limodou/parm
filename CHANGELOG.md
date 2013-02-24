@@ -1,6 +1,21 @@
 Parm Change Log
 =====================
 
+0.3 Version
+-----------------
+
+* Add toc multiple column css support, you can pass class=multiple to toc, for example:
+
+    ```
+    {% toc max_depth=1,class="multiple3" %}
+    file1.md
+    file2.md
+    file3.md
+    {% endtoc %}
+    ```
+
+* Add cusome_css support, so you can pass your custom css in conf.py.
+
 0.2 Version
 -----------------
 
