@@ -207,8 +207,7 @@ dd {margin-left:30px;margin-top:5px;}
     color: #c60f0f;
     border: none;
 }
-#wiki-content a.outter{
-color:#00f;
-background: urlexternal-link-ltr-icon.png) center right no-repeat;
+#markdown-content a.outter{
+background: url(external-link-ltr-icon.png) center right no-repeat;
 padding-right: 13px;
 }
