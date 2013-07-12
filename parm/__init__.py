@@ -20,7 +20,7 @@ __author__ = 'limodou'
 __author_email__ = 'limodou@gmail.com'
 __url__ = 'https://github.com/limodou/parm'
 __license__ = 'BSD'
-__version__ = '0.3'
+__version__ = '0.4'
 
 #import parm project config module
 try:
@@ -75,7 +75,7 @@ class MakeCommand(Command):
             help='Output directory of converted files.'),
     )
     
-    r_header = re.compile(r'<h(\d)(.*?)>(.*?)</h\1>', re.IGNORECASE)
+    r_header = re.compile(r'<h(\d)(.*?)>(.*?)(<a.*?/a>)\s*</h\1>', re.IGNORECASE)
     r_tag = re.compile(r'<.*?>')
     r_id = re.compile(r'id="([^"]*)"')
     

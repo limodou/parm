@@ -124,7 +124,7 @@ border-bottom-left-radius:5px;
 .expander div:hover{background-color:Khaki;}
 
 .alert p {margin-bottom: 2px;}
-.outter {position:relative;
+#article div.outter {position:relative;
 -webkit-box-shadow:  0px 0px 4px 2px rgba(128, 128, 128, 0.5);
 -moz-box-shadow:  0px 0px 4px 2px rgba(128, 128, 128, 0.5);
 box-shadow:  0px 0px 4px 2px rgba(128, 128, 128, 0.5);
@@ -185,3 +185,30 @@ dd {margin-left:30px;margin-top:5px;}
 #index ul.multiple li,
 #index ul.multiple2 li{float:left; width:48%;}
 #index ul.multiple3 li{float:left; width:33%;}
+
+#markdown-content .floatleft {margin:4px;float:left;clear:left;padding-right: 20px;}
+#markdown-content .floatright {margin:4px;float:right;clear:right;padding-left: 20px;}
+#markdown-content .floatcenter {margin:4px;text-align:center;}
+
+#markdown-content h1, #wiki-content h2, #wiki-content h3, #wiki-content h4, 
+#markdown-content h5, #wiki-content h6 {clear:both;}
+#markdown-content .footnotes {margin-top:15px; padding-top:15px;border-top:2px solid #ddd;}
+
+#markdown-content a.anchor {
+    color: #ccc;
+    font-size: 1em;
+    margin-left: 6px;
+    padding: 0 4px 0 4px;
+    text-decoration: none;
+    border: none;
+    background:none;
+}
+#markdown-content a.anchor:hover {
+    color: #c60f0f;
+    border: none;
+}
+#wiki-content a.outter{
+color:#00f;
+background: urlexternal-link-ltr-icon.png) center right no-repeat;
+padding-right: 13px;
+}

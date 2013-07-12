@@ -1,6 +1,11 @@
 Parm Change Log
 =====================
 
+0.4 Version
+-----------------
+
+* upgrade with par 0.7, fix css and toc generation
+
 0.3 Version
 -----------------
 

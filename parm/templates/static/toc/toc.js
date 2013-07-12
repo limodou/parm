@@ -81,7 +81,7 @@ $.fn.toc = function(options) {
 
       //build TOC item
       var a = $('<a/>')
-      .text($h.text())
+      .text($h[0].firstChild.textContent)
       .attr('href', '#' + opts.anchorName(i, heading, opts.prefix))
       .bind('click', function(e) { 
         scrollTo(e);
