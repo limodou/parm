@@ -5,6 +5,7 @@ Parm Change Log
 -----------------
 
 * upgrade with par 0.7, fix css and toc generation
+* add sub directories support for source
 
 0.3 Version
 -----------------

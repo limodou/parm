@@ -28,6 +28,14 @@ try:
 except:
     conf = None
 
+def fix_dir(path):
+    """
+    Check if directory is existed, if not then create it
+    """
+    _dir = os.path.dirname(path)
+    if not os.path.exists(_dir):
+        os.makedirs(_dir)
+        
 class InitCommand(Command):
     name = 'init'
     help = "Init a parm project environment. It'll create a config.py file."
@@ -106,7 +114,14 @@ class MakeCommand(Command):
             os.makedirs(source_path)
         
         #compile markdown files
-        files = list(os.listdir('.'))
+        #files = list(os.listdir('.'))
+#        files = glob.glob('*.*')
+        def get_files():
+            for _cur, _dirs, _files in os.walk('.'):
+                for _f in _files:
+                    yield os.path.normpath(os.path.join(_cur, _f)).replace('\\', '/')
+                    
+        files = list(get_files())
         headers = {}
         relations = {}
         
@@ -140,7 +155,8 @@ class MakeCommand(Command):
                     page_nav = relations.get(fname, {})
                     data['prev'] = page_nav.get('prev', {})
                     data['next'] = page_nav.get('next', {})
-                    data['source'] = '<a href="source/%s">%s</a>' % (path, conf.download_source)
+                    data['relpath'] = '.' * (path.count('/')+1)
+                    data['source'] = '<a href="%s/source/%s">%s</a>' % (data['relpath'], path, conf.download_source)
                     
                     #parse header from text
                     h = headers.setdefault(path, [])
@@ -159,6 +175,7 @@ class MakeCommand(Command):
                     #process template
                     template_file = conf.templates.get(fname, conf.templates.get('*', 'default.html'))
                     hfilename = os.path.join(options.directory, fname + '.html').replace('\\', '/')
+                    fix_dir(hfilename)
                     with open(hfilename, 'wb') as fh:
                         print 'Convert %s to %s' % (path, hfilename)
                         fh.write(template.template_file(template_file, data, dirs=['_build']))
@@ -166,6 +183,8 @@ class MakeCommand(Command):
                     output_files[fname] = hfilename
                     #copy source file
                     sfilename = os.path.join(source_path, path)
+                    #deal with sour file directory
+                    fix_dir(sfilename)
                     shutil.copy(path, sfilename)
                     
             elif os.path.isdir(path) and not path.startswith('_'):

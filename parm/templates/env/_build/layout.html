@@ -8,18 +8,18 @@
 <meta name="author" content="">
 
 <!--[if lt IE 9]>
-<script type="text/javascript" src="asset/html5.js"></script>
+<script type="text/javascript" src="{{=relpath}}/static/asset/html5.js"></script>
 <![endif]-->
 
-<link rel="stylesheet" href="static/bootstrap/css/bootstrap.min.css"/>
-<!-- <link href="static/bootstrap/css/bootstrap-responsive.min.css" rel="stylesheet">
+<link rel="stylesheet" href="{{=relpath}}/static/bootstrap/css/bootstrap.min.css"/>
+<!-- <link href="{{=relpath}}/static/bootstrap/css/bootstrap-responsive.min.css" rel="stylesheet">
  -->
-<link rel="stylesheet" href="static/docs.css"/>
-<link href="static/asset/prettify.css" rel="stylesheet">
-<link href="static/toc/toc.css" rel="stylesheet">
-<link href="static/bootheme.css" rel="stylesheet">
-<link rel="stylesheet" href="static/parm.css"/>
-<link rel="stylesheet" href="static/asset/{{=pre_css}}.css"/>
+<link rel="stylesheet" href="{{=relpath}}/static/docs.css"/>
+<link href="{{=relpath}}/static/asset/prettify.css" rel="stylesheet">
+<link href="{{=relpath}}/static/toc/toc.css" rel="stylesheet">
+<link href="{{=relpath}}/static/bootheme.css" rel="stylesheet">
+<link rel="stylesheet" href="{{=relpath}}/static/parm.css"/>
+<link rel="stylesheet" href="{{=relpath}}/static/asset/{{=pre_css}}.css"/>
 {{for c in custom_css:}}
 <link rel="stylesheet" href="{{=c}}"/>
 {{pass}}
@@ -96,13 +96,13 @@ pass
 </div>
 {{end}}
 
-<script type="text/javascript" src="static/jquery/jquery-1.7.2.min.js"></script>
-<script type="text/javascript" src="static/bootstrap/js/bootstrap.min.js"></script>
-<script src="static/asset/prettify.js"></script>
-<script src="static/toc/toc.js"></script>
-<script src="static/docs.js"></script>
-<script src="static/comment.js"></script>
-<script src="static/jquery.hotkeys.js"></script>
+<script type="text/javascript" src="{{=relpath}}/static/jquery/jquery-1.7.2.min.js"></script>
+<script type="text/javascript" src="{{=relpath}}/static/bootstrap/js/bootstrap.min.js"></script>
+<script src="{{=relpath}}/static/asset/prettify.js"></script>
+<script src="{{=relpath}}/static/toc/toc.js"></script>
+<script src="{{=relpath}}/static/docs.js"></script>
+<script src="{{=relpath}}/static/comment.js"></script>
+<script src="{{=relpath}}/static/jquery.hotkeys.js"></script>
 
 </body>
 </html>
