@@ -51,13 +51,13 @@ $(function(){
      //process expander
      $('.expander').click({'opened':false}, function(e){
          if (!e.data.opened){
-             $('#article').removeClass('span9').addClass('span11');
-             $('#topic').removeClass('span3').hide();
+             $('#article').removeClass('span9').addClass('span12');
+             $('#topic').hide().appendTo($('#article'));
              e.data.opened = true;
              $(this).find('div').html('&raquo;');
          }else{
-             $('#article').removeClass('span11').addClass('span9');
-             $('#topic').addClass('span3').show();
+             $('#article').removeClass('span12').addClass('span9');
+             $('#topic').insertBefore($('#article')).show();
              e.data.opened = false;
              $(this).find('div').html('&laquo;');
          }

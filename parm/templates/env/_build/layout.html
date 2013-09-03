@@ -12,8 +12,7 @@
 <![endif]-->
 
 <link rel="stylesheet" href="{{=relpath}}/static/bootstrap/css/bootstrap.min.css"/>
-<!-- <link href="{{=relpath}}/static/bootstrap/css/bootstrap-responsive.min.css" rel="stylesheet">
- -->
+<link href="{{=relpath}}/static/bootstrap/css/bootstrap-responsive.min.css" rel="stylesheet">
 <link rel="stylesheet" href="{{=relpath}}/static/docs.css"/>
 <link href="{{=relpath}}/static/asset/prettify.css" rel="stylesheet">
 <link href="{{=relpath}}/static/toc/toc.css" rel="stylesheet">
@@ -41,7 +40,7 @@ pass
 
 <!-- Navbar
 ================================================== -->
-<div class="navbar navbar-fixed-top">
+<div class="navbar">
   <div class="navbar-inner">
     <div class="container">
       <button type="button" class="btn btn-navbar" data-toggle="collapse" data-target=".nav-collapse">
@@ -70,11 +69,11 @@ pass
     <div class="span9" id="article">
       <div class="outter">
     
-          <div class="expander">
-            <div>&laquo;</div>
-          </div>
-          
           <div class="outter-inner" id="markdown-content">
+            <div class="expander">
+              <div>&laquo;</div>
+            </div>
+            
             <!-- prev_next_top -->
 
             {{<< body}}

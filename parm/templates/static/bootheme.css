@@ -28,9 +28,6 @@ html, body{
 background-image:url(bg.gif);
 font-size:13px;
 }
-body, body.bootstrap-body{
-padding-top:50px;
-}
 
 .sidebar ul.simplemenu li{
 font-size:14px;

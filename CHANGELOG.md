@@ -1,6 +1,11 @@
 Parm Change Log
 =====================
 
+0.5 Version
+-----------------
+
+* upgrade css to suit with responsable
+
 0.4 Version
 -----------------
 
