@@ -195,17 +195,13 @@ dd {margin-left:30px;margin-top:5px;}
 #markdown-content .footnotes {margin-top:15px; padding-top:15px;border-top:2px solid #ddd;}
 
 #markdown-content a.anchor, #index a.anchor {
-    color: #ccc;
+    color: white;
     font-size: 1em;
     margin-left: 6px;
     padding: 0 4px 0 4px;
     text-decoration: none;
     border: none;
     background:none;
-}
-#markdown-content a.anchor:hover, #index a.anchor:hover {
-    color: #c60f0f;
-    border: none;
 }
 #markdown-content a.outter{
 background: url(external-link-ltr-icon.png) center right no-repeat;

@@ -15,13 +15,16 @@ $(function(){
     window.prettyPrint && prettyPrint()
 
     function setup_toc(){
-        $('#toc').height(viewport().height - $('#toc').offset()['top'] - 40);
-           //.width($('#toc-container').width());
-        $('#toc').toc({
-            'selectors': 'h2,h3', //elements to use as headings
-            'highlightOffset': 0, //offset to trigger the next headline
-            'offset': 50
-        });
+        if ($('#toc').size() > 0)
+        {
+            $('#toc').height(viewport().height - $('#toc').offset()['top'] - 40);
+                //.width($('#toc-container').width());
+            $('#toc').toc({
+                'selectors': 'h2,h3', //elements to use as headings
+                'highlightOffset': 0, //offset to trigger the next headline
+                'offset': 50
+            });
+        }
     }
     
     setup_toc();
@@ -63,5 +66,10 @@ $(function(){
          }
      });
      
-     
+     $('#index, #markdown-content').find('h1,h2,h3,h4,h5,h6').hover(function(e){
+        $(this).find('a.anchor').css('color', '#c60f0f');
+     }, function(e){
+        $(this).find('a.anchor').css('color', 'white');
+     });
+
 });
