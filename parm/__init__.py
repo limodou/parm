@@ -20,7 +20,7 @@ __author__ = 'limodou'
 __author_email__ = 'limodou@gmail.com'
 __url__ = 'https://github.com/limodou/parm'
 __license__ = 'BSD'
-__version__ = '0.4'
+__version__ = '0.5'
 
 #import parm project config module
 try:
@@ -76,6 +76,7 @@ register_command(InitCommand)
 
 class MakeCommand(Command):
     name = 'make'
+    args = '[file1 [,file2...]]'
     help = "Make parm project. It'll create all markdown files to html files."
     has_options = True
     option_list = (
@@ -121,7 +122,10 @@ class MakeCommand(Command):
                 for _f in _files:
                     yield os.path.normpath(os.path.join(_cur, _f)).replace('\\', '/')
                     
-        files = list(get_files())
+        if args:
+            files = list(args)
+        else:
+            files = list(get_files())
         headers = {}
         relations = {}
         

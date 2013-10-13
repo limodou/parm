@@ -5,6 +5,7 @@ Parm Change Log
 -----------------
 
 * upgrade css to suit with responsable
+* add files parameters to make command
 
 0.4 Version
 -----------------
@@ -31,7 +32,7 @@ Parm Change Log
 -----------------
 
 * Fix setup.py adding data files
-* Fix heading 1 not found 
+* Fix heading 1 not found
 * Add source file view support
 * Add rst2md sub command, it can convert rst to markdown
 
