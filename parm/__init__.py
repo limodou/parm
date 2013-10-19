@@ -20,7 +20,7 @@ __author__ = 'limodou'
 __author_email__ = 'limodou@gmail.com'
 __url__ = 'https://github.com/limodou/parm'
 __license__ = 'BSD'
-__version__ = '0.5'
+__version__ = '0.6'
 
 #import parm project config module
 try:
@@ -119,6 +119,8 @@ class MakeCommand(Command):
 #        files = glob.glob('*.*')
         def get_files():
             for _cur, _dirs, _files in os.walk('.'):
+                for _f in _dirs:
+                    yield os.path.normpath(os.path.join(_cur, _f)).replace('\\', '/')
                 for _f in _files:
                     yield os.path.normpath(os.path.join(_cur, _f)).replace('\\', '/')
                     
@@ -185,13 +187,8 @@ class MakeCommand(Command):
                         fh.write(template.template_file(template_file, data, dirs=['_build']))
                 
                     output_files[fname] = hfilename
-                    #copy source file
-                    sfilename = os.path.join(source_path, path)
-                    #deal with sour file directory
-                    fix_dir(sfilename)
-                    shutil.copy(path, sfilename)
                     
-            elif os.path.isdir(path) and not path.startswith('_'):
+            elif os.path.isdir(path) and path != conf.template_dirs:
                 print 'Copy %s to %s' % (path, options.directory)
                 copy_dir(path, os.path.join(options.directory, path))
                 

@@ -1,6 +1,11 @@
 Parm Change Log
 =====================
 
+0.6 Version
+-----------------
+
+* Fix make command, copy all directories to output directory excep for template_dir
+
 0.5 Version
 -----------------
 
