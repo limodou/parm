@@ -1,6 +1,14 @@
 Parm Change Log
 =====================
 
+0.7 Version
+-----------------
+
+* Fix sub directory link bug
+* Remove anchor in title of index.html
+* Fix source file copy bug
+* Fix scroll offset bug
+
 0.6 Version
 -----------------
 

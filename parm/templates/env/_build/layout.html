@@ -30,9 +30,9 @@
 def menu(current='home'):
     for id, caption, link in menus:
         if id == current:
-            out.write('<li class="active" id="menu_%s"><a href="%s"><span>%s</span></a></li>' % (id, link, caption), escape=False)
+            out.write('<li class="active" id="menu_%s"><a href="%s/%s"><span>%s</span></a></li>' % (id, relpath, link, caption), escape=False)
         else:
-            out.write('<li id="menu_%s"><a href="%s"><span>%s</span></a></li>' % (id, link, caption), escape=False)
+            out.write('<li id="menu_%s"><a href="%s/%s"><span>%s</span></a></li>' % (id, relpath, link, caption), escape=False)
         pass
     pass
 pass

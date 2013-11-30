@@ -92,9 +92,9 @@ def extract_file(module, path, dist, verbose=False, replace=True):
         dfile = dist
     f = os.path.exists(dfile)
     if replace or not f:
-        shutil.copy2(inf, dist)
+        shutil.copy2(inf, dfile)
         if verbose:
-            print 'Copy %s to %s' % (inf, dist)
+            print 'Copy %s to %s' % (inf, dfile)
   
 def extract_dirs(mod, path, dst, verbose=False, exclude=None, exclude_ext=None, recursion=True, replace=True):
     """

@@ -15,12 +15,13 @@ from optparse import make_option
 import template
 from utils import log
 import shutil
+from copy import deepcopy
 
 __author__ = 'limodou'
 __author_email__ = 'limodou@gmail.com'
 __url__ = 'https://github.com/limodou/parm'
 __license__ = 'BSD'
-__version__ = '0.6'
+__version__ = '0.7'
 
 #import parm project config module
 try:
@@ -56,7 +57,7 @@ class InitCommand(Command):
         
         d['project'] = 'Parm'
         d['copyright'] = '2013, Limodou'
-        d['version'] = '1.0'
+        d['version'] = __version__
         
         if has_conf:
             create = get_answer("Create config file", quit='q') == 'Y'
@@ -93,6 +94,7 @@ class MakeCommand(Command):
         from par.bootstrap_ext import blocks
         from md_ext import new_code_comment, toc
         from functools import partial
+        from shutil import copy2
 
         if not conf:
             log.error('Current directory is not a parm project')
@@ -109,10 +111,10 @@ class MakeCommand(Command):
             os.path.join(options.directory, 'static'))
             
         #create source directory
-        source_path = os.path.join(options.directory, 'source')
-        if not os.path.exists(source_path):
-            print 'Make directories [%s]' % source_path
-            os.makedirs(source_path)
+#        source_path = os.path.join(options.directory, 'source')
+#        if not os.path.exists(source_path):
+#            print 'Make directories [%s]' % source_path
+#            os.makedirs(source_path)
         
         #compile markdown files
         #files = list(os.listdir('.'))
@@ -162,7 +164,7 @@ class MakeCommand(Command):
                     data['prev'] = page_nav.get('prev', {})
                     data['next'] = page_nav.get('next', {})
                     data['relpath'] = '.' * (path.count('/')+1)
-                    data['source'] = '<a href="%s/source/%s">%s</a>' % (data['relpath'], path, conf.download_source)
+                    data['source'] = '<a href="%s/%s">%s</a>' % (data['relpath'], path, conf.download_source)
                     
                     #parse header from text
                     h = headers.setdefault(path, [])
@@ -185,7 +187,7 @@ class MakeCommand(Command):
                     with open(hfilename, 'wb') as fh:
                         print 'Convert %s to %s' % (path, hfilename)
                         fh.write(template.template_file(template_file, data, dirs=['_build']))
-                
+                        copy2(path, os.path.join(options.directory, path))
                     output_files[fname] = hfilename
                     
             elif os.path.isdir(path) and path != conf.template_dirs:
@@ -211,7 +213,13 @@ class MakeCommand(Command):
             x = relations.get(name, {})
             data = {}
             data['prev'] = x.get('prev', {})
+            if data['prev']:
+                relpath = '.' * (data['prev']['link'].count('/')+1)
+                data['prev']['link'] = relpath + '/' + data['prev']['link']
             data['next'] = x.get('next', {})
+            if data['next']:
+                relpath = '.' * (data['next']['link'].count('/')+1)
+                data['next']['link'] = relpath + '/' + data['next']['link']
             
             prev_next_text_top = template.template(prev_next_template_top, data)
             prev_next_text_down = template.template(prev_next_template_down, data)

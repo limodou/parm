@@ -114,11 +114,7 @@ def toc(visitor, block, headers=None, relations=None):
             continue
         
         def make_title(x):
-            if x['id']:
-                _id = '#'+x['id']
-            else:
-                _id = ''
-            return '<li><a href="%s%s">%s</a></li>' % (x['link'], _id, x['title'])
+            return '<li><a href="%s">%s</a></li>' % (x['link'], x['title'])
         
         _fname, _ext = os.path.splitext(fname)
         last = 1

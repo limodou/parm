@@ -22,7 +22,7 @@ $(function(){
             $('#toc').toc({
                 'selectors': 'h2,h3', //elements to use as headings
                 'highlightOffset': 0, //offset to trigger the next headline
-                'offset': 50
+                'offset': 0
             });
         }
     }
