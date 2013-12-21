@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html>
+<head>
+
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="">
+<meta name="author" content="">
+
+<link rel="stylesheet" href="{{=relpath}}/static/semantic/css/semantic.min.css"/>
+<link rel="stylesheet" href="{{=relpath}}/static/docs.css"/>
+<link href="{{=relpath}}/static/asset/prettify.css" rel="stylesheet">
+<link href="{{=relpath}}/static/toc/toc.css" rel="stylesheet">
+<link rel="stylesheet" href="{{=relpath}}/static/parm.css"/>
+<link rel="stylesheet" href="{{=relpath}}/static/asset/{{=pre_css}}.css"/>
+{{for c in custom_css:}}
+<link rel="stylesheet" href="{{=c}}"/>
+{{pass}}
+<title>{{=title}}</title>
+</head>
+<body>
+
+{{
+def menu(current='home'):
+    for id, caption, link in menus:
+        if id == current:
+            out.write('<a class="active item" href="%s/%s">%s</a>' % (relpath, link, caption), escape=False)
+        else:
+            out.write('<a class="item" href="%s/%s">%s</a>' % (relpath, link, caption), escape=False)
+        pass
+    pass
+pass
+}}
+
+<!-- Navbar
+================================================== -->
+<div class="navbar">
+  <div class="ui small secondary inverted borderless menu">
+    {{block menu}}
+    {{menu('home')}}
+    {{end}}
+  </div>
+</div>
+
+{{block content}}
+<div class="ui divided grid">
+    <div class="four wide column">
+        <div id="toc" class="content"></div>
+    </div> 
+    
+    <div class="twelve wide column" id="markdown-content">
+    
+        <!-- prev_next_top -->
+        
+        {{<< body}}
+        
+        <div class="ui blue inverted small label">
+            <i class="icon download"></i>{{<< source}}
+        </div>
+        
+    </div>
+</div>
+
+<div class="ui page grid">
+    <div class="column">
+    <!-- disqus -->
+    {{<< conf.disqus_text}}
+    </div>
+</div>
+
+<div class="ui page grid" id="footer">
+    <div class="column">
+    {{<< defined('footer') or ''}}
+    </div>
+</div>
+{{end}}
+
+<script type="text/javascript" src="{{=relpath}}/static/jquery-1.7.2.min.js"></script>
+<script type="text/javascript" src="{{=relpath}}/static/semantic/javascript/semantic.min.js"></script>
+<script src="{{=relpath}}/static/asset/prettify.js"></script>
+<script src="{{=relpath}}/static/toc/toc.js"></script>
+<script src="{{=relpath}}/static/docs.js"></script>
+<script src="{{=relpath}}/static/comment.js"></script>
+<script src="{{=relpath}}/static/jquery.hotkeys.js"></script>
+<script src="{{=relpath}}/static/jquery.sticky-kit.min.js"></script>
+
+{{<< conf.disqus_js}}
+
+</body>
+</html>

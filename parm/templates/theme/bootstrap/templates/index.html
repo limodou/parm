@@ -1,0 +1,26 @@
+{{extend "layout.html"}}
+
+{{block content}}
+<div class="container segment" id="index">
+  <div class="ui page grid introduction">
+      <div class="column">
+          {{<<introduction}}
+      </div>
+  </div>
+
+  <div class="ui page grid">
+    <div class="column main">
+
+      {{<< body}}
+    
+      {{<< defined('page_footer') or ''}}
+    </div>
+  </div>
+  <div class="ui page grid" id="footer">
+      <div class="column">
+      {{<< defined('footer') or ''}}
+          
+    </div>
+  </div>
+</div>
+{{end}}

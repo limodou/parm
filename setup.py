@@ -36,6 +36,8 @@ Usage
 parm --help
 parm --version
 parm -d output_path
+parm init
+parm make
 ```
 
 License

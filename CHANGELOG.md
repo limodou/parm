@@ -1,6 +1,11 @@
 Parm Change Log
 =====================
 
+0.8 Version
+-----------------
+
+* Add semantic theme
+
 0.7 Version
 -----------------
 

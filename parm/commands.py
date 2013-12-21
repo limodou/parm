@@ -60,10 +60,10 @@ def get_input(prompt, default=None, choices=None, option_value=None):
         return option_value
     
     choices = choices or []
-    r = raw_input(prompt+' ') or default
     while 1:
-        if not r:
-            r = raw_input(prompt)
+        r = raw_input(prompt+' ').strip()
+        if not r and default is not None:
+            return default
         if choices:
             if r not in choices:
                 r = None

@@ -21,7 +21,7 @@ __author__ = 'limodou'
 __author_email__ = 'limodou@gmail.com'
 __url__ = 'https://github.com/limodou/parm'
 __license__ = 'BSD'
-__version__ = '0.7'
+__version__ = '0.8'
 
 #import parm project config module
 try:
@@ -49,30 +49,58 @@ class InitCommand(Command):
             has_conf = True
         else:
             has_conf = False
-        extract_dirs('parm', 'templates/env', '.', exclude=['conf.py'])
-        if not os.path.exists('static'):
-            os.makedirs('static')
+#        extract_dirs('parm', 'templates/env', '.', exclude=['conf.py'])
+#        if not os.path.exists('static'):
+#            os.makedirs('static')
             
         d = {}
         
-        d['project'] = 'Parm'
-        d['copyright'] = '2013, Limodou'
-        d['version'] = __version__
+        d['project'] = conf.project or 'Parm'
+        d['copyright'] = conf.copyright or '2013, Limodou'
+        d['version'] = conf.version or __version__
+        d['theme'] = getattr(conf, 'theme', None) or 'semantic'
+        d['template_dirs'] = conf.template_dirs or 'templates'
         
         if has_conf:
             create = get_answer("Create config file", quit='q') == 'Y'
         
         if not has_conf or (has_conf and create):
-            d['project'] = get_input("Project name [Parm]:", default=d['project'])
+            d['project'] = get_input("Project name [%s]:"%d['project'], default=d['project'])
             d['copyright'] = get_input("Copyright information [%s]:" % d['copyright'], default=d['copyright'])
             d['version'] = get_input("Version [%s]:" % d['version'], default=d['version'])
-
-            extract_file('parm', 'templates/env/conf.py', '.')
-            text = template.template_file('conf.py', d).replace('\r\n', '\n')
+            d['theme'] = get_input("Choice theme (bootstrap, semantic) [%s]:" % d['theme'], choices=['bootstrap', 'semantic'], default=d['theme'])
+            d['disqus'] = get_input("Disqus account name:", default=getattr(conf, 'disqus', ''))
+            
+            if d['theme'] == 'bootstrap':
+                d['tag_class'] = """
+'table':'table table-bordered',
+'pre':'prettyprint linenums',
+"""
+            elif d['theme'] == 'semantic':
+                d['tag_class'] = """
+'table':'ui collapsing celled table segment',
+'pre':'prettyprint',
+"""
+            
+            conf_file = pkg.resource_filename('parm', 'templates/env/conf.py.txt')
+            text = template.template_file(conf_file, d).replace('\r\n', '\n')
             f = open('conf.py', 'wb')
             f.write(text)
             f.close()
-            
+        
+        run = False
+        if os.path.exists(d['template_dirs']):
+            print "Template directory [%s] is already existed! If you've changed them, please deal with manually, otherwise the content will be overwritten." % d['template_dirs']
+            if get_answer("Overwrite template files") == 'Y':
+                run = True
+        else:
+            run = True
+        
+        if run:
+            print 'Copy %s to ./%s' % ('theme/%s/templates' % d['theme'], d['template_dirs'])
+            extract_dirs('parm', 'templates/theme/%s/templates' % d['theme'], 
+                d['template_dirs'])
+        
 register_command(InitCommand)
 
 class MakeCommand(Command):
@@ -90,8 +118,7 @@ class MakeCommand(Command):
     r_id = re.compile(r'id="([^"]*)"')
     
     def handle(self, options, global_options, *args):
-        from utils import extract_dirs, copy_dir
-        from par.bootstrap_ext import blocks
+        from utils import extract_dirs, copy_dir, import_attr
         from md_ext import new_code_comment, toc
         from functools import partial
         from shutil import copy2
@@ -105,20 +132,16 @@ class MakeCommand(Command):
             print 'Make directories [%s]' % options.directory
             os.makedirs(options.directory)
             
+        #get theme config
+        theme = getattr(conf, 'theme', 'semantic')
+        print 'Using theme [%s]' % theme
+        
         #copy static files
-        print 'Copy default templates/static to %s' % options.directory
-        extract_dirs('parm', 'templates/static', 
+        print 'Copy %s to %s' % ('theme/%s/static' % theme, os.path.join(options.directory, 'static'))
+        extract_dirs('parm', 'templates/theme/%s/static' % theme, 
             os.path.join(options.directory, 'static'))
             
-        #create source directory
-#        source_path = os.path.join(options.directory, 'source')
-#        if not os.path.exists(source_path):
-#            print 'Make directories [%s]' % source_path
-#            os.makedirs(source_path)
-        
         #compile markdown files
-        #files = list(os.listdir('.'))
-#        files = glob.glob('*.*')
         def get_files():
             for _cur, _dirs, _files in os.walk('.'):
                 for _f in _dirs:
@@ -134,10 +157,17 @@ class MakeCommand(Command):
         relations = {}
         
         #prepare block process handlers
+        blocks = {}
         blocks['code-comment'] = new_code_comment
         blocks['toc'] = partial(toc, headers=headers, relations=relations)
 
+        #according theme import different blocks
+        mod_path = 'par.%s_ext.blocks' % theme
+        b = import_attr(mod_path)
+        blocks.update(b)
+        
         output_files = {}
+        template_dirs = conf.template_dirs
         
         while 1:
             if not files:
@@ -172,8 +202,11 @@ class MakeCommand(Command):
                     if title:
                         data['title'] = unicode(title, 'utf8') + ' - ' + conf.project 
                     else:
-                        print 'Error: Heading 1 not found in file %s' % path
-                        continue
+                        if fname != conf.master_doc:
+                            print 'Error: Heading 1 not found in file %s' % path
+                            continue
+                        else:
+                            data['title'] = conf.project
 
                     #convert conf attributes to data
                     for k in dir(conf):
@@ -186,7 +219,7 @@ class MakeCommand(Command):
                     fix_dir(hfilename)
                     with open(hfilename, 'wb') as fh:
                         print 'Convert %s to %s' % (path, hfilename)
-                        fh.write(template.template_file(template_file, data, dirs=['_build']))
+                        fh.write(template.template_file(template_file, data, dirs=[template_dirs]))
                         copy2(path, os.path.join(options.directory, path))
                     output_files[fname] = hfilename
                     
