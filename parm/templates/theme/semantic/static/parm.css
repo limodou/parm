@@ -36,7 +36,7 @@ body{font-family: "PT Serif",Georgia,Times,"Times New Roman",serif; font-size:1.
 li {line-height: 1.5em;}
 
 #markdown-content {position:relative; padding-bottom:50px;padding-top:30px;}
-#markdown-content h2, #index h2{
+#markdown-content h2, #introduction h2{
 margin-bottom: 1em;
 border-bottom: 1px solid #ddd;
 line-height:40px;
@@ -62,7 +62,6 @@ blockquote:before {
 blockquote p {
   display inline;
 }
-#index .main {padding-left:2em;padding-right:2em;}
 
 #markdown-content .floatleft {margin:4px;float:left;clear:left;padding-right: 20px;}
 #markdown-content .floatright {margin:4px;float:right;clear:right;padding-left: 20px;}
@@ -86,9 +85,9 @@ background: url(external-link-ltr-icon.png) center right no-repeat;
 padding-right: 13px;
 }
 
-#index .introduction {padding-top:25px;padding-bottom:25px;background-color:#00b5ae;}
-#index .introduction h1 {font-size:5em;}
-#index .introduction h2 {
+#introduction {padding-top:25px;padding-bottom:25px;background-color:#00b5ae;}
+#introduction h1 {font-size:5em;}
+#introduction h2 {
 font-family: "Source Sans Pro", "Helvetica Neue", "Helvetica", "Arial", sans-serif;
 color:#CCE2FF;;
 font-weight: normal;
@@ -138,4 +137,9 @@ padding: 0;
 color: inherit;
 background-color: transparent;
 border: 0;
+}
+
+@media (max-width: 480px) {
+#side-bar {display:none;}
+#markdown-content {width:100%;}
 }

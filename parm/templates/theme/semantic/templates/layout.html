@@ -44,23 +44,23 @@ pass
 
 {{block content}}
 <div class="ui divided grid">
-    <div class="four wide column">
+    <div class="four wide column" id="side-bar">
         <div id="toc" class="content"></div>
     </div> 
     
     <div class="twelve wide column" id="markdown-content">
     
         <!-- prev_next_top -->
-    
+        
         {{<< body}}
-    
+        
         <div class="ui blue inverted small label">
             <i class="icon download"></i>{{<< source}}
         </div>
-    
+        
     </div>
 </div>
-    
+
 <div class="ui page grid">
     <div class="column">
     <!-- disqus -->
@@ -69,7 +69,7 @@ pass
     {{pass}}
     </div>
 </div>
-    
+
 <div class="ui page grid" id="footer">
     <div class="column">
     {{<< defined('footer') or ''}}
