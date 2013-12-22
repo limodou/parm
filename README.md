@@ -255,3 +255,41 @@ menus = [
     ('home', 'Home', 'index.html'),
 ]
 ```
+
+## How to exclude files
+
+In 0.9 version, after you've initialized parm project, there should be an exclude.txt
+file, you can change it to exclude the files or directories which you don't want 
+to copy to output directory. One pattern could be in one line. The pattern just 
+like filename matching pattern, for example, these are available patterns:
+
+```
+conf.py
+*.pyc
+templates
+```
+
+## How to host your docs in github pages
+
+1. clone your project to a new directory, for example `yourproject-doc`
+2. `git checkout --orphan gh-pages`
+3. `git rm -rf .`
+4. create docs in your repo, and write your docs
+5. render html to doc directory, for example the directory will be:
+
+    ```
+    project(master)\
+       docs\  <------you are here
+    project-doc(gh-pages)\
+    ```
+    
+    ```
+    parm make -d ../../yourproject-doc
+    ```
+6. in yourproject-doc, `git add .`
+7. `git commit -a -m "init doc"`
+8. `git push origin gh-pages`
+9. Visit your doc in `http://yourname.github.io/yourproject`
+
+You could also see the documentation https://help.github.com/articles/creating-project-pages-manually
+to understand how to use `gh-pages`.

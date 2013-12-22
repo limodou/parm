@@ -32,7 +32,7 @@ class CommandError(Exception):
     """
     pass
 
-def get_answer(message, answers='Yn', default='Y', quit='n'):
+def get_answer(message, answers='Yn', default='Y', quit=''):
     """
     Get an answer from stdin, the answers should be 'Y/n' etc.
     If you don't want the user can quit in the loop, then quit should be None.

@@ -1,6 +1,12 @@
 Parm Change Log
 =====================
 
+0.9 Version
+-----------------
+
+* Add exclude support
+* Fix readme
+
 0.8 Version
 -----------------
 

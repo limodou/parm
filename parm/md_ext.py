@@ -93,7 +93,7 @@ def toc(visitor, block, headers=None, relations=None):
     """
     Format:
         
-        {% toc max_depth=2,class=multiple %}
+        {% toc max_depth=2 %}
         file1.md
         file2.md
         {% endtoc %}

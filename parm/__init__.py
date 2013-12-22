@@ -100,7 +100,7 @@ class InitCommand(Command):
                 d['template_dirs'])
                 
         if get_answer("Copy init files [index.md*]") == 'Y':
-            for f in ['index.md', 'introduction.md', '.nojekyll']:
+            for f in ['index.md', 'introduction.md', 'exclude.txt']:
                 if os.path.exists(f):
                     print '%s is already existed, so just skip it' % f
                 else:
@@ -124,7 +124,7 @@ class MakeCommand(Command):
     r_id = re.compile(r'id="([^"]*)"')
     
     def handle(self, options, global_options, *args):
-        from utils import extract_dirs, copy_dir, import_attr
+        from utils import extract_dirs, copy_dir, walk_dirs, import_attr
         from md_ext import new_code_comment, toc
         from functools import partial
         from shutil import copy2
@@ -148,24 +148,14 @@ class MakeCommand(Command):
             os.path.join(options.directory, 'static'))
             
         dst_dir = os.path.normpath(os.path.abspath(options.directory)).replace('\\', '/') + '/'
-        #compile markdown files
-        def get_files():
-            for _cur, _dirs, _files in os.walk('.'):
-                for _f in _dirs:
-                    _path = os.path.normpath(os.path.abspath(os.path.join(_cur, _f))).replace('\\', '/') + '/'
-                    if _path.startswith(dst_dir):
-                        continue
-                    yield os.path.normpath(os.path.join(_cur, _f))
-                for _f in _files:
-                    _file = os.path.normpath(os.path.abspath(os.path.join(_cur, _f))).replace('\\', '/')
-                    if _file.startswith(dst_dir):
-                        continue
-                    yield os.path.normpath(os.path.join(_cur, _f)).replace('\\', '/')
-                    
-        if args:
-            files = list(args)
+        
+        #process exclude
+        if os.path.exists('exclude.txt'):
+            _exclude = open('exclude.txt').read().splitlines()
         else:
-            files = list(get_files())
+            _exclude = []
+        _exclude.extend([options.directory, conf.template_dirs])
+        files = list(walk_dirs('.', exclude=_exclude))
         headers = {}
         relations = {}
         
@@ -189,7 +179,7 @@ class MakeCommand(Command):
             path = files.pop(0)
             fname, ext = os.path.splitext(path)
             if os.path.isfile(path) and (ext in conf.source_suffix):
-                if fname == conf.master_doc and len(files)>1:
+                if fname == conf.master_doc and len(files)>0:
                     files.append(path)
                     continue
                 
@@ -236,9 +226,15 @@ class MakeCommand(Command):
                         copy2(path, os.path.join(options.directory, path))
                     output_files[fname] = hfilename
                     
-            elif os.path.isdir(path) and path != conf.template_dirs:
-                print 'Copy %s to %s' % (path, os.path.abspath(os.path.join(options.directory, path)))
-                copy_dir(path, os.path.join(dst_dir, path))
+            else:
+                if os.path.isdir(path):
+                    dpath = os.path.join(dst_dir, path)
+                    if not os.path.exists(dpath):
+                        print 'Makedir %s' % os.path.join(dst_dir, path)
+                        os.makedirs(dpath)
+                else:
+                    print 'Copy %s to %s' % (path, os.path.join(dst_dir, path))
+                    shutil.copy(path, os.path.join(dst_dir, path))
                 
         prev_next_template_top = """{{if prev:}}<div class="chapter-prev chapter-top">
     <a prev-chapter href="{{<< prev['link']}}"><i class="icon-arrow-left"></i> {{=prev['title']}}</a>
