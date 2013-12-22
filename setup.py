@@ -14,7 +14,8 @@ Parm can be used to convert markdown files to  html pages. It'll use par module 
 The features are:
 
 * Topic content page support
-* Bootstrap 2.1.1 css framework based
+* Bootstrap theme(2.1.1 css framework based)
+* Semantic-UI theme
 
 Requirement
 ----------------
@@ -35,9 +36,9 @@ Usage
 ```
 parm --help
 parm --version
-parm -d output_path
 parm init
-parm make
+parm make [-d directory]
+parm rst2md
 ```
 
 License
