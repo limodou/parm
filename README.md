@@ -293,3 +293,11 @@ templates
 
 You could also see the documentation https://help.github.com/articles/creating-project-pages-manually
 to understand how to use `gh-pages`.
+
+## License 
+
+This software is released under BSD license.
+
+## DEMO
+
+You can see: http://limodou.github.io/parm or http://limodou.github.io/uliweb-doc
