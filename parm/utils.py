@@ -151,8 +151,12 @@ def copy_dir(src, dst, verbose=False, check=False, processor=None):
         if r in ['.svn', '_svn', '.git']:
             continue
         fpath = os.path.join(src, r)
+        
         if os.path.isdir(fpath):
-            copy_dir(fpath, os.path.join(dst, r), verbose, check, processor)
+            if os.path.abspath(fpath) != os.path.abspath(dst):
+                copy_dir(fpath, os.path.join(dst, r), verbose, check, processor)
+            else:
+                continue
         else:
             ext = os.path.splitext(fpath)[1]
             if ext in ['.pyc', '.pyo', '.bak', '.tmp']:

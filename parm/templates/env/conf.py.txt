@@ -31,9 +31,11 @@ project = u'{{=project}}'
 project_url = './index.html'
 copyright = u'{{=copyright}}'
 introduction = u'''
-<h1 class="ui header">{{=project}}</h1>
-<h2 class="ui header">Your project show description here</h2>
-'''
+<h1 class="ui header">%s
+<a class="ui black label">%s</a>
+</h1>
+<h2 class="ui header">Your project shows description here.</h2>
+''' % (project, version)
 
 # You can add custom css files, just like
 # custom_css = ['/static/custom.css']
@@ -44,9 +46,6 @@ custom_css = []
 menus = [
     ('home', 'Home', 'index.html'),
 ]
-
-# in content footer you can config comment tool just like disque
-content_footer = ''
 
 #page footer
 footer = """

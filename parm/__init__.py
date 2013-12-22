@@ -21,7 +21,7 @@ __author__ = 'limodou'
 __author_email__ = 'limodou@gmail.com'
 __url__ = 'https://github.com/limodou/parm'
 __license__ = 'BSD'
-__version__ = '0.8'
+__version__ = '0.9'
 
 #import parm project config module
 try:
@@ -49,17 +49,15 @@ class InitCommand(Command):
             has_conf = True
         else:
             has_conf = False
-#        extract_dirs('parm', 'templates/env', '.', exclude=['conf.py'])
-#        if not os.path.exists('static'):
-#            os.makedirs('static')
             
         d = {}
         
-        d['project'] = conf.project or 'Parm'
-        d['copyright'] = conf.copyright or '2013, Limodou'
-        d['version'] = conf.version or __version__
-        d['theme'] = getattr(conf, 'theme', None) or 'semantic'
-        d['template_dirs'] = conf.template_dirs or 'templates'
+        d['project'] = getattr('conf', 'project', 'Parm')
+        d['copyright'] = getattr('conf', 'copyright', '2013, Limodou')
+        d['version'] = getattr('conf', 'version', __version__)
+        d['theme'] = getattr(conf, 'theme', 'semantic')
+        d['template_dirs'] = getattr(conf, 'template_dirs', 'templates')
+        d['disqus'] = getattr(conf, 'disqus', '')
         
         if has_conf:
             create = get_answer("Create config file", quit='q') == 'Y'
@@ -69,7 +67,7 @@ class InitCommand(Command):
             d['copyright'] = get_input("Copyright information [%s]:" % d['copyright'], default=d['copyright'])
             d['version'] = get_input("Version [%s]:" % d['version'], default=d['version'])
             d['theme'] = get_input("Choice theme (bootstrap, semantic) [%s]:" % d['theme'], choices=['bootstrap', 'semantic'], default=d['theme'])
-            d['disqus'] = get_input("Disqus account name:", default=getattr(conf, 'disqus', ''))
+            d['disqus'] = get_input("Disqus account name:", d['disqus'])
             
             if d['theme'] == 'bootstrap':
                 d['tag_class'] = """
@@ -100,6 +98,14 @@ class InitCommand(Command):
             print 'Copy %s to ./%s' % ('theme/%s/templates' % d['theme'], d['template_dirs'])
             extract_dirs('parm', 'templates/theme/%s/templates' % d['theme'], 
                 d['template_dirs'])
+                
+        if get_answer("Copy init files [index.md*]") == 'Y':
+            for f in ['index.md', 'introduction.md', '.nojekyll']:
+                if os.path.exists(f):
+                    print '%s is already existed, so just skip it' % f
+                else:
+                    print 'Copy templates/env/%s to ./%s' % (f, f)
+                    extract_file('parm', 'templates/env/%s' % f, '.')
         
 register_command(InitCommand)
 
@@ -109,7 +115,7 @@ class MakeCommand(Command):
     help = "Make parm project. It'll create all markdown files to html files."
     has_options = True
     option_list = (
-        make_option('-d', dest='directory', default='../html',
+        make_option('-d', dest='directory', default='html',
             help='Output directory of converted files.'),
     )
     
@@ -141,12 +147,19 @@ class MakeCommand(Command):
         extract_dirs('parm', 'templates/theme/%s/static' % theme, 
             os.path.join(options.directory, 'static'))
             
+        dst_dir = os.path.normpath(os.path.abspath(options.directory)).replace('\\', '/') + '/'
         #compile markdown files
         def get_files():
             for _cur, _dirs, _files in os.walk('.'):
                 for _f in _dirs:
-                    yield os.path.normpath(os.path.join(_cur, _f)).replace('\\', '/')
+                    _path = os.path.normpath(os.path.abspath(os.path.join(_cur, _f))).replace('\\', '/') + '/'
+                    if _path.startswith(dst_dir):
+                        continue
+                    yield os.path.normpath(os.path.join(_cur, _f))
                 for _f in _files:
+                    _file = os.path.normpath(os.path.abspath(os.path.join(_cur, _f))).replace('\\', '/')
+                    if _file.startswith(dst_dir):
+                        continue
                     yield os.path.normpath(os.path.join(_cur, _f)).replace('\\', '/')
                     
         if args:
@@ -224,8 +237,8 @@ class MakeCommand(Command):
                     output_files[fname] = hfilename
                     
             elif os.path.isdir(path) and path != conf.template_dirs:
-                print 'Copy %s to %s' % (path, options.directory)
-                copy_dir(path, os.path.join(options.directory, path))
+                print 'Copy %s to %s' % (path, os.path.abspath(os.path.join(options.directory, path)))
+                copy_dir(path, os.path.join(dst_dir, path))
                 
         prev_next_template_top = """{{if prev:}}<div class="chapter-prev chapter-top">
     <a prev-chapter href="{{<< prev['link']}}"><i class="icon-arrow-left"></i> {{=prev['title']}}</a>

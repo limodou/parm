@@ -36,31 +36,36 @@ And parm will use it to convert the markdown documents.
 This command will copy some static files and templates from parm module. But
 you don't need to care about them now.
 
+For 0.9 version, it'll also copy a demo pages such as : index.md, introduction.md,
+so you can directly run `parm make` and see the result.
+
 ## Writing TOC
 
 Next, you can start to convert the docs. Because parm support table of content(TOC), so
-you can write your topic content in `index.md` file. The content just like:
+you can write your topic content in `index.md` file. For 0.9 version, it'll already
+created a index.md for you, so you can just open and edit it.
+
+The content just like:
 
 ```
-Document Subject
-==================
+## Introduction
 
-{% toc max_depth=2[,class=multiple] %}
+{% toc max_depth=2 %}
 file1.md
 file2.md
 ...
 {% endtoc %}
 ```
 
+For 0.9 version, you shouldn't need H1 subject, because the project info is already
+written in conf.py, and you can change them.
+
 You should put all files which you can to be listed in `toc` tag. And you can 
 also set `max_depth` argumant, and it means the heading level of each markdown
 file, such as `h1`, `h2`, .etc. You can also skip `max_depth` the default will 
 be `1`.
 
-`,class=multiple` is optional. By default, the toc indexes will be output one column.
-If you want to display multiple columns, you can pass `,class=multiple` . There
-are 3 parameters: `multiple`, `multiple2`, `multiple3`. `multiple` and `multiple2`
-are the same, they'll output indexes for two columns. And `multiple3` for 3 columns.
+You can put multiple toc section in index.md, and also give a H2 subject for each.
 
 ## Build
 
@@ -72,7 +77,7 @@ parm make
 
 to start converting.
 
-And when the convert finished, the result will be output to `../html` default.
+And when the convert finished, the result will be output to `html` default.
 You can also change it with `-d` parameter, just like:
 
 ```
@@ -91,8 +96,9 @@ parm rst2md <output_directory>
 ```
 
 But you known, reStructuredText format is rich than markdown, so I expand some
-new style for Markdown format in `par` project. But there are still some styles
-unsupported by par, so you need to change them manually.
+new style for Markdown format in [par](https://github.com/limodou/par) project. 
+But there are still some styles unsupported by par, so you need to change them 
+manually.
 
 And if you want to convert reStructuredText to Markdown, you should install 
 `docutils` first.
@@ -108,7 +114,7 @@ rst2md seem not so matual enough.
 ## Demo site
 
 Uliweb-doc is written by markdown, and using parm convert to html files. You can
-see http://limodou.github.com/uliweb-doc, and the source code is in 
+see http://limodou.github.io/uliweb-doc, and the source code is in 
 https://github.com/limodou/uliweb-doc.
 
 ## How to add disqus support
@@ -117,6 +123,11 @@ When initialized the parm project, it'll copy some templates and static files. Y
 want to add disqus support to each page. So let me show you how to do that.
 
 ### Sign in Disqus and got embeded codes
+
+For 0.9 version, parm has already supported disqus, so when you created conf.py
+it'll ask you the disqus account name, and the name will be saved in conf.py, so
+you can edit it later. And steps below will not need, but you should know how
+to config it if you want to change it later.
 
 You should sign in disqus first, and then you'll get two paragraphs, one is 
 html code, the other is js code. For example:
@@ -159,7 +170,9 @@ html code, the other is js code. For example:
 
 And you should replace two `YOUR_SITE_SHORT_NAME` according your account of disqus.
 
-Write above codes into `conf.py`, for example:
+For 0.9 version, you can just replace `disqus` config variable, it's enough.
+
+Above codes is already saved in `conf.py`, for example:
 
 ```
 #disqus
@@ -174,7 +187,7 @@ disqus_js = '''
 
 ### Change layout.html
 
-Open the template file `your_parm_project/_build/layout.html` and change two 
+Open the template file `your_parm_project/templates/layout.html` and change two 
 places:
 
 After
@@ -205,3 +218,40 @@ add:
 ```
 
 When after above works, execute `parm make -d output_directory` again.
+
+For 0.9 version, above code is already existed in `layout.html` template.
+
+## Change Index Introduction Info
+
+Introduction is a pagagraph to show the project title and summary infos, you can 
+change it in conf.py:
+
+```
+introduction = u'''
+<h1 class="ui header">%s
+<a class="ui black label">%s</a>
+</h1>
+<h2 class="ui header">Your project shows description here.</h2>
+''' % (project, version)
+```
+
+## About theme
+
+For 0.8 version, parm is already support two themes: bootstrap, semantic. But I
+prefer the semantic, because I made more care about it. If you want to change 
+the theme, you can just change :
+
+```
+theme = 'semantic'
+```
+
+## Menu Navigation
+
+Default menu navigation has only home entry, you can change it in conf.py according
+the description:
+
+```
+menus = [
+    ('home', 'Home', 'index.html'),
+]
+```
