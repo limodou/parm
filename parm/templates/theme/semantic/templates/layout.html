@@ -22,10 +22,13 @@
 {{
 def menu(current='home'):
     for id, caption, link in menus:
+        if not (link.startswith('http://') or link.startswith('https://')):
+            link = '%s/%s' % (relpath, link)
+        pass
         if id == current:
-            out.write('<a class="active item" href="%s/%s">%s</a>' % (relpath, link, caption), escape=False)
+            out.write('<a class="active item" href="%s">%s</a>' % (link, caption), escape=False)
         else:
-            out.write('<a class="item" href="%s/%s">%s</a>' % (relpath, link, caption), escape=False)
+            out.write('<a class="item" href="%s">%s</a>' % (link, caption), escape=False)
         pass
     pass
 pass
