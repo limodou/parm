@@ -9,7 +9,6 @@ twitter bootstrap.
 First install par and parm to your box.
 
 ```
-pip install par
 pip install parm
 ```
 

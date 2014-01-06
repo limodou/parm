@@ -1,16 +1,16 @@
 __doc__ = """
 =====================
-Par 
+Parm 
 =====================
 
 :Author: Limodou <limodou@gmail.com>
 
-.. contents:: 
-
 About Parm
 ----------------
 
-Parm can be used to convert markdown files to  html pages. It'll use par module to parse markdown. 
+Parm can be used to convert markdown files to  html pages. It'll use par module 
+to parse markdown.
+ 
 The features are:
 
 * Topic content page support
@@ -25,21 +25,20 @@ Requirement
 Installation
 ----------------
 
-```
-pip install par
-pip install parm
-```
+::
+    
+    pip install parm
 
 Usage
 -------------
 
-```
-parm --help
-parm --version
-parm init
-parm make [-d directory]
-parm rst2md
-```
+::
+    
+    parm --help
+    parm --version
+    parm init
+    parm make [-d directory]
+    parm rst2md
 
 License
 ------------
@@ -132,4 +131,5 @@ setup(name='parm',
             'parm = parm:main',
         ],
     },
+    install_requires=['par']
 )

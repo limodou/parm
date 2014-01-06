@@ -1,6 +1,11 @@
 Parm Change Log
 =====================
 
+0.9.2 Version
+-----------------
+
+* Chanage setup.py, add par package requirement.
+
 0.9.1 Version
 -----------------
 
