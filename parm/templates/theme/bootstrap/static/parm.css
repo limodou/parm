@@ -207,3 +207,5 @@ dd {margin-left:30px;margin-top:5px;}
 background: url(external-link-ltr-icon.png) center right no-repeat;
 padding-right: 13px;
 }
+
+li > p {margin:0;}
