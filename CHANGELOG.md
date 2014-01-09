@@ -4,7 +4,7 @@ Change Log
 1.0 Version
 -----------------
 
-* Chanage `setup.py`, add `par` package requirement.
+* Change `setup.py`, add `par` package requirement.
 * Add google search support, you can config it via init command by default.
 * Fix `rst2md` parsing `.. contents::` bug.
 * Change `rst2md` and `make` command parameter.
