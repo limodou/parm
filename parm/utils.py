@@ -133,7 +133,8 @@ def match(f, patterns):
         if fnmatch(f, x):
             return True
         
-def walk_dirs(path, exclude=None, exclude_ext=None, recursion=True):
+def walk_dirs(path, include=None, include_ext=None, exclude=None, 
+        exclude_ext=None, recursion=True, file_only=False):
     """
     path directory path
     resursion True will extract all sub module of mod
@@ -142,6 +143,8 @@ def walk_dirs(path, exclude=None, exclude_ext=None, recursion=True):
     default_exclude_ext = ['.pyc', '.pyo', '.bak', '.tmp']
     exclude = exclude or []
     exclude_ext = exclude_ext or []
+    include_ext = include_ext or []
+    include = include or []
 
     if not os.path.exists(path):
         raise StopIteration
@@ -149,15 +152,21 @@ def walk_dirs(path, exclude=None, exclude_ext=None, recursion=True):
     for r in os.listdir(path):
         if match(r, exclude) or r in default_exclude:
             continue
+        if include and r not in include:
+            continue
         fpath = os.path.join(path, r)
         if os.path.isdir(fpath):
-            yield os.path.normpath(fpath).replace('\\', '/')
+            if not file_only:
+                yield os.path.normpath(fpath).replace('\\', '/')
             if recursion:
-                for f in walk_dirs(fpath, exclude, exclude_ext, recursion):
+                for f in walk_dirs(fpath, include, include_ext, exclude, 
+                    exclude_ext, recursion, file_only):
                     yield os.path.normpath(f).replace('\\', '/')
         else:
             ext = os.path.splitext(fpath)[1]
             if ext in exclude_ext or ext in default_exclude_ext:
+                continue
+            if include_ext and ext not in include_ext:
                 continue
             yield os.path.normpath(fpath).replace('\\', '/')
 

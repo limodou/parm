@@ -101,7 +101,7 @@ class Translator(nodes.NodeVisitor):
         return ''.join(self.head + self.body + self.foot)
 
     def deunicode(self, text):
-        text = text.replace(u'\xa0', '\\ ')
+        text = text.replace(u'\xa0', ' ')
         text = text.replace(u'\u2020', '\\(dg')
         return text
 
@@ -252,7 +252,7 @@ class Translator(nodes.NodeVisitor):
             raise nodes.SkipNode
         else:
             self.body.append(u'\n{0} {1}\n'.format((self.section_level+1)*'#',
-                self.deunicode(node.astext())))
+                self.deunicode(node.astext()).split(' ', 1)[-1].strip()))
             self.body.append('\n')
             raise nodes.SkipNode
 

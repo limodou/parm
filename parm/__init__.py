@@ -21,7 +21,7 @@ __author__ = 'limodou'
 __author_email__ = 'limodou@gmail.com'
 __url__ = 'https://github.com/limodou/parm'
 __license__ = 'BSD'
-__version__ = '0.9.1'
+__version__ = '1.0'
 
 #import parm project config module
 try:
@@ -58,6 +58,7 @@ class InitCommand(Command):
         d['theme'] = getattr(conf, 'theme', 'semantic')
         d['template_dirs'] = getattr(conf, 'template_dirs', 'templates')
         d['disqus'] = getattr(conf, 'disqus', '')
+        d['domain'] = getattr(conf, 'domain', '')
         
         if has_conf:
             create = get_answer("Create config file", quit='q') == 'Y'
@@ -67,8 +68,11 @@ class InitCommand(Command):
             d['copyright'] = get_input("Copyright information [%s]:" % d['copyright'], default=d['copyright'])
             d['version'] = get_input("Version [%s]:" % d['version'], default=d['version'])
             d['theme'] = get_input("Choice theme (bootstrap, semantic) [%s]:" % d['theme'], choices=['bootstrap', 'semantic'], default=d['theme'])
-            d['disqus'] = get_input("Disqus account name:", d['disqus'])
+            d['disqus'] = get_input("Disqus account name [%s]:" % d['disqus'], default=d['disqus'])
+            d['search'] = get_answer("If you want to add search input") == 'Y'
+            d['domain'] = get_input("Domain name used for search [%s]:" % d['domain'], default=d['domain'])
             
+            print d
             if d['theme'] == 'bootstrap':
                 d['tag_class'] = """
 'table':'table table-bordered',
@@ -111,7 +115,6 @@ register_command(InitCommand)
 
 class MakeCommand(Command):
     name = 'make'
-    args = '[file1 [,file2...]]'
     help = "Make parm project. It'll create all markdown files to html files."
     has_options = True
     option_list = (
@@ -298,30 +301,32 @@ class Rst2MdCommand(Command):
     help = ("Convert reStructuredText to Markdown. \n\nThis tool can't convert "
         "everything of rst to markdown very well, so you need to modify the output "
         "files manually, but it's a good start point")
-    args = '<output_directory>'
+    args = '[rstfile, rstfile...]'
     option_list = (
         make_option('-e', dest='extension', default='.rst',
             help='Extension of the reStructuredText file, default is ".rst".'),
+        make_option('-d', dest='directory', default='.',
+            help='Output directory of converted files.'),
     )
     
     def handle(self, options, global_options, *args):
         from docutils.core import publish_file
         import glob
         import markdown_writer
+        from utils import walk_dirs
         
         source = os.getcwd()
-        destination = None
-        if len(args) == 0:
-            destination = '.'
-        else:
-            destination = args[0]
         
-        if not os.path.exists(destination):
-            os.makedirs(destination)
+        if not os.path.exists(options.directory):
+            os.makedirs(options.directory)
             
-        files = glob.glob(source+'/*'+options.extension)
+        if not args:
+            files = walk_dirs(source, include_ext=options.extension, file_only=True)
+        else:
+            files = args
         for f in files:
-            nf = os.path.join(destination, os.path.splitext(os.path.basename(f))[0] + '.md')
+            print f
+            nf = os.path.join(options.directory, os.path.splitext(os.path.basename(f))[0] + '.md')
             if global_options.verbose:
                 print 'Convert %s...' % f
             publish_file(source_path=f, 

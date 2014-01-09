@@ -1,10 +1,13 @@
-Parm Change Log
+Change Log
 =====================
 
-0.9.2 Version
+1.0 Version
 -----------------
 
-* Chanage setup.py, add par package requirement.
+* Chanage `setup.py`, add `par` package requirement.
+* Add google search support, you can config it via init command by default.
+* Fix `rst2md` parsing `.. contents::` bug.
+* Change `rst2md` and `make` command parameter.
 
 0.9.1 Version
 -----------------
@@ -16,6 +19,7 @@ Parm Change Log
 
 * Add exclude support
 * Fix readme
+* Add disqus config support
 
 0.8 Version
 -----------------

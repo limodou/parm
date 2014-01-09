@@ -98,3 +98,30 @@ disqus_js = '''<script type="text/javascript">
    }());
    </script>
 '''
+
+search = {{=search}}
+domain = '{{=domain}}'
+search_html = """
+<div class="item">
+  <div class="ui icon input">
+    <form id="searchform">
+    <input name="q" type="text" placeholder="Search...">
+    </form>
+  </div>
+</div>
+"""
+
+search_js = """
+<script type="text/javascript">
+$(function(){
+    var form = $('#searchform');
+    form.submit(function(e){
+        e.preventDefault();
+        var wq=$('input[name="q"]').val();
+        var link="http://www.google.com/search?q=site:%s "+wq;
+        window.open(link);
+
+    });
+});
+</script>
+""" % domain
