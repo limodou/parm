@@ -143,3 +143,7 @@ border: 0;
 #side-bar {display:none;}
 #markdown-content {width:100%;}
 }
+
+li > p {margin:0;}
+
+#searchform input {background-color:gray;color:white;}

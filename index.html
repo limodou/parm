@@ -8,7 +8,6 @@
 <meta name="author" content="">
 
 <link rel="stylesheet" href="./static/semantic/css/semantic.min.css"/>
-<link rel="stylesheet" href="./static/docs.css"/>
 <link href="./static/asset/prettify.css" rel="stylesheet">
 <link href="./static/toc/toc.css" rel="stylesheet">
 <link rel="stylesheet" href="./static/parm.css"/>
@@ -27,6 +26,20 @@
     
     <a class="active item" href="./index.html">Home</a>
     
+    
+        <div class="right menu">
+            
+<div class="item">
+  <div class="ui icon input">
+    <form id="searchform">
+    <input name="q" type="text" placeholder="Search...">
+    </form>
+  </div>
+</div>
+
+        </div>
+    
+    
   </div>
 </div>
 
@@ -35,7 +48,7 @@
     <div class="column">
         
 <h1 class="ui header">Parm
-<a class="ui black label">0.2.2</a>
+<a class="ui black label">0.9.2</a>
 </h1>
 <h2 class="ui header">Your project shows description here.</h2>
 
@@ -44,17 +57,12 @@
 
 <div class="ui page grid" id="markdown-content">
   <div class="column">
-    <h2 id="title_0-1">Introduction<a class="anchor" href="#title_0-1">&para;</a></h2>
+    <h2 id="title_0-1">Parm Doc<a class="anchor" href="#title_0-1">&para;</a></h2>
 <div class="toc">
 <ul>
-<li><a href="introduction.html">Parm Introduction</a></li></ul>
+<li><a href="README.html">Parm Introduction</a></li><li><a href="CHANGELOG.html">Change Log</a></li></ul>
 </div>
 
-<h2 id="title_0-2">Introduction<a class="anchor" href="#title_0-2">&para;</a></h2>
-<div class="toc">
-<ul>
-<li><a href="introduction.html">Parm Introduction</a></li></ul>
-</div>
 
     
   </div>
@@ -78,6 +86,23 @@
 <script src="./static/comment.js"></script>
 <script src="./static/jquery.hotkeys.js"></script>
 <script src="./static/jquery.sticky-kit.min.js"></script>
+
+
+
+
+    
+<script type="text/javascript">
+$(function(){
+    var form = $('#searchform');
+    form.submit(function(e){
+        e.preventDefault();
+        var wq=$('input[name="q"]').val();
+        var link="http://www.google.com/search?q=site:limodou.github.io/parm "+wq;
+        window.open(link);
+
+    });
+});
+</script>
 
 
 

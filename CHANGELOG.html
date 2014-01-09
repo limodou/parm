@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html>
+<head>
+
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="">
+<meta name="author" content="">
+
+<link rel="stylesheet" href="./static/semantic/css/semantic.min.css"/>
+<link href="./static/asset/prettify.css" rel="stylesheet">
+<link href="./static/toc/toc.css" rel="stylesheet">
+<link rel="stylesheet" href="./static/parm.css"/>
+<link rel="stylesheet" href="./static/asset/sons-of-obsidian.css"/>
+
+<title>Change Log - Parm</title>
+</head>
+<body>
+
+
+
+<!-- Navbar
+================================================== -->
+<div class="navbar">
+  <div class="ui small secondary inverted borderless menu">
+    
+    <a class="active item" href="./index.html">Home</a>
+    
+    
+        <div class="right menu">
+            
+<div class="item">
+  <div class="ui icon input">
+    <form id="searchform">
+    <input name="q" type="text" placeholder="Search...">
+    </form>
+  </div>
+</div>
+
+        </div>
+    
+    
+  </div>
+</div>
+
+
+<div class="ui divided grid">
+    <div class="four wide column" id="side-bar">
+        <div id="toc" class="content"></div>
+    </div> 
+    
+    <div class="twelve wide column" id="markdown-content">
+    
+        <div class="chapter-prev chapter-top">
+    <a prev-chapter href="./README.html"><i class="icon-arrow-left"></i> Parm Introduction</a>
+</div>
+
+        
+        <h1 id="title_1">Change Log<a class="anchor" href="#title_1">&para;</a></h1>
+<h2 id="title_1-1">1.0 Version<a class="anchor" href="#title_1-1">&para;</a></h2>
+<ul>
+<li>Chanage <code>setup.py</code>, add <code>par</code> package requirement.</li>
+<li>Add google search support, you can config it via init command by default.</li>
+<li>Fix <code>rst2md</code> parsing <code>.. contents::</code> bug.</li>
+<li>Change <code>rst2md</code> and <code>make</code> command parameter.</li>
+</ul>
+<h2 id="title_1-2">0.9.1 Version<a class="anchor" href="#title_1-2">&para;</a></h2>
+<ul>
+<li>Bug fix</li>
+</ul>
+<h2 id="title_1-3">0.9 Version<a class="anchor" href="#title_1-3">&para;</a></h2>
+<ul>
+<li>Add exclude support</li>
+<li>Fix readme</li>
+<li>Add disqus config support</li>
+</ul>
+<h2 id="title_1-4">0.8 Version<a class="anchor" href="#title_1-4">&para;</a></h2>
+<ul>
+<li>Add semantic theme</li>
+</ul>
+<h2 id="title_1-5">0.7 Version<a class="anchor" href="#title_1-5">&para;</a></h2>
+<ul>
+<li>Fix sub directory link bug</li>
+<li>Remove anchor in title of index.html</li>
+<li>Fix source file copy bug</li>
+<li>Fix scroll offset bug</li>
+</ul>
+<h2 id="title_1-6">0.6 Version<a class="anchor" href="#title_1-6">&para;</a></h2>
+<ul>
+<li>Fix make command, copy all directories to output directory excep for template_dir</li>
+</ul>
+<h2 id="title_1-7">0.5 Version<a class="anchor" href="#title_1-7">&para;</a></h2>
+<ul>
+<li>upgrade css to suit with responsable</li>
+<li>add files parameters to make command</li>
+</ul>
+<h2 id="title_1-8">0.4 Version<a class="anchor" href="#title_1-8">&para;</a></h2>
+<ul>
+<li>upgrade with par 0.7, fix css and toc generation</li>
+<li>add sub directories support for source</li>
+</ul>
+<h2 id="title_1-9">0.3 Version<a class="anchor" href="#title_1-9">&para;</a></h2>
+<ul>
+<li><p>Add toc multiple column css support, you can pass class=multiple to toc, for example:</p>
+<pre class="prettyprint"><code>{% toc max_depth=1,class="multiple3" %}
+file1.md
+file2.md
+file3.md
+{% endtoc %}</code></pre></li>
+<li>Add cusome_css support, so you can pass your custom css in conf.py.</li>
+</ul>
+<h2 id="title_1-10">0.2 Version<a class="anchor" href="#title_1-10">&para;</a></h2>
+<ul>
+<li>Fix setup.py adding data files</li>
+<li>Fix heading 1 not found</li>
+<li>Add source file view support</li>
+<li>Add rst2md sub command, it can convert rst to markdown</li>
+</ul>
+<h2 id="title_1-11">0.1 Version<a class="anchor" href="#title_1-11">&para;</a></h2>
+<p>First version</p>
+
+        
+        <div class="ui blue inverted small label">
+            <i class="icon download"></i><a href="./CHANGELOG.md">View Source</a>
+        </div>
+        
+    </div>
+</div>
+
+<div class="ui page grid">
+    <div class="column">
+    <!-- disqus -->
+    
+    </div>
+</div>
+
+<div class="ui page grid" id="footer">
+    <div class="column">
+    
+<p>Designed by Limodou, Copyright 2013, Limodou</p>
+<p>CSS framework <a href="https://github.com/twitter/bootstrap">Bootstrap</a>, Markdown parser lib <a href="https://github.com/limodou/par">Par</a> and this page is created by <a href="https://github.com/limodou/parm">Parm</a> tool.</p>
+
+    </div>
+</div>
+
+
+<script type="text/javascript" src="./static/jquery-1.7.2.min.js"></script>
+<script type="text/javascript" src="./static/semantic/javascript/semantic.min.js"></script>
+<script src="./static/asset/prettify.js"></script>
+<script src="./static/toc/toc.js"></script>
+<script src="./static/docs.js"></script>
+<script src="./static/comment.js"></script>
+<script src="./static/jquery.hotkeys.js"></script>
+<script src="./static/jquery.sticky-kit.min.js"></script>
+
+
+
+
+    
+<script type="text/javascript">
+$(function(){
+    var form = $('#searchform');
+    form.submit(function(e){
+        e.preventDefault();
+        var wq=$('input[name="q"]').val();
+        var link="http://www.google.com/search?q=site:limodou.github.io/parm "+wq;
+        window.open(link);
+
+    });
+});
+</script>
+
+
+
+</body>
+</html>

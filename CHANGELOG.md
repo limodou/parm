@@ -1,0 +1,79 @@
+Change Log
+=====================
+
+1.0 Version
+-----------------
+
+* Chanage `setup.py`, add `par` package requirement.
+* Add google search support, you can config it via init command by default.
+* Fix `rst2md` parsing `.. contents::` bug.
+* Change `rst2md` and `make` command parameter.
+
+0.9.1 Version
+-----------------
+
+* Bug fix
+
+0.9 Version
+-----------------
+
+* Add exclude support
+* Fix readme
+* Add disqus config support
+
+0.8 Version
+-----------------
+
+* Add semantic theme
+
+0.7 Version
+-----------------
+
+* Fix sub directory link bug
+* Remove anchor in title of index.html
+* Fix source file copy bug
+* Fix scroll offset bug
+
+0.6 Version
+-----------------
+
+* Fix make command, copy all directories to output directory excep for template_dir
+
+0.5 Version
+-----------------
+
+* upgrade css to suit with responsable
+* add files parameters to make command
+
+0.4 Version
+-----------------
+
+* upgrade with par 0.7, fix css and toc generation
+* add sub directories support for source
+
+0.3 Version
+-----------------
+
+* Add toc multiple column css support, you can pass class=multiple to toc, for example:
+
+    ```
+    {% toc max_depth=1,class="multiple3" %}
+    file1.md
+    file2.md
+    file3.md
+    {% endtoc %}
+    ```
+
+* Add cusome_css support, so you can pass your custom css in conf.py.
+
+0.2 Version
+-----------------
+
+* Fix setup.py adding data files
+* Fix heading 1 not found
+* Add source file view support
+* Add rst2md sub command, it can convert rst to markdown
+
+0.1 Version
+-----------------
+First version
