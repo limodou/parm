@@ -1,8 +1,8 @@
 Parm Introduction
 ===================
 
-Convert par favorit markdown syntax to html document, also supports semantic-ui and
-twitter bootstrap.
+Convert par favorit markdown syntax to html document, supports semantic-ui and
+bootstrap css framework.
 
 ## Installation
 
