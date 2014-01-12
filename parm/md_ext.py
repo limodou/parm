@@ -1,4 +1,5 @@
 from utils import log
+import re
 import os
 
 def code_comment(visitor, items):
@@ -157,3 +158,153 @@ def toc(visitor, block, headers=None, relations=None):
     s.append('</ul>\n')
     s.append('</div>\n')
     return ''.join(s)
+
+def include(visitor, block):
+    """
+    include source code from file, the format is:
+        
+        {% include file=test.js, lines=1-20 30-, language=python, class=linenums %}
+        lines_content
+        {% endinclude %}
+        
+        the line 1<= lineno < 20 and 30 <= lineno will be included
+        
+        lines_content is line pattern used to match which lines should be included
+        the format is:
+            
+            begin ... end
+            
+        begin and end are line pattern, and end will not be included
+    """
+    
+    def get_lineno(lines):
+        num = []
+        for x in lines.split():
+            if '-' in x:
+                b, e = x.split('-')
+                if b.strip():
+                    b = int(b)
+                else:
+                    b = 1
+                b = int(b)
+                if e.strip():
+                    e = int(e)
+                else:
+                    e = -1
+                num.append((b, e))
+            else:
+                num.append((int(x), int(x)+1))
+        return num
+        
+    def get_line_index(line, v, index):
+        if isinstance(v, int):
+            return v
+        if re.search(v, line):
+            return index
+        else:
+            return v
+        
+    def test_lineno(n, lineno, index):
+        """
+        last status
+        """
+        if index != -1:
+            b, e = lineno[index]
+            if b<=n and ((e==-1) or n<e):
+                return True, index
+        for i, v in enumerate(lineno):
+            b, e = lineno[i]
+            if b<=n and ((e==-1) or n<e):
+                return True, i
+                
+        return False, -1
+        
+    kw = block['kwargs']
+    filename = kw.pop('file', '')
+    if not os.path.exists(filename):
+        log.error("Can't find the file %s" % filename)
+        return '<p class="error">Can\'t find the file %s</p>' % filename
+    
+    #Get line number array
+    lines = kw.pop('lines', '')
+    if lines:
+        lineno = get_lineno(lines)
+    else:
+        lineno = []
+    
+    #process lines_content
+    pattern = False
+    for x in block['body'].splitlines():
+        x = x.rstrip()
+        if x:
+            v = x.split('...')
+            if len(v) == 1:
+                b = x
+                e = ''
+            else:
+                b, e = [y.rstrip() for y in v]
+            if b.isdigit():
+                b = int(b)
+            else:
+                pattern = True
+            b = b or 1
+            if e.isdigit():
+                e = int(e)
+            else:
+                pattern = True
+            e = e or -1
+            if len(v) == 1:
+                lineno.append(b)
+            else:
+                lineno.append((b, e))
+
+    s = []
+    first = '```'
+    lang = kw.pop('language', '')
+    if lang:
+        first += lang+','
+    x = []
+    for k, v in kw.items():
+        x.append('%s=%s' % (k, v))
+    if x:
+        first += ','.join(x)
+    s.append(first)
+    
+    with open(filename, 'r') as f:
+        buf = f.readlines()
+    
+    if lineno and pattern:
+        #calculate patterns
+        for i, line in enumerate(buf):
+            for j, v in enumerate(lineno):
+                if isinstance(v, tuple):
+                    lineno[j] = (get_line_index(line, v[0], i+1), get_line_index(line, v[1], i+1))
+                else:
+                    t = get_line_index(line, v, i+1)
+                    lineno[j] = t, t+1
+        for i in range(len(lineno)-1, -1, -1):
+            v = lineno[i]
+            if not isinstance(v, tuple):
+                del lineno[i]
+            else:
+                if isinstance(v[0], str) or isinstance(v[1], str):
+                    del lineno[i]
+       
+    last_index = -1
+    for i, line in enumerate(buf):
+        line = line.rstrip()
+        if not lineno:
+            s.append(line)
+        else:
+            flag, index = test_lineno(i+1, lineno, last_index)
+            if flag:
+                s.append(line)
+                last_index = index
+            else:
+                if i-1>=0 and s[-1]!='...':
+                    s.append('...')
+                last_index = -1
+    s.append('```')
+    text = '\n'.join(s)
+    return visitor.parse_text(text, 'article')
+    

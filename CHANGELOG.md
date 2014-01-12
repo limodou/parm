@@ -1,6 +1,40 @@
 Change Log
 =====================
 
+1.1 Version
+-----------------
+
+* Add `include` syntax, so that you can include source code to markdown file, 
+  for example:
+
+    ```
+    {% include file=test.js, lines=1-2 10-, language=python, class=linenums  %}
+    {% endinclude %}
+    ```
+    
+    `class=linenums` is used to display line number. 
+    
+    The simplest format is:
+    
+    ```
+    {% include file=test.js %}
+    {% endinclude %}
+    ```
+    
+    Also support regular expression, for example:
+    
+    ```
+    {% include file=test.js%}re.
+    \$\('\.div'\)...^\}\);
+    {% endinclude %}
+    ```
+    
+    parm will not automatically escape special characters such as `{()}` etc.
+    And you should separate begin pattern and end pattern with `...`. Extra blank
+    before the pattern will not skipped, but ending blank will be trimmed.
+    
+* Add `test_parm.py` file to test `include` syntax.
+
 1.0 Version
 -----------------
 

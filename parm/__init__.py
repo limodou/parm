@@ -21,7 +21,7 @@ __author__ = 'limodou'
 __author_email__ = 'limodou@gmail.com'
 __url__ = 'https://github.com/limodou/parm'
 __license__ = 'BSD'
-__version__ = '1.0'
+__version__ = '1.1'
 
 #import parm project config module
 try:
@@ -128,7 +128,7 @@ class MakeCommand(Command):
     
     def handle(self, options, global_options, *args):
         from utils import extract_dirs, copy_dir, walk_dirs, import_attr
-        from md_ext import new_code_comment, toc
+        from md_ext import new_code_comment, toc, include
         from functools import partial
         from shutil import copy2
 
@@ -166,6 +166,7 @@ class MakeCommand(Command):
         blocks = {}
         blocks['code-comment'] = new_code_comment
         blocks['toc'] = partial(toc, headers=headers, relations=relations)
+        blocks['include'] = include
 
         #according theme import different blocks
         mod_path = 'par.%s_ext.blocks' % theme
