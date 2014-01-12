@@ -34,6 +34,7 @@ Change Log
     before the pattern will not skipped, but ending blank will be trimmed.
     
 * Add `test_parm.py` file to test `include` syntax.
+* Fix customized `prettify.css` bug in semantic theme
 
 1.0 Version
 -----------------
