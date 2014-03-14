@@ -221,6 +221,9 @@ def include(visitor, block):
         
     kw = block['kwargs']
     filename = kw.pop('file', '')
+    if visitor.filename:
+        _dir = os.path.dirname(visitor.filename)
+        filename = os.path.join(_dir, filename)
     if not os.path.exists(filename):
         log.error("Can't find the file %s" % filename)
         return '<p class="error">Can\'t find the file %s</p>' % filename

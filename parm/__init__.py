@@ -21,7 +21,7 @@ __author__ = 'limodou'
 __author_email__ = 'limodou@gmail.com'
 __url__ = 'https://github.com/limodou/parm'
 __license__ = 'BSD'
-__version__ = '1.1'
+__version__ = '1.2'
 
 #import parm project config module
 try:
@@ -72,16 +72,15 @@ class InitCommand(Command):
             d['search'] = get_answer("If you want to add search input") == 'Y'
             d['domain'] = get_input("Domain name used for search [%s]:" % d['domain'], default=d['domain'])
             
-            print d
             if d['theme'] == 'bootstrap':
                 d['tag_class'] = """
 'table':'table table-bordered',
-'pre':'prettyprint linenums',
+'pre':'+prettyprint',
 """
             elif d['theme'] == 'semantic':
                 d['tag_class'] = """
 'table':'ui collapsing celled table segment',
-'pre':'prettyprint',
+'pre':'+prettyprint',
 """
             
             conf_file = pkg.resource_filename('parm', 'templates/env/conf.py.txt')
@@ -196,7 +195,8 @@ class MakeCommand(Command):
                     data['body'] = parseHtml(f.read(), 
                         '', 
                         conf.tag_class,
-                        block_callback=blocks)
+                        block_callback=blocks,
+                        filename=path)
                     page_nav = relations.get(fname, {})
                     data['prev'] = page_nav.get('prev', {})
                     data['next'] = page_nav.get('next', {})
@@ -326,7 +326,6 @@ class Rst2MdCommand(Command):
         else:
             files = args
         for f in files:
-            print f
             nf = os.path.join(options.directory, os.path.splitext(os.path.basename(f))[0] + '.md')
             if global_options.verbose:
                 print 'Convert %s...' % f

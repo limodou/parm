@@ -1,6 +1,12 @@
 Change Log
 =====================
 
+1.2 Version
+-----------------
+
+* Fix `include` bug
+* Fix `class=linenums` bug
+
 1.1 Version
 -----------------
 
