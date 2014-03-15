@@ -85,15 +85,23 @@ $.fn.accordion = function(parameters) {
             ;
             module.toggle(index);
           },
-          resetStyle: function() {
-            module.verbose('Resetting styles on element', this);
-            $(this)
-              .attr('style', '')
-              .removeAttr('style')
-              .children()
+          resetDisplay: function() {
+            $(this).css('display', '');
+            if( $(this).attr('style') == '') {
+              $(this)
                 .attr('style', '')
                 .removeAttr('style')
-            ;
+              ;
+            }
+          },
+          resetOpacity: function() {
+            $(this).css('opacity', '');
+            if( $(this).attr('style') == '') {
+              $(this)
+                .attr('style', '')
+                .removeAttr('style')
+              ;
+            }
           }
         },
 
@@ -134,19 +142,17 @@ $.fn.accordion = function(parameters) {
               $previousContent
                 .stop()
                 .children()
+                  .stop()
                   .animate({
                     opacity: 0
-                  }, settings.duration, module.event.resetStyle)
+                  }, settings.duration, module.event.resetOpacity)
                   .end()
                 .slideUp(settings.duration , settings.easing, function() {
                   $previousContent
                     .removeClass(className.active)
-                    .attr('style', '')
-                    .removeAttr('style')
                     .children()
-                      .attr('style', '')
-                      .removeAttr('style')
                   ;
+                  $.proxy(module.event.resetDisplay, this)();
                 })
               ;
             }
@@ -156,15 +162,16 @@ $.fn.accordion = function(parameters) {
             $activeContent
               .stop()
               .children()
-                .attr('style', '')
-                .removeAttr('style')
+                .stop()
+                .animate({
+                  opacity: 1
+                }, settings.duration)
                 .end()
               .slideDown(settings.duration, settings.easing, function() {
                 $activeContent
                   .addClass(className.active)
-                  .attr('style', '')
-                  .removeAttr('style')
                 ;
+                $.proxy(module.event.resetDisplay, this)();
                 $.proxy(settings.onOpen, $activeContent)();
                 $.proxy(settings.onChange, $activeContent)();
               })
@@ -186,15 +193,13 @@ $.fn.accordion = function(parameters) {
             .show()
             .stop()
             .children()
+              .stop()
               .animate({
                 opacity: 0
-              }, settings.duration, module.event.resetStyle)
+              }, settings.duration, module.event.resetOpacity)
               .end()
             .slideUp(settings.duration, settings.easing, function(){
-              $activeContent
-                .attr('style', '')
-                .removeAttr('style')
-              ;
+              $.proxy(module.event.resetDisplay, this)();
               $.proxy(settings.onClose, $activeContent)();
               $.proxy(settings.onChange, $activeContent)();
             })
@@ -305,13 +310,14 @@ $.fn.accordion = function(parameters) {
         },
         invoke: function(query, passedArguments, context) {
           var
+            object = instance,
             maxDepth,
             found,
             response
           ;
           passedArguments = passedArguments || queryArguments;
           context         = element         || context;
-          if(typeof query == 'string' && instance !== undefined) {
+          if(typeof query == 'string' && object !== undefined) {
             query    = query.split(/[\. ]/);
             maxDepth = query.length - 1;
             $.each(query, function(depth, value) {
@@ -319,22 +325,21 @@ $.fn.accordion = function(parameters) {
                 ? value + query[depth + 1].charAt(0).toUpperCase() + query[depth + 1].slice(1)
                 : query
               ;
-              if( $.isPlainObject( instance[camelCaseValue] ) && (depth != maxDepth) ) {
-                instance = instance[camelCaseValue];
+              if( $.isPlainObject( object[camelCaseValue] ) && (depth != maxDepth) ) {
+                object = object[camelCaseValue];
               }
-              else if( instance[camelCaseValue] !== undefined ) {
-                found = instance[camelCaseValue];
+              else if( object[camelCaseValue] !== undefined ) {
+                found = object[camelCaseValue];
                 return false;
               }
-              else if( $.isPlainObject( instance[value] ) && (depth != maxDepth) ) {
-                instance = instance[value];
+              else if( $.isPlainObject( object[value] ) && (depth != maxDepth) ) {
+                object = object[value];
               }
-              else if( instance[value] !== undefined ) {
-                found = instance[value];
+              else if( object[value] !== undefined ) {
+                found = object[value];
                 return false;
               }
               else {
-                module.error(error.method, query);
                 return false;
               }
             });
@@ -874,13 +879,14 @@ $.extend( $.easing, {
       },
       invoke: function(query, passedArguments, context) {
         var
+          object = instance,
           maxDepth,
           found,
           response
         ;
         passedArguments = passedArguments || queryArguments;
         context         = element         || context;
-        if(typeof query == 'string' && instance !== undefined) {
+        if(typeof query == 'string' && object !== undefined) {
           query    = query.split(/[\. ]/);
           maxDepth = query.length - 1;
           $.each(query, function(depth, value) {
@@ -888,22 +894,21 @@ $.extend( $.easing, {
               ? value + query[depth + 1].charAt(0).toUpperCase() + query[depth + 1].slice(1)
               : query
             ;
-            if( $.isPlainObject( instance[value] ) && (depth != maxDepth) ) {
-              instance = instance[value];
+            if( $.isPlainObject( object[camelCaseValue] ) && (depth != maxDepth) ) {
+              object = object[camelCaseValue];
             }
-            else if( $.isPlainObject( instance[camelCaseValue] ) && (depth != maxDepth) ) {
-              instance = instance[camelCaseValue];
-            }
-            else if( instance[value] !== undefined ) {
-              found = instance[value];
+            else if( object[camelCaseValue] !== undefined ) {
+              found = object[camelCaseValue];
               return false;
             }
-            else if( instance[camelCaseValue] !== undefined ) {
-              found = instance[camelCaseValue];
+            else if( $.isPlainObject( object[value] ) && (depth != maxDepth) ) {
+              object = object[value];
+            }
+            else if( object[value] !== undefined ) {
+              found = object[value];
               return false;
             }
             else {
-              module.error(error.method, query);
               return false;
             }
           });
@@ -1387,6 +1392,39 @@ $.fn.form = function(fields, parameters) {
 
         initialize: function() {
           module.verbose('Initializing form validation', $module, validation, settings);
+          module.bindEvents();
+          module.instantiate();
+        },
+
+        instantiate: function() {
+          module.verbose('Storing instance of module', module);
+          instance = module;
+          $module
+            .data(moduleNamespace, module)
+          ;
+        },
+
+        destroy: function() {
+          module.verbose('Destroying previous module', instance);
+          module.removeEvents();
+          $module
+            .removeData(moduleNamespace)
+          ;
+        },
+
+        refresh: function() {
+          module.verbose('Refreshing selector cache');
+          $field = $module.find(selector.field);
+        },
+
+        submit: function() {
+          module.verbose('Submitting form', $module);
+          $module
+            .submit()
+          ;
+        },
+
+        bindEvents: function() {
           if(settings.keyboardShortcuts) {
             $field
               .on('keydown' + eventNamespace, module.event.field.keydown)
@@ -1402,36 +1440,30 @@ $.fn.form = function(fields, parameters) {
             .on('click' + eventNamespace, module.submit)
           ;
           $field
-            .on(module.get.changeEvent() + eventNamespace, module.event.field.change)
+            .each(function() {
+              var
+                type       = $(this).prop('type'),
+                inputEvent = module.get.changeEvent(type)
+              ;
+              $(this)
+                .on(inputEvent + eventNamespace, module.event.field.change)
+              ;
+            })
           ;
-          module.instantiate();
         },
 
-        instantiate: function() {
-          module.verbose('Storing instance of module', module);
-          instance = module;
-          $module
-            .data(moduleNamespace, module)
-          ;
-        },
-
-        destroy: function() {
-          module.verbose('Destroying previous module', instance);
+        removeEvents: function() {
           $module
             .off(eventNamespace)
-            .removeData(moduleNamespace)
           ;
-        },
-
-        refresh: function() {
-          module.verbose('Refreshing selector cache');
-          $field = $module.find(selector.field);
-        },
-
-        submit: function() {
-          module.verbose('Submitting form', $module);
-          $module
-            .submit()
+          $field
+            .off(eventNamespace)
+          ;
+          $submit
+            .off(eventNamespace)
+          ;
+          $field
+            .off(eventNamespace)
           ;
         },
 
@@ -1487,12 +1519,12 @@ $.fn.form = function(fields, parameters) {
                 $field      = $(this),
                 $fieldGroup = $field.closest($group)
               ;
-              if( $fieldGroup.hasClass(className.error) ) {
-                module.debug('Revalidating field', $field,  module.get.validation($field));
-                module.validate.field( module.get.validation($field) );
-              }
-              else if(settings.on == 'change') {
-                module.validate.field( module.get.validation($field) );
+              if(settings.on == 'change' || ( $fieldGroup.hasClass(className.error) && settings.revalidate) ) {
+                clearTimeout(module.timer);
+                module.timer = setTimeout(function() {
+                  module.debug('Revalidating field', $field,  module.get.validation($field));
+                  module.validate.field( module.get.validation($field) );
+                }, settings.delay);
               }
             }
           }
@@ -1500,13 +1532,18 @@ $.fn.form = function(fields, parameters) {
         },
 
         get: {
-          changeEvent: function() {
-            return (document.createElement('input').oninput !== undefined)
-              ? 'input'
-              : (document.createElement('input').onpropertychange !== undefined)
-                ? 'propertychange'
-                : 'keyup'
-            ;
+          changeEvent: function(type) {
+            if(type == 'checkbox' || type == 'radio' || type == 'hidden') {
+              return 'change';
+            }
+            else {
+              return (document.createElement('input').oninput !== undefined)
+                ? 'input'
+                : (document.createElement('input').onpropertychange !== undefined)
+                  ? 'propertychange'
+                  : 'keyup'
+              ;
+            }
           },
           field: function(identifier) {
             module.verbose('Finding field with identifier', identifier);
@@ -1553,14 +1590,18 @@ $.fn.form = function(fields, parameters) {
         },
 
         add: {
-          prompt: function(field, errors) {
+          prompt: function(identifier, errors) {
             var
-              $field       = module.get.field(field.identifier),
+              $field       = module.get.field(identifier),
               $fieldGroup  = $field.closest($group),
               $prompt      = $fieldGroup.find(selector.prompt),
               promptExists = ($prompt.size() !== 0)
             ;
-            module.verbose('Adding inline error', field);
+            errors = (typeof errors == 'string')
+              ? [errors]
+              : errors
+            ;
+            module.verbose('Adding field error state', identifier);
             $fieldGroup
               .addClass(className.error)
             ;
@@ -1585,6 +1626,9 @@ $.fn.form = function(fields, parameters) {
                     .fadeIn(settings.duration)
                   ;
                 }
+              }
+              else {
+                module.verbose('Inline errors are disabled, no inline error added', identifier);
               }
             }
           },
@@ -1643,7 +1687,7 @@ $.fn.form = function(fields, parameters) {
                 .removeClass(className.error)
                 .addClass(className.success)
               ;
-              $.proxy(settings.onSuccess, this)(event);
+              return $.proxy(settings.onSuccess, this)(event);
             }
             else {
               module.debug('Form has errors');
@@ -1677,7 +1721,7 @@ $.fn.form = function(fields, parameters) {
             }
             else {
               formErrors = formErrors.concat(fieldErrors);
-              module.add.prompt(field, fieldErrors);
+              module.add.prompt(field.identifier, fieldErrors);
               $.proxy(settings.onInvalid, $field)(fieldErrors);
               return false;
             }
@@ -1689,9 +1733,9 @@ $.fn.form = function(fields, parameters) {
             var
               $field        = module.get.field(field.identifier),
               type          = validation.type,
-              value         = $field.val() + '',
+              value         = $.trim($field.val() + ''),
 
-              bracketRegExp = /\[(.*?)\]/i,
+              bracketRegExp = /\[(.*)\]/i,
               bracket       = bracketRegExp.exec(type),
               isValid       = true,
               ancillary,
@@ -1815,13 +1859,14 @@ $.fn.form = function(fields, parameters) {
         },
         invoke: function(query, passedArguments, context) {
           var
+            object = instance,
             maxDepth,
             found,
             response
           ;
           passedArguments = passedArguments || queryArguments;
           context         = element         || context;
-          if(typeof query == 'string' && instance !== undefined) {
+          if(typeof query == 'string' && object !== undefined) {
             query    = query.split(/[\. ]/);
             maxDepth = query.length - 1;
             $.each(query, function(depth, value) {
@@ -1829,22 +1874,21 @@ $.fn.form = function(fields, parameters) {
                 ? value + query[depth + 1].charAt(0).toUpperCase() + query[depth + 1].slice(1)
                 : query
               ;
-              if( $.isPlainObject( instance[camelCaseValue] ) && (depth != maxDepth) ) {
-                instance = instance[camelCaseValue];
+              if( $.isPlainObject( object[camelCaseValue] ) && (depth != maxDepth) ) {
+                object = object[camelCaseValue];
               }
-              else if( instance[camelCaseValue] !== undefined ) {
-                found = instance[camelCaseValue];
+              else if( object[camelCaseValue] !== undefined ) {
+                found = object[camelCaseValue];
                 return false;
               }
-              else if( $.isPlainObject( instance[value] ) && (depth != maxDepth) ) {
-                instance = instance[value];
+              else if( $.isPlainObject( object[value] ) && (depth != maxDepth) ) {
+                object = object[value];
               }
-              else if( instance[value] !== undefined ) {
-                found = instance[value];
+              else if( object[value] !== undefined ) {
+                found = object[value];
                 return false;
               }
               else {
-                module.error(error.method, query);
                 return false;
               }
             });
@@ -1903,6 +1947,9 @@ $.fn.form.settings = {
   on                : 'submit',
   inline            : false,
 
+  delay             : 200,
+  revalidate        : true,
+
   transition        : 'scale',
   duration          : 150,
 
@@ -1938,7 +1985,6 @@ $.fn.form.settings = {
   },
 
 
-
   templates: {
     error: function(errors) {
       var
@@ -1967,7 +2013,7 @@ $.fn.form.settings = {
     },
     email: function(value){
       var
-        emailRegExp = new RegExp("[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*@(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?")
+        emailRegExp = new RegExp("[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*@(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?", "i")
       ;
       return emailRegExp.test(value);
     },
@@ -2569,13 +2615,14 @@ $.fn.state = function(parameters) {
         },
         invoke: function(query, passedArguments, context) {
           var
+            object = instance,
             maxDepth,
             found,
             response
           ;
           passedArguments = passedArguments || queryArguments;
           context         = element         || context;
-          if(typeof query == 'string' && instance !== undefined) {
+          if(typeof query == 'string' && object !== undefined) {
             query    = query.split(/[\. ]/);
             maxDepth = query.length - 1;
             $.each(query, function(depth, value) {
@@ -2583,22 +2630,21 @@ $.fn.state = function(parameters) {
                 ? value + query[depth + 1].charAt(0).toUpperCase() + query[depth + 1].slice(1)
                 : query
               ;
-              if( $.isPlainObject( instance[camelCaseValue] ) && (depth != maxDepth) ) {
-                instance = instance[camelCaseValue];
+              if( $.isPlainObject( object[camelCaseValue] ) && (depth != maxDepth) ) {
+                object = object[camelCaseValue];
               }
-              else if( instance[camelCaseValue] !== undefined ) {
-                found = instance[camelCaseValue];
+              else if( object[camelCaseValue] !== undefined ) {
+                found = object[camelCaseValue];
                 return false;
               }
-              else if( $.isPlainObject( instance[value] ) && (depth != maxDepth) ) {
-                instance = instance[value];
+              else if( $.isPlainObject( object[value] ) && (depth != maxDepth) ) {
+                object = object[value];
               }
-              else if( instance[value] !== undefined ) {
-                found = instance[value];
+              else if( object[value] !== undefined ) {
+                found = object[value];
                 return false;
               }
               else {
-                module.error(error.method, query);
                 return false;
               }
             });
@@ -3639,6 +3685,7 @@ $.fn.checkbox = function(parameters) {
           module.debug('Enabling checkbox', $input);
           $input
             .prop('checked', true)
+            .trigger('change')
           ;
           $.proxy(settings.onChange, $input.get())();
           $.proxy(settings.onEnable, $input.get())();
@@ -3648,6 +3695,7 @@ $.fn.checkbox = function(parameters) {
           module.debug('Disabling checkbox');
           $input
             .prop('checked', false)
+            .trigger('change')
           ;
           $.proxy(settings.onChange, $input.get())();
           $.proxy(settings.onDisable, $input.get())();
@@ -3763,13 +3811,14 @@ $.fn.checkbox = function(parameters) {
         },
         invoke: function(query, passedArguments, context) {
           var
+            object = instance,
             maxDepth,
             found,
             response
           ;
           passedArguments = passedArguments || queryArguments;
           context         = element         || context;
-          if(typeof query == 'string' && instance !== undefined) {
+          if(typeof query == 'string' && object !== undefined) {
             query    = query.split(/[\. ]/);
             maxDepth = query.length - 1;
             $.each(query, function(depth, value) {
@@ -3777,22 +3826,21 @@ $.fn.checkbox = function(parameters) {
                 ? value + query[depth + 1].charAt(0).toUpperCase() + query[depth + 1].slice(1)
                 : query
               ;
-              if( $.isPlainObject( instance[camelCaseValue] ) && (depth != maxDepth) ) {
-                instance = instance[camelCaseValue];
+              if( $.isPlainObject( object[camelCaseValue] ) && (depth != maxDepth) ) {
+                object = object[camelCaseValue];
               }
-              else if( instance[camelCaseValue] !== undefined ) {
-                found = instance[camelCaseValue];
+              else if( object[camelCaseValue] !== undefined ) {
+                found = object[camelCaseValue];
                 return false;
               }
-              else if( $.isPlainObject( instance[value] ) && (depth != maxDepth) ) {
-                instance = instance[value];
+              else if( $.isPlainObject( object[value] ) && (depth != maxDepth) ) {
+                object = object[value];
               }
-              else if( instance[value] !== undefined ) {
-                found = instance[value];
+              else if( object[value] !== undefined ) {
+                found = object[value];
                 return false;
               }
               else {
-                module.error(error.method, query);
                 return false;
               }
             });
@@ -4009,11 +4057,11 @@ $.fn.dimmer = function(parameters) {
 
         addContent: function(element) {
           var
-            $content = $(element).detach()
+            $content = $(element)
           ;
           module.debug('Add content to dimmer', $content);
           if($content.parent()[0] !== $dimmer[0]) {
-            $dimmer.append($content);
+            $content.detach().appendTo($dimmer);
           }
         },
 
@@ -4028,7 +4076,7 @@ $.fn.dimmer = function(parameters) {
               : function(){}
             ;
             module.set.dimmed();
-            if(settings.useCSS && $.fn.transition !== undefined && $module.transition('is supported')) {
+            if(settings.on != 'hover' && settings.useCSS && $.fn.transition !== undefined && $dimmer.transition('is supported')) {
               $dimmer
                 .transition({
                   animation : settings.transition + ' in',
@@ -4063,7 +4111,7 @@ $.fn.dimmer = function(parameters) {
               ? callback
               : function(){}
             ;
-            if(settings.useCSS && $.fn.transition !== undefined && $module.transition('is supported')) {
+            if(settings.on != 'hover' && settings.useCSS && $.fn.transition !== undefined && $dimmer.transition('is supported')) {
               module.verbose('Hiding dimmer with css');
               $dimmer
                 .transition({
@@ -4335,13 +4383,14 @@ $.fn.dimmer = function(parameters) {
         },
         invoke: function(query, passedArguments, context) {
           var
+            object = instance,
             maxDepth,
             found,
             response
           ;
           passedArguments = passedArguments || queryArguments;
           context         = element         || context;
-          if(typeof query == 'string' && instance !== undefined) {
+          if(typeof query == 'string' && object !== undefined) {
             query    = query.split(/[\. ]/);
             maxDepth = query.length - 1;
             $.each(query, function(depth, value) {
@@ -4349,22 +4398,21 @@ $.fn.dimmer = function(parameters) {
                 ? value + query[depth + 1].charAt(0).toUpperCase() + query[depth + 1].slice(1)
                 : query
               ;
-              if( $.isPlainObject( instance[camelCaseValue] ) && (depth != maxDepth) ) {
-                instance = instance[camelCaseValue];
+              if( $.isPlainObject( object[camelCaseValue] ) && (depth != maxDepth) ) {
+                object = object[camelCaseValue];
               }
-              else if( $.isPlainObject( instance[value] ) && (depth != maxDepth) ) {
-                instance = instance[value];
-              }
-              else if( instance[value] !== undefined ) {
-                found = instance[value];
+              else if( object[camelCaseValue] !== undefined ) {
+                found = object[camelCaseValue];
                 return false;
               }
-              else if( instance[camelCaseValue] !== undefined ) {
-                found = instance[camelCaseValue];
+              else if( $.isPlainObject( object[value] ) && (depth != maxDepth) ) {
+                object = object[value];
+              }
+              else if( object[value] !== undefined ) {
+                found = object[value];
                 return false;
               }
               else {
-                module.error(error.method, query);
                 return false;
               }
             });
@@ -4527,12 +4575,12 @@ $.fn.dropdown = function(parameters) {
         initialize: function() {
           module.debug('Initializing dropdown', settings);
 
+          module.save.defaults();
           module.set.selected();
 
           if(hasTouch) {
             module.bind.touchEvents();
           }
-          // no use detecting mouse events because touch devices emulate them
           module.bind.mouseEvents();
           module.instantiate();
         },
@@ -4611,6 +4659,7 @@ $.fn.dropdown = function(parameters) {
             if(hasTouch) {
               $document
                 .off('touchstart' + eventNamespace)
+                .off('touchmove' + eventNamespace)
               ;
             }
             $document
@@ -4681,11 +4730,21 @@ $.fn.dropdown = function(parameters) {
                   : $choice.text(),
                 value   = ( $choice.data(metadata.value) !== undefined)
                   ? $choice.data(metadata.value)
-                  : text.toLowerCase()
+                  : (typeof text === 'string')
+                      ? text.toLowerCase()
+                      : text,
+                callback = function() {
+                  module.determine.selectAction(text, value);
+                  $.proxy(settings.onChange, element)(value, text);
+                }
               ;
               if( $choice.find(selector.menu).size() === 0 ) {
-                module.determine.selectAction(text, value);
-                $.proxy(settings.onChange, element)(value, text);
+                if(event.type == 'touchstart') {
+                  $choice.one('click', callback);
+                }
+                else {
+                  callback();
+                }
               }
             }
 
@@ -4784,11 +4843,14 @@ $.fn.dropdown = function(parameters) {
             return $text.text();
           },
           value: function() {
-            return $input.val();
+            return ($input.size() > 0)
+              ? $input.val()
+              : $module.data(metadata.value)
+            ;
           },
-          item: function(value) {
+          item: function(value, strict) {
             var
-              $selectedItem
+              $selectedItem = false
             ;
             value = (value !== undefined)
               ? value
@@ -4796,7 +4858,14 @@ $.fn.dropdown = function(parameters) {
                 ? module.get.value()
                 : module.get.text()
             ;
-            if(value) {
+            if(strict === undefined && value === '') {
+              module.debug('Ambiguous dropdown value using strict type check', value);
+              strict = true;
+            }
+            else {
+              strict = strict || false;
+            }
+            if(value !== undefined) {
               $item
                 .each(function() {
                   var
@@ -4806,11 +4875,25 @@ $.fn.dropdown = function(parameters) {
                       : $choice.text(),
                     optionValue   = ( $choice.data(metadata.value) !== undefined )
                       ? $choice.data(metadata.value)
-                      : optionText.toLowerCase()
+                      : (typeof optionText === 'string')
+                        ? optionText.toLowerCase()
+                        : optionText
                   ;
-                  if( optionValue == value || optionText == value ) {
-                    $selectedItem = $(this);
-                    return false;
+                  if(strict) {
+                    if( optionValue === value ) {
+                      $selectedItem = $(this);
+                    }
+                    else if( !$selectedItem && optionText === value ) {
+                      $selectedItem = $(this);
+                    }
+                  }
+                  else {
+                    if( optionValue == value ) {
+                      $selectedItem = $(this);
+                    }
+                    else if( !$selectedItem && optionText == value ) {
+                      $selectedItem = $(this);
+                    }
                   }
                 })
               ;
@@ -4822,6 +4905,43 @@ $.fn.dropdown = function(parameters) {
           }
         },
 
+        restore: {
+          defaults: function() {
+            module.restore.defaultText();
+            module.restore.defaultValue();
+          },
+          defaultText: function() {
+            var
+              defaultText = $module.data(metadata.defaultText)
+            ;
+            module.debug('Restoring default text', defaultText);
+            module.set.text(defaultText);
+          },
+          defaultValue: function() {
+            var
+              defaultValue = $module.data(metadata.defaultValue)
+            ;
+            if(defaultValue !== undefined) {
+              module.debug('Restoring default value', defaultValue);
+              module.set.selected(defaultValue);
+              module.set.value(defaultValue);
+            }
+          }
+        },
+
+        save: {
+          defaults: function() {
+            module.save.defaultText();
+            module.save.defaultValue();
+          },
+          defaultValue: function() {
+            $module.data(metadata.defaultValue, module.get.value() );
+          },
+          defaultText: function() {
+            $module.data(metadata.defaultText, $text.text() );
+          }
+        },
+
         set: {
           text: function(text) {
             module.debug('Changing text', text, $text);
@@ -4830,7 +4950,15 @@ $.fn.dropdown = function(parameters) {
           },
           value: function(value) {
             module.debug('Adding selected value to hidden input', value, $input);
-            $input.val(value);
+            if($input.size() > 0) {
+              $input
+                .val(value)
+                .trigger('change')
+              ;
+            }
+            else {
+              $module.data(metadata.value, value);
+            }
           },
           active: function() {
             $module.addClass(className.active);
@@ -4914,12 +5042,14 @@ $.fn.dropdown = function(parameters) {
                 callback();
               }
               else if($.fn.transition !== undefined && $module.transition('is supported')) {
-                $currentMenu.transition({
-                  animation : settings.transition + ' in',
-                  duration  : settings.duration,
-                  complete  : callback,
-                  queue     : false
-                });
+                $currentMenu
+                  .transition({
+                    animation : settings.transition + ' in',
+                    duration  : settings.duration,
+                    complete  : callback,
+                    queue     : false
+                  })
+                ;
               }
               else if(settings.transition == 'slide down') {
                 $currentMenu
@@ -4962,12 +5092,14 @@ $.fn.dropdown = function(parameters) {
             if(module.is.visible($currentMenu) ) {
               module.verbose('Doing menu hide animation', $currentMenu);
               if($.fn.transition !== undefined && $module.transition('is supported')) {
-                $currentMenu.transition({
-                  animation : settings.transition + ' out',
-                  duration  : settings.duration,
-                  complete  : callback,
-                  queue     : false
-                });
+                $currentMenu
+                  .transition({
+                    animation : settings.transition + ' out',
+                    duration  : settings.duration,
+                    complete  : callback,
+                    queue     : false
+                  })
+                ;
               }
               else if(settings.transition == 'none') {
                 callback();
@@ -5167,13 +5299,14 @@ $.fn.dropdown = function(parameters) {
         },
         invoke: function(query, passedArguments, context) {
           var
+            object = instance,
             maxDepth,
             found,
             response
           ;
           passedArguments = passedArguments || queryArguments;
           context         = element         || context;
-          if(typeof query == 'string' && instance !== undefined) {
+          if(typeof query == 'string' && object !== undefined) {
             query    = query.split(/[\. ]/);
             maxDepth = query.length - 1;
             $.each(query, function(depth, value) {
@@ -5181,18 +5314,18 @@ $.fn.dropdown = function(parameters) {
                 ? value + query[depth + 1].charAt(0).toUpperCase() + query[depth + 1].slice(1)
                 : query
               ;
-              if( $.isPlainObject( instance[camelCaseValue] ) && (depth != maxDepth) ) {
-                instance = instance[camelCaseValue];
+              if( $.isPlainObject( object[camelCaseValue] ) && (depth != maxDepth) ) {
+                object = object[camelCaseValue];
               }
-              else if( instance[camelCaseValue] !== undefined ) {
-                found = instance[camelCaseValue];
+              else if( object[camelCaseValue] !== undefined ) {
+                found = object[camelCaseValue];
                 return false;
               }
-              else if( $.isPlainObject( instance[value] ) && (depth != maxDepth) ) {
-                instance = instance[value];
+              else if( $.isPlainObject( object[value] ) && (depth != maxDepth) ) {
+                object = object[value];
               }
-              else if( instance[value] !== undefined ) {
-                found = instance[value];
+              else if( object[value] !== undefined ) {
+                found = object[value];
                 return false;
               }
               else {
@@ -5273,8 +5406,10 @@ $.fn.dropdown.settings = {
   },
 
   metadata: {
-    text    : 'text',
-    value   : 'value'
+    defaultText  : 'defaultText',
+    defaultValue : 'defaultValue',
+    text         : 'text',
+    value        : 'value'
   },
 
   selector : {
@@ -5294,10 +5429,18 @@ $.fn.dropdown.settings = {
 
 };
 
+// Adds easing
+$.extend( $.easing, {
+  easeOutQuad: function (x, t, b, c, d) {
+    return -c *(t/=d)*(t-2) + b;
+  },
+});
+
+
 })( jQuery, window , document );
 /*
  * # Semantic - Modal
- * http://github.com/jlukic/semantic-ui/
+ * http://github.com/semantic-org/semantic-ui/
  *
  *
  * Copyright 2013 Contributors
@@ -5313,6 +5456,7 @@ $.fn.modal = function(parameters) {
     $allModules = $(this),
     $window     = $(window),
     $document   = $(document),
+    $body       = $('body'),
 
     time            = new Date().getTime(),
     performance     = [],
@@ -5320,6 +5464,12 @@ $.fn.modal = function(parameters) {
     query           = arguments[0],
     methodInvoked   = (typeof query == 'string'),
     queryArguments  = [].slice.call(arguments, 1),
+
+    requestAnimationFrame = window.requestAnimationFrame
+      || window.mozRequestAnimationFrame
+      || window.webkitRequestAnimationFrame
+      || window.msRequestAnimationFrame
+      || function(callback) { setTimeout(callback, 0); },
 
     returnedValue
   ;
@@ -5361,19 +5511,25 @@ $.fn.modal = function(parameters) {
         initialize: function() {
           module.verbose('Initializing dimmer', $context);
 
-          if(typeof $.fn.dimmer === undefined) {
+          if($.fn.dimmer === undefined) {
             module.error(error.dimmer);
             return;
           }
           $dimmable = $context
             .dimmer({
               closable : false,
-              useCSS   : module.is.modernBrowser(),
-              show     : settings.duration * 0.9,
-              hide     : settings.duration * 1.1
+              useCSS   : true,
+              duration : {
+                show     : settings.duration * 0.9,
+                hide     : settings.duration * 1.1
+              }
             })
-            .dimmer('add content', $module)
           ;
+
+          if(settings.detachable) {
+            $dimmable.dimmer('add content', $module);
+          }
+
           $dimmer = $dimmable
             .dimmer('get dimmer')
           ;
@@ -5386,9 +5542,7 @@ $.fn.modal = function(parameters) {
             .on('click' + eventNamespace, module.event.close)
           ;
           $window
-            .on('resize' + eventNamespace, function() {
-              module.event.debounce(module.refresh, 50);
-            })
+            .on('resize' + eventNamespace, module.event.resize)
           ;
           module.instantiate();
         },
@@ -5418,6 +5572,7 @@ $.fn.modal = function(parameters) {
         refresh: function() {
           module.remove.scrolling();
           module.cacheSizes();
+          module.set.screenHeight();
           module.set.type();
           module.set.position();
         },
@@ -5468,7 +5623,12 @@ $.fn.modal = function(parameters) {
           click: function(event) {
             if( $(event.target).closest(selector.modal).size() === 0 ) {
               module.debug('Dimmer clicked, hiding all modals');
-              module.hideAll();
+              if(settings.allowMultiple) {
+                module.hide();
+              }
+              else {
+                module.hideAll();
+              }
               event.stopImmediatePropagation();
             }
           },
@@ -5494,7 +5654,7 @@ $.fn.modal = function(parameters) {
           },
           resize: function() {
             if( $dimmable.dimmer('is active') ) {
-              module.refresh();
+              requestAnimationFrame(module.refresh);
             }
           }
         },
@@ -5523,33 +5683,37 @@ $.fn.modal = function(parameters) {
             : function(){}
           ;
           if( !module.is.active() ) {
-            module.debug('Showing modal');
             module.cacheSizes();
             module.set.position();
+            module.set.screenHeight();
             module.set.type();
 
-            if( $otherModals.filter(':visible').size() > 0 ) {
+            if( $otherModals.filter(':visible').size() > 0 && !settings.allowMultiple) {
               module.debug('Other modals visible, queueing show animation');
               module.hideOthers(module.showModal);
             }
             else {
+              $.proxy(settings.onShow, element)();
               if(settings.transition && $.fn.transition !== undefined && $module.transition('is supported')) {
+                module.debug('Showing modal with css animations');
                 $module
                   .transition(settings.transition + ' in', settings.duration, function() {
+                    $.proxy(settings.onVisible, element)();
                     module.set.active();
                     callback();
                   })
                 ;
               }
               else {
+                module.debug('Showing modal with javascript');
                 $module
                   .fadeIn(settings.duration, settings.easing, function() {
+                    $.proxy(settings.onVisible, element)();
                     module.set.active();
                     callback();
                   })
                 ;
               }
-              $.proxy(settings.onShow, element)();
             }
           }
           else {
@@ -5572,23 +5736,32 @@ $.fn.modal = function(parameters) {
             ? callback
             : function(){}
           ;
-          module.hideDimmer();
+          if($allModals.filter(':visible').size() <= 1) {
+            module.hideDimmer();
+          }
           module.hideModal(callback);
         },
 
         hideDimmer: function() {
-          if( $dimmable.dimmer('is active') ) {
-            module.debug('Hiding dimmer');
-            if(settings.closable) {
-              $dimmer
-                .off('click' + eventNamespace)
-              ;
-            }
-            $dimmable.dimmer('hide');
-          }
-          else {
+          if( !module.is.active() ) {
             module.debug('Dimmer is not visible cannot hide');
+            return;
           }
+          module.debug('Hiding dimmer');
+          if(settings.closable) {
+            $dimmer
+              .off('click' + eventNamespace)
+            ;
+          }
+          $dimmable.dimmer('hide', function() {
+            if(settings.transition && $.fn.transition !== undefined && $module.transition('is supported')) {
+              $module
+                .transition('reset')
+              ;
+              module.remove.screenHeight();
+            }
+            module.remove.active();
+          });
         },
 
         hideModal: function(callback) {
@@ -5596,28 +5769,32 @@ $.fn.modal = function(parameters) {
             ? callback
             : function(){}
           ;
-          if( module.is.active() ) {
-            module.debug('Hiding modal');
-            module.remove.keyboardShortcuts();
-            if(settings.transition && $.fn.transition !== undefined && $module.transition('is supported')) {
-              $module
-                .transition(settings.transition + ' out', settings.duration, function() {
-                  module.remove.active();
-                  module.restore.focus();
-                  callback();
-                })
-              ;
-            }
-            else {
-              $module
-                .fadeOut(settings.duration, settings.easing, function() {
-                  module.remove.active();
-                  module.restore.focus();
-                  callback();
-                })
-              ;
-            }
-            $.proxy(settings.onHide, element)();
+          if( !module.is.active() ) {
+            module.debug('Cannot hide modal it is not active');
+            return;
+          }
+          module.debug('Hiding modal');
+          module.remove.keyboardShortcuts();
+          $.proxy(settings.onHide, element)();
+          if(settings.transition && $.fn.transition !== undefined && $module.transition('is supported')) {
+            $module
+              .transition(settings.transition + ' out', settings.duration, function() {
+                $.proxy(settings.onHidden, element)();
+                module.remove.active();
+                module.restore.focus();
+                callback();
+              })
+            ;
+          }
+          else {
+            $module
+              .fadeOut(settings.duration, settings.easing, function() {
+                $.proxy(settings.onHidden, element)();
+                module.remove.active();
+                module.restore.focus();
+                callback();
+              })
+            ;
           }
         },
 
@@ -5677,6 +5854,14 @@ $.fn.modal = function(parameters) {
           active: function() {
             $module.removeClass(className.active);
           },
+          screenHeight: function() {
+            if(module.cache.height > module.cache.pageHeight) {
+              module.debug('Removing page height');
+              $body
+                .css('height', '')
+              ;
+            }
+          },
           keyboardShortcuts: function() {
             module.verbose('Removing keyboard shortcuts');
             $document
@@ -5691,6 +5876,7 @@ $.fn.modal = function(parameters) {
 
         cacheSizes: function() {
           module.cache = {
+            pageHeight    : $body.outerHeight(),
             height        : $module.outerHeight() + settings.offset,
             contextHeight : (settings.context == 'body')
               ? $(window).height()
@@ -5710,12 +5896,20 @@ $.fn.modal = function(parameters) {
             return $module.hasClass(className.active);
           },
           modernBrowser: function() {
-            // lol
-            return (navigator.appName !== 'Microsoft Internet Explorer');
+            // appName for IE11 reports 'Netscape' can no longer use
+            return !(window.ActiveXObject || "ActiveXObject" in window);
           }
         },
 
         set: {
+          screenHeight: function() {
+            if(module.cache.height > module.cache.pageHeight) {
+              module.debug('Modal is taller than page content, resizing page height');
+              $body
+                .css('height', module.cache.height + settings.padding)
+              ;
+            }
+          },
           active: function() {
             module.add.keyboardShortcuts();
             module.save.focus();
@@ -5744,7 +5938,7 @@ $.fn.modal = function(parameters) {
             }
           },
           position: function() {
-            module.verbose('Centering modal on page', module.cache, module.cache.height / 2);
+            module.verbose('Centering modal on page', module.cache);
             if(module.can.fit()) {
               $module
                 .css({
@@ -5865,13 +6059,14 @@ $.fn.modal = function(parameters) {
         },
         invoke: function(query, passedArguments, context) {
           var
+            object = instance,
             maxDepth,
             found,
             response
           ;
           passedArguments = passedArguments || queryArguments;
           context         = element         || context;
-          if(typeof query == 'string' && instance !== undefined) {
+          if(typeof query == 'string' && object !== undefined) {
             query    = query.split(/[\. ]/);
             maxDepth = query.length - 1;
             $.each(query, function(depth, value) {
@@ -5879,22 +6074,21 @@ $.fn.modal = function(parameters) {
                 ? value + query[depth + 1].charAt(0).toUpperCase() + query[depth + 1].slice(1)
                 : query
               ;
-              if( $.isPlainObject( instance[camelCaseValue] ) && (depth != maxDepth) ) {
-                instance = instance[camelCaseValue];
+              if( $.isPlainObject( object[camelCaseValue] ) && (depth != maxDepth) ) {
+                object = object[camelCaseValue];
               }
-              else if( instance[camelCaseValue] !== undefined ) {
-                found = instance[camelCaseValue];
+              else if( object[camelCaseValue] !== undefined ) {
+                found = object[camelCaseValue];
                 return false;
               }
-              else if( $.isPlainObject( instance[value] ) && (depth != maxDepth) ) {
-                instance = instance[value];
+              else if( $.isPlainObject( object[value] ) && (depth != maxDepth) ) {
+                object = object[value];
               }
-              else if( instance[value] !== undefined ) {
-                found = instance[value];
+              else if( object[value] !== undefined ) {
+                found = object[value];
                 return false;
               }
               else {
-                module.error(error.method, query);
                 return false;
               }
             });
@@ -5941,29 +6135,38 @@ $.fn.modal = function(parameters) {
 
 $.fn.modal.settings = {
 
-  name        : 'Modal',
-  namespace   : 'modal',
+  name          : 'Modal',
+  namespace     : 'modal',
 
-  debug       : true,
-  verbose     : true,
-  performance : true,
+  debug         : true,
+  verbose       : true,
+  performance   : true,
 
-  closable    : true,
-  context     : 'body',
-  duration    : 500,
-  easing      : 'easeOutExpo',
-  offset      : 0,
-  transition  : 'scale',
+  allowMultiple : true,
+  detachable    : true,
+  closable      : true,
+  context       : 'body',
 
-  onShow      : function(){},
-  onHide      : function(){},
-  onApprove   : function(){ return true; },
-  onDeny      : function(){ return true; },
+  duration      : 500,
+  easing        : 'easeOutExpo',
+  offset        : 0,
+  transition    : 'scale',
+
+  padding       : 30,
+
+  onShow        : function(){},
+  onHide        : function(){},
+
+  onVisible     : function(){},
+  onHidden      : function(){},
+
+  onApprove     : function(){ return true; },
+  onDeny        : function(){ return true; },
 
   selector    : {
     close    : '.close, .actions .button',
-    approve  : '.actions .positive, .actions .approve',
-    deny     : '.actions .negative, .actions .cancel',
+    approve  : '.actions .positive, .actions .approve, .actions .ok',
+    deny     : '.actions .negative, .actions .deny, .actions .cancel',
     modal    : '.ui.modal'
   },
   error : {
@@ -6385,13 +6588,14 @@ $.fn.nag = function(parameters) {
         },
         invoke: function(query, passedArguments, context) {
           var
+            object = instance,
             maxDepth,
             found,
             response
           ;
           passedArguments = passedArguments || queryArguments;
           context         = element         || context;
-          if(typeof query == 'string' && instance !== undefined) {
+          if(typeof query == 'string' && object !== undefined) {
             query    = query.split(/[\. ]/);
             maxDepth = query.length - 1;
             $.each(query, function(depth, value) {
@@ -6399,22 +6603,21 @@ $.fn.nag = function(parameters) {
                 ? value + query[depth + 1].charAt(0).toUpperCase() + query[depth + 1].slice(1)
                 : query
               ;
-              if( $.isPlainObject( instance[camelCaseValue] ) && (depth != maxDepth) ) {
-                instance = instance[camelCaseValue];
+              if( $.isPlainObject( object[camelCaseValue] ) && (depth != maxDepth) ) {
+                object = object[camelCaseValue];
               }
-              else if( instance[camelCaseValue] !== undefined ) {
-                found = instance[camelCaseValue];
+              else if( object[camelCaseValue] !== undefined ) {
+                found = object[camelCaseValue];
                 return false;
               }
-              else if( $.isPlainObject( instance[value] ) && (depth != maxDepth) ) {
-                instance = instance[value];
+              else if( $.isPlainObject( object[value] ) && (depth != maxDepth) ) {
+                object = object[value];
               }
-              else if( instance[value] !== undefined ) {
-                found = instance[value];
+              else if( object[value] !== undefined ) {
+                found = object[value];
                 return false;
               }
               else {
-                module.error(error.method, query);
                 return false;
               }
             });
@@ -6691,12 +6894,14 @@ $.fn.popup = function(parameters) {
             if(settings.inline) {
               module.verbose('Inserting popup element inline', $popup);
               $popup
+                .data(moduleNamespace, instance)
                 .insertAfter($module)
               ;
             }
             else {
               module.verbose('Appending popup element to body', $popup);
               $popup
+                .data(moduleNamespace, instance)
                 .appendTo( $context )
               ;
             }
@@ -6711,10 +6916,13 @@ $.fn.popup = function(parameters) {
         toggle: function() {
           module.debug('Toggling pop-up');
           if( module.is.hidden() ) {
+            module.debug('Popup is hidden, showing pop-up');
+            module.unbind.close();
             module.hideAll();
             module.show();
           }
           else {
+            module.debug('Popup is visible, hiding pop-up');
             module.hide();
           }
         },
@@ -6728,6 +6936,7 @@ $.fn.popup = function(parameters) {
           if( !module.exists() ) {
             module.create();
           }
+          module.save.conditions();
           module.set.position();
           module.animate.show(callback);
         },
@@ -6738,6 +6947,7 @@ $.fn.popup = function(parameters) {
           $module
             .removeClass(className.visible)
           ;
+          module.restore.conditions();
           module.unbind.close();
           if( module.is.visible() ) {
             module.animate.hide(callback);
@@ -6753,8 +6963,12 @@ $.fn.popup = function(parameters) {
 
         hideGracefully: function(event) {
           // don't close on clicks inside popup
-          if( $(event.target).closest(selector.popup).size() === 0) {
+          if(event && $(event.target).closest(selector.popup).size() === 0) {
+            module.debug('Click occurred outside popup hiding popup');
             module.hide();
+          }
+          else {
+            module.debug('Click was inside popup, keeping popup open');
           }
         },
 
@@ -6774,6 +6988,26 @@ $.fn.popup = function(parameters) {
           ;
         },
 
+        save: {
+          conditions: function() {
+            module.cache = {
+              title: $module.attr('title')
+            };
+            if (module.cache.title) {
+              $module.removeAttr('title');
+            }
+            module.verbose('Saving original attributes', module.cache.title);
+          }
+        },
+        restore: {
+          conditions: function() {
+            if(module.cache && module.cache.title) {
+              $module.attr('title', module.cache.title);
+              module.verbose('Restoring original attributes', module.cache.title);
+            }
+            return true;
+          }
+        },
         animate: {
           show: function(callback) {
             callback = callback || function(){};
@@ -7034,16 +7268,16 @@ $.fn.popup = function(parameters) {
                 module.error(error.recursion);
                 searchDepth = 0;
                 module.reset();
+                $popup.removeClass(className.loading);
                 return false;
               }
             }
             else {
               module.debug('Position is on stage', position);
               searchDepth = 0;
+              $popup.removeClass(className.loading);
               return true;
             }
-
-            $module.removeClass(className.loading);
           }
 
         },
@@ -7053,7 +7287,10 @@ $.fn.popup = function(parameters) {
             if(settings.on == 'click' && settings.closable) {
               module.verbose('Binding popup close event to document');
               $document
-                .on('click' + eventNamespace, module.hideGracefully)
+                .on('click' + eventNamespace, function(event) {
+                  module.verbose('Pop-up clickaway intent detected');
+                  $.proxy(module.hideGracefully, this)(event);
+                })
               ;
             }
           }
@@ -7071,6 +7308,9 @@ $.fn.popup = function(parameters) {
         },
 
         is: {
+          animating: function() {
+            return ( $popup.is(':animated') || $popup.hasClass(className.animating) );
+          },
           visible: function() {
             return $popup.is(':visible');
           },
@@ -7190,13 +7430,14 @@ $.fn.popup = function(parameters) {
         },
         invoke: function(query, passedArguments, context) {
           var
+            object = instance,
             maxDepth,
             found,
             response
           ;
           passedArguments = passedArguments || queryArguments;
           context         = element         || context;
-          if(typeof query == 'string' && instance !== undefined) {
+          if(typeof query == 'string' && object !== undefined) {
             query    = query.split(/[\. ]/);
             maxDepth = query.length - 1;
             $.each(query, function(depth, value) {
@@ -7204,22 +7445,21 @@ $.fn.popup = function(parameters) {
                 ? value + query[depth + 1].charAt(0).toUpperCase() + query[depth + 1].slice(1)
                 : query
               ;
-              if( $.isPlainObject( instance[value] ) && (depth != maxDepth) ) {
-                instance = instance[value];
+              if( $.isPlainObject( object[camelCaseValue] ) && (depth != maxDepth) ) {
+                object = object[camelCaseValue];
               }
-              else if( $.isPlainObject( instance[camelCaseValue] ) && (depth != maxDepth) ) {
-                instance = instance[camelCaseValue];
-              }
-              else if( instance[value] !== undefined ) {
-                found = instance[value];
+              else if( object[camelCaseValue] !== undefined ) {
+                found = object[camelCaseValue];
                 return false;
               }
-              else if( instance[camelCaseValue] !== undefined ) {
-                found = instance[camelCaseValue];
+              else if( $.isPlainObject( object[value] ) && (depth != maxDepth) ) {
+                object = object[value];
+              }
+              else if( object[value] !== undefined ) {
+                found = object[value];
                 return false;
               }
               else {
-                module.error(error.method, query);
                 return false;
               }
             });
@@ -7315,6 +7555,7 @@ $.fn.popup.settings = {
   },
 
   className   : {
+    animating   : 'animating',
     loading     : 'loading',
     popup       : 'ui popup',
     position    : 'top left center bottom right',
@@ -7496,7 +7737,7 @@ $.fn.rating = function(parameters) {
             .on('click' + eventNamespace, module.event.click)
           ;
           $module
-            .addClass(className.active)
+            .removeClass(className.disabled)
           ;
         },
 
@@ -7506,7 +7747,7 @@ $.fn.rating = function(parameters) {
             .off(eventNamespace)
           ;
           $module
-            .removeClass(className.active)
+            .addClass(className.disabled)
           ;
         },
 
@@ -7639,13 +7880,14 @@ $.fn.rating = function(parameters) {
         },
         invoke: function(query, passedArguments, context) {
           var
+            object = instance,
             maxDepth,
             found,
             response
           ;
           passedArguments = passedArguments || queryArguments;
           context         = element         || context;
-          if(typeof query == 'string' && instance !== undefined) {
+          if(typeof query == 'string' && object !== undefined) {
             query    = query.split(/[\. ]/);
             maxDepth = query.length - 1;
             $.each(query, function(depth, value) {
@@ -7653,22 +7895,21 @@ $.fn.rating = function(parameters) {
                 ? value + query[depth + 1].charAt(0).toUpperCase() + query[depth + 1].slice(1)
                 : query
               ;
-              if( $.isPlainObject( instance[camelCaseValue] ) && (depth != maxDepth) ) {
-                instance = instance[camelCaseValue];
+              if( $.isPlainObject( object[camelCaseValue] ) && (depth != maxDepth) ) {
+                object = object[camelCaseValue];
               }
-              else if( instance[camelCaseValue] !== undefined ) {
-                found = instance[camelCaseValue];
+              else if( object[camelCaseValue] !== undefined ) {
+                found = object[camelCaseValue];
                 return false;
               }
-              else if( $.isPlainObject( instance[value] ) && (depth != maxDepth) ) {
-                instance = instance[value];
+              else if( $.isPlainObject( object[value] ) && (depth != maxDepth) ) {
+                object = object[value];
               }
-              else if( instance[value] !== undefined ) {
-                found = instance[value];
+              else if( object[value] !== undefined ) {
+                found = object[value];
                 return false;
               }
               else {
-                module.error(error.method, query);
                 return false;
               }
             });
@@ -7736,9 +7977,10 @@ $.fn.rating.settings = {
   },
 
   className : {
-    active  : 'active',
-    hover   : 'hover',
-    loading : 'loading'
+    active   : 'active',
+    disabled : 'disabled',
+    hover    : 'hover',
+    loading  : 'loading'
   },
 
   selector  : {
@@ -8259,13 +8501,14 @@ $.fn.search = function(source, parameters) {
         },
         invoke: function(query, passedArguments, context) {
           var
+            object = instance,
             maxDepth,
             found,
             response
           ;
           passedArguments = passedArguments || queryArguments;
           context         = element         || context;
-          if(typeof query == 'string' && instance !== undefined) {
+          if(typeof query == 'string' && object !== undefined) {
             query    = query.split(/[\. ]/);
             maxDepth = query.length - 1;
             $.each(query, function(depth, value) {
@@ -8273,22 +8516,21 @@ $.fn.search = function(source, parameters) {
                 ? value + query[depth + 1].charAt(0).toUpperCase() + query[depth + 1].slice(1)
                 : query
               ;
-              if( $.isPlainObject( instance[camelCaseValue] ) && (depth != maxDepth) ) {
-                instance = instance[camelCaseValue];
+              if( $.isPlainObject( object[camelCaseValue] ) && (depth != maxDepth) ) {
+                object = object[camelCaseValue];
               }
-              else if( instance[camelCaseValue] !== undefined ) {
-                found = instance[camelCaseValue];
+              else if( object[camelCaseValue] !== undefined ) {
+                found = object[camelCaseValue];
                 return false;
               }
-              else if( $.isPlainObject( instance[value] ) && (depth != maxDepth) ) {
-                instance = instance[value];
+              else if( $.isPlainObject( object[value] ) && (depth != maxDepth) ) {
+                object = object[value];
               }
-              else if( instance[value] !== undefined ) {
-                found = instance[value];
+              else if( object[value] !== undefined ) {
+                found = object[value];
                 return false;
               }
               else {
-                module.error(error.method, query);
                 return false;
               }
             });
@@ -9180,13 +9422,14 @@ $.fn.shape = function(parameters) {
         },
         invoke: function(query, passedArguments, context) {
           var
+            object = instance,
             maxDepth,
             found,
             response
           ;
           passedArguments = passedArguments || queryArguments;
           context         = element         || context;
-          if(typeof query == 'string' && instance !== undefined) {
+          if(typeof query == 'string' && object !== undefined) {
             query    = query.split(/[\. ]/);
             maxDepth = query.length - 1;
             $.each(query, function(depth, value) {
@@ -9194,22 +9437,21 @@ $.fn.shape = function(parameters) {
                 ? value + query[depth + 1].charAt(0).toUpperCase() + query[depth + 1].slice(1)
                 : query
               ;
-              if( $.isPlainObject( instance[camelCaseValue] ) && (depth != maxDepth) ) {
-                instance = instance[camelCaseValue];
+              if( $.isPlainObject( object[camelCaseValue] ) && (depth != maxDepth) ) {
+                object = object[camelCaseValue];
               }
-              else if( instance[camelCaseValue] !== undefined ) {
-                found = instance[camelCaseValue];
+              else if( object[camelCaseValue] !== undefined ) {
+                found = object[camelCaseValue];
                 return false;
               }
-              else if( $.isPlainObject( instance[value] ) && (depth != maxDepth) ) {
-                instance = instance[value];
+              else if( $.isPlainObject( object[value] ) && (depth != maxDepth) ) {
+                object = object[value];
               }
-              else if( instance[value] !== undefined ) {
-                found = instance[value];
+              else if( object[value] !== undefined ) {
+                found = object[value];
                 return false;
               }
               else {
-                module.error(error.method, query);
                 return false;
               }
             });
@@ -9303,7 +9545,7 @@ $.fn.shape.settings = {
 
 })( jQuery, window , document );
 /*
- * # Semantic - Dropdown
+ * # Semantic - Sidebar
  * http://github.com/jlukic/semantic-ui/
  *
  *
@@ -9522,6 +9764,7 @@ $.fn.sidebar = function(parameters) {
           }
         },
 
+
         remove: {
           bodyCSS: function() {
             module.debug('Removing body css styles', $style);
@@ -9703,13 +9946,14 @@ $.fn.sidebar = function(parameters) {
         },
         invoke: function(query, passedArguments, context) {
           var
+            object = instance,
             maxDepth,
             found,
             response
           ;
           passedArguments = passedArguments || queryArguments;
           context         = element         || context;
-          if(typeof query == 'string' && instance !== undefined) {
+          if(typeof query == 'string' && object !== undefined) {
             query    = query.split(/[\. ]/);
             maxDepth = query.length - 1;
             $.each(query, function(depth, value) {
@@ -9717,22 +9961,21 @@ $.fn.sidebar = function(parameters) {
                 ? value + query[depth + 1].charAt(0).toUpperCase() + query[depth + 1].slice(1)
                 : query
               ;
-              if( $.isPlainObject( instance[camelCaseValue] ) && (depth != maxDepth) ) {
-                instance = instance[camelCaseValue];
+              if( $.isPlainObject( object[camelCaseValue] ) && (depth != maxDepth) ) {
+                object = object[camelCaseValue];
               }
-              else if( instance[camelCaseValue] !== undefined ) {
-                found = instance[camelCaseValue];
+              else if( object[camelCaseValue] !== undefined ) {
+                found = object[camelCaseValue];
                 return false;
               }
-              else if( $.isPlainObject( instance[value] ) && (depth != maxDepth) ) {
-                instance = instance[value];
+              else if( $.isPlainObject( object[value] ) && (depth != maxDepth) ) {
+                object = object[value];
               }
-              else if( instance[value] !== undefined ) {
-                found = instance[value];
+              else if( object[value] !== undefined ) {
+                found = object[value];
                 return false;
               }
               else {
-                module.error(error.method, query);
                 return false;
               }
             });
@@ -9815,6 +10058,7 @@ $.fn.sidebar.settings = {
 };
 
 })( jQuery, window , document );
+
 /*
  * # Semantic - Tab
  * http://github.com/jlukic/semantic-ui/
@@ -9888,6 +10132,9 @@ $.fn.sidebar.settings = {
             return false;
           }
           else {
+            if(settings.historyType == 'hash') {
+              module.debug('Using hash state change to manage state');
+            }
             if(settings.historyType == 'html5') {
               module.debug('Using HTML5 to manage state');
               if(settings.path !== false) {
@@ -10380,13 +10627,14 @@ $.fn.sidebar.settings = {
       },
       invoke: function(query, passedArguments, context) {
         var
+          object = instance,
           maxDepth,
           found,
           response
         ;
         passedArguments = passedArguments || queryArguments;
         context         = element         || context;
-        if(typeof query == 'string' && instance !== undefined) {
+        if(typeof query == 'string' && object !== undefined) {
           query    = query.split(/[\. ]/);
           maxDepth = query.length - 1;
           $.each(query, function(depth, value) {
@@ -10394,22 +10642,21 @@ $.fn.sidebar.settings = {
               ? value + query[depth + 1].charAt(0).toUpperCase() + query[depth + 1].slice(1)
               : query
             ;
-            if( $.isPlainObject( instance[value] ) && (depth != maxDepth) ) {
-              instance = instance[value];
+            if( $.isPlainObject( object[camelCaseValue] ) && (depth != maxDepth) ) {
+              object = object[camelCaseValue];
             }
-            else if( $.isPlainObject( instance[camelCaseValue] ) && (depth != maxDepth) ) {
-              instance = instance[camelCaseValue];
-            }
-            else if( instance[value] !== undefined ) {
-              found = instance[value];
+            else if( object[camelCaseValue] !== undefined ) {
+              found = object[camelCaseValue];
               return false;
             }
-            else if( instance[camelCaseValue] !== undefined ) {
-              found = instance[camelCaseValue];
+            else if( $.isPlainObject( object[value] ) && (depth != maxDepth) ) {
+              object = object[value];
+            }
+            else if( object[value] !== undefined ) {
+              found = object[value];
               return false;
             }
             else {
-              module.error(error.method, query);
               return false;
             }
           });
@@ -10595,11 +10842,8 @@ $.fn.transition = function() {
           animationEnd    = module.get.animationEvent();
           animationName   = module.get.animationName();
 
-          instance        = $module.data(moduleNamespace);
+          instance        = $module.data(moduleNamespace) || module;
 
-          if(instance === undefined) {
-            module.instantiate();
-          }
           if(methodInvoked) {
             methodInvoked = module.invoke(query);
           }
@@ -10607,11 +10851,11 @@ $.fn.transition = function() {
           if(methodInvoked === false) {
             module.animate();
           }
+          module.instantiate();
         },
 
         instantiate: function() {
           module.verbose('Storing instance of module', module);
-          instance = module;
           $module
             .data(moduleNamespace, instance)
           ;
@@ -10624,6 +10868,32 @@ $.fn.transition = function() {
           ;
         },
 
+        refresh: function() {
+          module.verbose('Refreshing display type on next animation');
+          delete instance.displayType;
+        },
+
+        forceRepaint: function() {
+          module.verbose('Forcing element repaint');
+          var
+            $parentElement = $module.parent(),
+            $nextElement = $module.next()
+          ;
+          if($nextElement.size() === 0) {
+            $module.detach().appendTo($parentElement);
+          }
+          else {
+            $module.detach().insertBefore($nextElement);
+          }
+        },
+
+        repaint: function() {
+          module.verbose('Repainting element');
+          var
+            fakeAssignment = element.offsetWidth
+          ;
+        },
+
         animate: function(overrideSettings) {
           settings = overrideSettings || settings;
           if(!module.is.supported()) {
@@ -10631,31 +10901,29 @@ $.fn.transition = function() {
             return false;
           }
           module.debug('Preparing animation', settings.animation);
-          if(module.is.animating()) {
-            if(settings.queue) {
+          if(module.is.animating() && settings.queue) {
+            if(!settings.allowRepeats && module.has.direction() && module.is.occuring() && instance.queuing !== true) {
+              module.error(error.repeated);
+            }
+            else {
               module.queue(settings.animation);
             }
             return false;
           }
-          module.save.conditions();
-          module.set.duration(settings.duration);
-          module.set.animating();
-          module.repaint();
-          $module
-            .addClass(className.transition)
-            .addClass(settings.animation)
-            .one(animationEnd, module.complete)
-          ;
-          if(!module.has.direction() && module.can.transition()) {
-            module.set.direction();
+          if(module.can.animate) {
+            module.set.animating(settings.animation);
           }
-          if(!module.has.transitionAvailable) {
-            module.restore.conditions();
-            module.error(error.noAnimation);
-            return false;
+          else {
+            module.error(error.noAnimation, settings.animation);
           }
-          module.show();
-          module.debug('Starting tween', settings.animation, $module.attr('class'));
+        },
+
+        reset: function() {
+          module.debug('Resetting animation to beginning conditions');
+          $module.off(animationEnd);
+          module.restore.conditions();
+          module.hide();
+          module.remove.animating();
         },
 
         queue: function(animation) {
@@ -10664,6 +10932,7 @@ $.fn.transition = function() {
           $module
             .one(animationEnd, function() {
               instance.queuing = false;
+              module.repaint();
               module.animate.apply(this, settings);
             })
           ;
@@ -10672,12 +10941,15 @@ $.fn.transition = function() {
         complete: function () {
           module.verbose('CSS animation complete', settings.animation);
           if(!module.is.looping()) {
-            if($module.hasClass(className.outward)) {
+            if( module.is.outward() ) {
+              module.verbose('Animation is outward, hiding element');
               module.restore.conditions();
+              module.remove.display();
               module.hide();
               $.proxy(settings.onHide, this)();
             }
-            else if($module.hasClass(className.inward)) {
+            else if( module.is.inward() ) {
+              module.verbose('Animation is outward, showing element');
               module.restore.conditions();
               module.show();
               $.proxy(settings.onShow, this)();
@@ -10685,54 +10957,70 @@ $.fn.transition = function() {
             else {
               module.restore.conditions();
             }
+            module.remove.duration();
             module.remove.animating();
           }
           $.proxy(settings.complete, this)();
         },
 
-        repaint: function(fakeAssignment) {
-          module.verbose('Forcing repaint event');
-          fakeAssignment = element.offsetWidth;
-        },
-
         has: {
           direction: function(animation) {
             animation = animation || settings.animation;
-            if( $module.hasClass(className.inward) || $module.hasClass(className.outward) ) {
+            if( animation.search(className.inward) !== -1 || animation.search(className.outward) !== -1) {
+              module.debug('Direction already set in animation');
               return true;
             }
-          },
-          transitionAvailable: function() {
-            if($module.css(animationName) !== 'none') {
-              module.debug('CSS definition found');
-              return true;
-            }
-            else {
-              module.debug('Unable to find css definition');
-              return false;
-            }
+            return false;
           }
         },
 
         set: {
 
-          animating: function() {
-            $module.addClass(className.animating);
+          animating: function(animation) {
+            animation = animation || settings.animation;
+            module.save.conditions();
+            if(module.can.transition() && !module.has.direction()) {
+              module.set.direction();
+            }
+            module.remove.hidden();
+            module.set.display();
+            $module
+              .addClass(className.animating)
+              .addClass(className.transition)
+              .addClass(animation)
+              .one(animationEnd, module.complete)
+            ;
+            module.set.duration(settings.duration);
+            module.debug('Starting tween', settings.animation, $module.attr('class'));
+          },
+
+          display: function() {
+            var
+              displayType = module.get.displayType()
+            ;
+            if(displayType !== 'block') {
+              module.verbose('Setting final visibility to', displayType);
+              $module
+                .css({
+                  display: displayType
+                })
+              ;
+            }
           },
 
           direction: function() {
             if($module.is(':visible')) {
               module.debug('Automatically determining the direction of animation', 'Outward');
               $module
-                .addClass(className.outward)
                 .removeClass(className.inward)
+                .addClass(className.outward)
               ;
             }
             else {
               module.debug('Automatically determining the direction of animation', 'Inward');
               $module
-                .addClass(className.inward)
                 .removeClass(className.outward)
+                .addClass(className.inward)
               ;
             }
           },
@@ -10760,41 +11048,63 @@ $.fn.transition = function() {
                 'animation-duration': duration
               })
             ;
+          },
+
+          hidden: function() {
+            $module
+              .addClass(className.transition)
+              .addClass(className.hidden)
+            ;
+          },
+
+          visible: function() {
+            $module
+              .addClass(className.transition)
+              .addClass(className.visible)
+            ;
           }
         },
 
         save: {
+          displayType: function(displayType) {
+            instance.displayType = displayType;
+          },
+          transitionExists: function(animation, exists) {
+            $.fn.transition.exists[animation] = exists;
+            module.verbose('Saving existence of transition', animation, exists);
+          },
           conditions: function() {
-            module.cache = {
+            instance.cache = {
               className : $module.attr('class'),
               style     : $module.attr('style')
             };
-            module.verbose('Saving original attributes', module.cache);
+            module.verbose('Saving original attributes', instance.cache);
           }
         },
 
         restore: {
           conditions: function() {
-            if(typeof module.cache === undefined) {
-              module.error(error.cache);
+            if(instance.cache === undefined) {
               return false;
             }
-            if(module.cache.className) {
-              $module.attr('class', module.cache.className);
+            if(instance.cache.className) {
+              $module.attr('class', instance.cache.className);
             }
             else {
               $module.removeAttr('class');
             }
-            if(module.cache.style) {
-              $module.attr('style', module.cache.style);
+            if(instance.cache.style) {
+              $module.attr('style', instance.cache.style);
             }
             else {
-              $module.removeAttr('style');
+              if(module.get.displayType() === 'block') {
+                $module.removeAttr('style');
+              }
             }
             if(module.is.looping()) {
               module.remove.looping();
             }
-            module.verbose('Restoring original attributes', module.cache);
+            module.verbose('Restoring original attributes', instance.cache);
           }
         },
 
@@ -10804,12 +11114,38 @@ $.fn.transition = function() {
             $module.removeClass(className.animating);
           },
 
+          display: function() {
+            if(instance.displayType !== undefined) {
+              $module.css('display', '');
+            }
+          },
+
+          duration: function() {
+            $module
+              .css({
+                '-webkit-animation-duration' : '',
+                '-moz-animation-duration'    : '',
+                '-ms-animation-duration'     : '',
+                '-o-animation-duration'      : '',
+                'animation-duration'         : ''
+              })
+            ;
+          },
+
+          hidden: function() {
+            $module.removeClass(className.hidden);
+          },
+
+          visible: function() {
+            $module.removeClass(className.visible);
+          },
+
           looping: function() {
             module.debug('Transitions are no longer looping');
             $module
               .removeClass(className.looping)
             ;
-            module.repaint();
+            module.forceRepaint();
           }
 
         },
@@ -10818,12 +11154,12 @@ $.fn.transition = function() {
 
           settings: function(animation, duration, complete) {
             // single settings object
-            if($.isPlainObject(animation)) {
+            if(typeof animation == 'object') {
               return $.extend(true, {}, $.fn.transition.settings, animation);
             }
             // all arguments provided
             else if(typeof complete == 'function') {
-              return $.extend(true, {}, $.fn.transition.settings, {
+              return $.extend({}, $.fn.transition.settings, {
                 animation : animation,
                 complete  : complete,
                 duration  : duration
@@ -10831,31 +11167,43 @@ $.fn.transition = function() {
             }
             // only duration provided
             else if(typeof duration == 'string' || typeof duration == 'number') {
-              return $.extend(true, {}, $.fn.transition.settings, {
+              return $.extend({}, $.fn.transition.settings, {
                 animation : animation,
                 duration  : duration
               });
             }
             // duration is actually settings object
             else if(typeof duration == 'object') {
-              return $.extend(true, {}, $.fn.transition.settings, duration, {
+              return $.extend({}, $.fn.transition.settings, duration, {
                 animation : animation
               });
             }
             // duration is actually callback
             else if(typeof duration == 'function') {
-              return $.extend(true, {}, $.fn.transition.settings, {
+              return $.extend({}, $.fn.transition.settings, {
                 animation : animation,
                 complete  : duration
               });
             }
             // only animation provided
             else {
-              return $.extend(true, {}, $.fn.transition.settings, {
+              return $.extend({}, $.fn.transition.settings, {
                 animation : animation
               });
             }
-            return $.extend({}, $.fn.transition.settings);
+            return $.fn.transition.settings;
+          },
+
+          displayType: function() {
+            if(instance.displayType === undefined) {
+              // create fake element to determine display state
+              module.can.transition();
+            }
+            return instance.displayType;
+          },
+
+          transitionExists: function(animation) {
+            return $.fn.transition.exists[animation];
           },
 
           animationName: function() {
@@ -10901,22 +11249,60 @@ $.fn.transition = function() {
         },
 
         can: {
-          transition: function() {
-            var
-              $clone           = $('<div>').addClass( $module.attr('class') ).appendTo($('body')),
-              currentAnimation = $clone.css(animationName),
-              inAnimation      = $clone.addClass(className.inward).css(animationName)
-            ;
-            if(currentAnimation != inAnimation) {
-              module.debug('In/out transitions exist');
-              $clone.remove();
+          animate: function() {
+            if($module.css(settings.animation) !== 'none') {
+              module.debug('CSS definition found',  $module.css(settings.animation));
               return true;
             }
             else {
-              module.debug('Static animation found');
-              $clone.remove();
+              module.debug('Unable to find css definition', $module.attr('class'));
               return false;
             }
+          },
+          transition: function() {
+            var
+              elementClass     = $module.attr('class'),
+              animation        = settings.animation,
+              transitionExists = module.get.transitionExists(settings.animation),
+              $clone,
+              currentAnimation,
+              inAnimation,
+              displayType
+            ;
+            if( transitionExists === undefined || instance.displayType === undefined) {
+              module.verbose('Determining whether animation exists');
+              $clone = $('<div>').addClass( elementClass ).appendTo($('body'));
+              currentAnimation = $clone
+                .removeClass(className.inward)
+                .removeClass(className.outward)
+                .addClass(className.animating)
+                .addClass(className.transition)
+                .addClass(animation)
+                .css(animationName)
+              ;
+              inAnimation = $clone
+                .addClass(className.inward)
+                .css(animationName)
+              ;
+              displayType = $clone
+                .attr('class', elementClass)
+                .show()
+                .css('display')
+              ;
+              module.verbose('Determining final display state', displayType);
+              if(currentAnimation != inAnimation) {
+                module.debug('Transition exists for animation', animation);
+                transitionExists = true;
+              }
+              else {
+                module.debug('Static animation found', animation, displayType);
+                transitionExists = false;
+              }
+              $clone.remove();
+              module.save.displayType(displayType);
+              module.save.transitionExists(animation, transitionExists);
+            }
+            return transitionExists;
           }
         },
 
@@ -10924,8 +11310,18 @@ $.fn.transition = function() {
           animating: function() {
             return $module.hasClass(className.animating);
           },
+          inward: function() {
+            return $module.hasClass(className.inward);
+          },
+          outward: function() {
+            return $module.hasClass(className.outward);
+          },
           looping: function() {
             return $module.hasClass(className.looping);
+          },
+          occuring: function(animation) {
+            animation = animation || settings.animation;
+            return ( $module.hasClass(animation) );
           },
           visible: function() {
             return $module.is(':visible');
@@ -10937,20 +11333,15 @@ $.fn.transition = function() {
 
         hide: function() {
           module.verbose('Hiding element');
-          $module
-            .removeClass(className.visible)
-            .addClass(className.transition)
-            .addClass(className.hidden)
-          ;
+          module.remove.visible();
+          module.set.hidden();
           module.repaint();
         },
-        show: function() {
-          module.verbose('Showing element');
-          $module
-            .removeClass(className.hidden)
-            .addClass(className.transition)
-            .addClass(className.visible)
-          ;
+
+        show: function(display) {
+          module.verbose('Showing element', display);
+          module.remove.hidden();
+          module.set.visible();
           module.repaint();
         },
 
@@ -11073,13 +11464,14 @@ $.fn.transition = function() {
         },
         invoke: function(query, passedArguments, context) {
           var
+            object = instance,
             maxDepth,
             found,
             response
           ;
           passedArguments = passedArguments || queryArguments;
           context         = element         || context;
-          if(typeof query == 'string' && instance !== undefined) {
+          if(typeof query == 'string' && object !== undefined) {
             query    = query.split(/[\. ]/);
             maxDepth = query.length - 1;
             $.each(query, function(depth, value) {
@@ -11087,18 +11479,18 @@ $.fn.transition = function() {
                 ? value + query[depth + 1].charAt(0).toUpperCase() + query[depth + 1].slice(1)
                 : query
               ;
-              if( $.isPlainObject( instance[camelCaseValue] ) && (depth != maxDepth) ) {
-                instance = instance[camelCaseValue];
+              if( $.isPlainObject( object[camelCaseValue] ) && (depth != maxDepth) ) {
+                object = object[camelCaseValue];
               }
-              else if( instance[camelCaseValue] !== undefined ) {
-                found = instance[camelCaseValue];
+              else if( object[camelCaseValue] !== undefined ) {
+                found = object[camelCaseValue];
                 return false;
               }
-              else if( $.isPlainObject( instance[value] ) && (depth != maxDepth) ) {
-                instance = instance[value];
+              else if( $.isPlainObject( object[value] ) && (depth != maxDepth) ) {
+                object = object[value];
               }
-              else if( instance[value] !== undefined ) {
-                found = instance[value];
+              else if( object[value] !== undefined ) {
+                found = object[value];
                 return false;
               }
               else {
@@ -11133,6 +11525,8 @@ $.fn.transition = function() {
   ;
 };
 
+$.fn.transition.exists = {};
+
 $.fn.transition.settings = {
 
   // module info
@@ -11155,9 +11549,12 @@ $.fn.transition.settings = {
   onShow      : function() {},
   onHide      : function() {},
 
+  // whether animation can occur twice in a row
+  allowRepeats : false,
+
   // animation duration
-  animation   : 'fade',
-  duration    : '700ms',
+  animation  : 'fade',
+  duration   : '700ms',
 
   // new animations will occur after previous ones
   queue       : true,
@@ -11177,6 +11574,7 @@ $.fn.transition.settings = {
   // possible errors
   error: {
     noAnimation : 'There is no css animation matching the one you specified.',
+    repeated    : 'That animation is already occurring, cancelling repeated animation',
     method      : 'The method you called is not defined',
     support     : 'This browser does not support CSS animations'
   }
@@ -11522,13 +11920,14 @@ $.fn.video = function(parameters) {
         },
         invoke: function(query, passedArguments, context) {
           var
+            object = instance,
             maxDepth,
             found,
             response
           ;
           passedArguments = passedArguments || queryArguments;
           context         = element         || context;
-          if(typeof query == 'string' && instance !== undefined) {
+          if(typeof query == 'string' && object !== undefined) {
             query    = query.split(/[\. ]/);
             maxDepth = query.length - 1;
             $.each(query, function(depth, value) {
@@ -11536,22 +11935,21 @@ $.fn.video = function(parameters) {
                 ? value + query[depth + 1].charAt(0).toUpperCase() + query[depth + 1].slice(1)
                 : query
               ;
-              if( $.isPlainObject( instance[camelCaseValue] ) && (depth != maxDepth) ) {
-                instance = instance[camelCaseValue];
+              if( $.isPlainObject( object[camelCaseValue] ) && (depth != maxDepth) ) {
+                object = object[camelCaseValue];
               }
-              else if( instance[camelCaseValue] !== undefined ) {
-                found = instance[camelCaseValue];
+              else if( object[camelCaseValue] !== undefined ) {
+                found = object[camelCaseValue];
                 return false;
               }
-              else if( $.isPlainObject( instance[value] ) && (depth != maxDepth) ) {
-                instance = instance[value];
+              else if( $.isPlainObject( object[value] ) && (depth != maxDepth) ) {
+                object = object[value];
               }
-              else if( instance[value] !== undefined ) {
-                found = instance[value];
+              else if( object[value] !== undefined ) {
+                found = object[value];
                 return false;
               }
               else {
-                module.error(error.method, query);
                 return false;
               }
             });
