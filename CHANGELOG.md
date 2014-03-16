@@ -7,6 +7,7 @@ Change Log
 * Fix disqus not defined when init bug. You can just change it in conf.py later.
 * Upgrade semantic-ui to 0.15.1
 * Fix `include` rule
+* Fix comment.js bug in sementic-ui theme.
 
 1.2 Version
 -----------------
