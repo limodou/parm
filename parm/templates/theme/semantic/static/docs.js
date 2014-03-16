@@ -52,6 +52,8 @@ $(function(){
         }
     }).bind('keydown.return', function(){
         $('.expander').click();
+    }).bind('keydown.h', function(){
+        window.location.href = relpath+'/index.html';
     });
     
     //process expander
@@ -76,5 +78,9 @@ $(function(){
     });
 
     //initialize popup
-    $('.ui.popup').popup();    
+    $('.icon.help').popup();    
+    
+    //goto top
+    $('#markdown-content').UItoTop({ easingType: 'easeOutQuart', text:'<i class="up icon"></i>' });
+    
 });

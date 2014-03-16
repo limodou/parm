@@ -141,3 +141,23 @@ def test_include_7():
     <BLANKLINE>
     """
 
+def test_include_8():
+    """
+    >>> text = '''
+    ... {% include file=test1.js %}
+    ... <script>...</script>
+    ... {% endinclude %}
+    ... '''
+    >>> blocks = {'include':include}
+    >>> print parseHtml(text, '%(body)s', block_callback=blocks)
+    <BLANKLINE>
+    <pre><code>...
+    &lt;script&gt;
+    avalon.define("blog", function(vm){
+        vm.name = 'hello';
+    });
+    &lt;/script&gt;
+    ...</code></pre>
+    <BLANKLINE>
+    """
+

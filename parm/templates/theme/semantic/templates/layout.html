@@ -12,6 +12,7 @@
 <link href="{{=relpath}}/static/toc/toc.css" rel="stylesheet">
 <link rel="stylesheet" href="{{=relpath}}/static/parm.css"/>
 <link rel="stylesheet" href="{{=relpath}}/static/asset/{{=pre_css}}.css"/>
+<link rel="stylesheet" href="{{=relpath}}/static/ui.totop.css"/>
 {{for c in custom_css:}}
 <link rel="stylesheet" href="{{=c}}"/>
 {{pass}}
@@ -65,6 +66,10 @@ pass
         <div class="ui blue inverted small label">
             <i class="icon download"></i>{{<< source}}
         </div>
+        <div class="ui blue inverted small label">
+            <i class="icon help link" data-html="<b>&larr;</b> Prev Chapter <b>&rarr;</b> Next Chapter<br/><b>h</b> Index Page"></i>
+        </div>
+        
         
     </div>
 </div>
@@ -85,14 +90,19 @@ pass
 </div>
 {{end}}
 
+<script>
+var relpath = '{{=relpath}}';
+</script>
+
 <script type="text/javascript" src="{{=relpath}}/static/jquery-1.7.2.min.js"></script>
 <script type="text/javascript" src="{{=relpath}}/static/semantic/javascript/semantic.min.js"></script>
 <script src="{{=relpath}}/static/asset/prettify.js"></script>
 <script src="{{=relpath}}/static/toc/toc.js"></script>
-<script src="{{=relpath}}/static/docs.js"></script>
-<script src="{{=relpath}}/static/comment.js"></script>
+<script src="{{=relpath}}/static/jquery.ui.totop.js"></script>
 <script src="{{=relpath}}/static/jquery.hotkeys.js"></script>
 <script src="{{=relpath}}/static/jquery.sticky-kit.min.js"></script>
+<script src="{{=relpath}}/static/docs.js"></script>
+<script src="{{=relpath}}/static/comment.js"></script>
 
 {{if conf.disqus:}}
     {{<< conf.disqus_js}}
