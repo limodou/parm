@@ -12,6 +12,7 @@
 <link href="./static/toc/toc.css" rel="stylesheet">
 <link rel="stylesheet" href="./static/parm.css"/>
 <link rel="stylesheet" href="./static/asset/sons-of-obsidian.css"/>
+<link rel="stylesheet" href="./static/ui.totop.css"/>
 
 <title>Change Log - Parm</title>
 </head>
@@ -63,6 +64,7 @@
 <li>Upgrade semantic-ui to 0.15.1</li>
 <li>Fix <code>include</code> rule</li>
 <li>Fix comment.js bug in sementic-ui theme.</li>
+<li>Add press <code>h</code> to goto index.html support.</li>
 </ul>
 <h2 id="title_1-2">1.2 Version<a class="anchor" href="#title_1-2">&para;</a></h2>
 <ul>
@@ -152,6 +154,10 @@ file3.md
         <div class="ui blue inverted small label">
             <i class="icon download"></i><a href="./CHANGELOG.md">View Source</a>
         </div>
+        <div class="ui blue inverted small label">
+            <i class="icon help link" data-html="<b>&larr;</b> Prev Chapter <b>&rarr;</b> Next Chapter<br/><b>h</b> Index Page"></i>
+        </div>
+        
         
     </div>
 </div>
@@ -173,14 +179,19 @@ file3.md
 </div>
 
 
+<script>
+var relpath = '.';
+</script>
+
 <script type="text/javascript" src="./static/jquery-1.7.2.min.js"></script>
 <script type="text/javascript" src="./static/semantic/javascript/semantic.min.js"></script>
 <script src="./static/asset/prettify.js"></script>
 <script src="./static/toc/toc.js"></script>
-<script src="./static/docs.js"></script>
-<script src="./static/comment.js"></script>
+<script src="./static/jquery.ui.totop.js"></script>
 <script src="./static/jquery.hotkeys.js"></script>
 <script src="./static/jquery.sticky-kit.min.js"></script>
+<script src="./static/docs.js"></script>
+<script src="./static/comment.js"></script>
 
 
 

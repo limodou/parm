@@ -8,6 +8,7 @@ Change Log
 * Upgrade semantic-ui to 0.15.1
 * Fix `include` rule
 * Fix comment.js bug in sementic-ui theme.
+* Add press `h` to goto index.html support.
 
 1.2 Version
 -----------------
