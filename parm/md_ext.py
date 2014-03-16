@@ -167,12 +167,15 @@ def include(visitor, block):
         lines_content
         {% endinclude %}
         
-        the line 1<= lineno < 20 and 30 <= lineno will be included
+        the line 1<= lineno <= 20 and 30 <= lineno will be included
         
         lines_content is line pattern used to match which lines should be included
         the format is:
             
             begin ... end
+            
+        if you don't want to included `begin` or `end` line, you can add `!` at the 
+        end of `begin` or `end`
             
         begin and end are line pattern, and end will not be included
     """
@@ -193,13 +196,27 @@ def include(visitor, block):
                     e = -1
                 num.append((b, e))
             else:
-                num.append((int(x), int(x)+1))
+                num.append((int(x), int(x)))
         return num
         
-    def get_line_index(line, v, index):
+    def get_line_index(line, v, index, flag=''):
+        """
+        flag is 'begin' or 'end'
+        """
         if isinstance(v, int):
             return v
-        if re.search(v, line):
+        skip = False
+        p = v
+        if v.endswith('!'):
+            skip = True
+            p = v[:-1]
+            
+        if re.search(p, line):
+            if skip:
+                if flag == 'begin':
+                    index = index + 1
+                elif flag == 'end':
+                    index = index - 1
             return index
         else:
             return v
@@ -210,11 +227,11 @@ def include(visitor, block):
         """
         if index != -1:
             b, e = lineno[index]
-            if b<=n and ((e==-1) or n<e):
+            if b<=n and ((e==-1) or n<=e):
                 return True, index
         for i, v in enumerate(lineno):
             b, e = lineno[i]
-            if b<=n and ((e==-1) or n<e):
+            if b<=n and ((e==-1) or n<=e):
                 return True, i
                 
         return False, -1
@@ -281,10 +298,11 @@ def include(visitor, block):
         for i, line in enumerate(buf):
             for j, v in enumerate(lineno):
                 if isinstance(v, tuple):
-                    lineno[j] = (get_line_index(line, v[0], i+1), get_line_index(line, v[1], i+1))
+                    lineno[j] = (get_line_index(line, v[0], i+1, 'begin'), get_line_index(line, v[1], i+1, 'end'))
                 else:
                     t = get_line_index(line, v, i+1)
-                    lineno[j] = t, t+1
+                    lineno[j] = t, t
+        
         for i in range(len(lineno)-1, -1, -1):
             v = lineno[i]
             if not isinstance(v, tuple):

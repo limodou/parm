@@ -145,3 +145,4 @@ border: 0;
 }
 
 #searchform input {background-color:gray;color:white;}
+.ui.popup p{margin:0;}

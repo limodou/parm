@@ -13,6 +13,7 @@ def test_include_1():
     >>> print parseHtml(text, '%(body)s', block_callback=blocks)
     <BLANKLINE>
     <pre class="linenums"><code class="language-python">$(function(){
+        $('.div').on('click', function(e){
     ...
                 url:'/test',
     ...
@@ -66,7 +67,7 @@ def test_include_3():
                 }
             });
         });
-    ...</code></pre>
+    });</code></pre>
     <BLANKLINE>
     """
     
@@ -82,14 +83,15 @@ def test_include_4():
     <BLANKLINE>
     <pre><code>$(function(){
         $('.div').on('click', function(e){
+            e.preventDefault();
     ...</code></pre>
     <BLANKLINE>
     """
 
-def test_include_4():
+def test_include_5():
     """
     >>> text = '''
-    ... {% include file=test.js, lines=5-%}
+    ... {% include file=test.js, lines=5-6%}
     ... ...e\.preventDefault
     ... {% endinclude %}
     ... '''
@@ -98,15 +100,44 @@ def test_include_4():
     <BLANKLINE>
     <pre><code>$(function(){
         $('.div').on('click', function(e){
+            e.preventDefault();
     ...
                 url:'/test',
                 dataType:'json',
-                success:function(result){
-                    show_message(result);
-                }
-            });
-        });
-    });</code></pre>
+    ...</code></pre>
+    <BLANKLINE>
+    """
+
+def test_include_6():
+    """
+    >>> text = '''
+    ... {% include file=test.js %}
+    ... \$\('\.div'\)...\$\.ajax
+    ... {% endinclude %}
+    ... '''
+    >>> blocks = {'include':include}
+    >>> print parseHtml(text, '%(body)s', block_callback=blocks)
+    <BLANKLINE>
+    <pre><code>    $('.div').on('click', function(e){
+            e.preventDefault();
+            $.ajax({
+    ...</code></pre>
+    <BLANKLINE>
+    """
+
+def test_include_7():
+    """
+    >>> text = '''
+    ... {% include file=test.js %}
+    ... \$\('\.div'\)!...\$\.ajax!
+    ... {% endinclude %}
+    ... '''
+    >>> blocks = {'include':include}
+    >>> print parseHtml(text, '%(body)s', block_callback=blocks)
+    <BLANKLINE>
+    <pre><code>...
+            e.preventDefault();
+    ...</code></pre>
     <BLANKLINE>
     """
 

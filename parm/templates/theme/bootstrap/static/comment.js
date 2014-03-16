@@ -62,7 +62,7 @@ function($) {
         $.each(t, function(x, y){
             if (/\d+/.test(x)){
                 var el = $('.linenums li:eq('+(parseInt(x)-1)+')', that.$element);
-                if (el){
+                if (el.size()>0){
                     el.css({position:'relative'});
                     var offset = el.offset()
                     var t;
