@@ -1,10 +1,58 @@
 Change Log
 =====================
 
+1.3 Version
+-----------------
+
+* Fix disqus not defined when init bug. You can just change it in conf.py later.
+* Upgrade semantic-ui to 0.15.1
+* Fix `include` rule
+
+1.2 Version
+-----------------
+
+* Fix `include` bug
+* Fix `class=linenums` bug
+
+1.1 Version
+-----------------
+
+* Add `include` syntax, so that you can include source code to markdown file, 
+  for example:
+
+    ```
+    {% include file=test.js, lines=1-2 10-, language=python, class=linenums  %}
+    {% endinclude %}
+    ```
+    
+    `class=linenums` is used to display line number. 
+    
+    The simplest format is:
+    
+    ```
+    {% include file=test.js %}
+    {% endinclude %}
+    ```
+    
+    Also support regular expression, for example:
+    
+    ```
+    {% include file=test.js%}re.
+    \$\('\.div'\)...^\}\);
+    {% endinclude %}
+    ```
+    
+    parm will not automatically escape special characters such as `{()}` etc.
+    And you should separate begin pattern and end pattern with `...`. Extra blank
+    before the pattern will not skipped, but ending blank will be trimmed.
+    
+* Add `test_parm.py` file to test `include` syntax.
+* Fix customized `prettify.css` bug in semantic theme
+
 1.0 Version
 -----------------
 
-* Chanage `setup.py`, add `par` package requirement.
+* Change `setup.py`, add `par` package requirement.
 * Add google search support, you can config it via init command by default.
 * Fix `rst2md` parsing `.. contents::` bug.
 * Change `rst2md` and `make` command parameter.

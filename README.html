@@ -57,22 +57,22 @@
 </div>
         
         <h1 id="title_1">Parm Introduction<a class="anchor" href="#title_1">&para;</a></h1>
-<p>Convert par favorit markdown syntax to html document, also supports twitter bootstrap.</p>
+<p>Convert par favorit markdown syntax to html document, supports semantic-ui and bootstrap css framework.</p>
 <h2 id="title_1-1">Installation<a class="anchor" href="#title_1-1">&para;</a></h2>
 <p>First install par and parm to your box.</p>
-<pre class="prettyprint"><code>pip install parm</code></pre>
+<pre class="prettyprint "><code>pip install parm</code></pre>
 <p>Then writing your markdown documents. For example write it in:</p>
-<pre class="prettyprint"><code>/project/docs</code></pre>
+<pre class="prettyprint "><code>/project/docs</code></pre>
 <h2 id="title_1-2">Initialize Environment<a class="anchor" href="#title_1-2">&para;</a></h2>
 <p>Next, change to docs folder. If you are run the first time, you should initialize parm project environment, just like:</p>
-<pre class="prettyprint"><code>parm init</code></pre>
+<pre class="prettyprint "><code>parm init</code></pre>
 <p>When running this command, it'll may ask if you want to initialize the config information, if you choice <code>Y</code>, then you will enter interactive command line, then just input some infos, and you can change them later in <code>conf.py</code> file. And parm will use it to convert the markdown documents.</p>
 <p>This command will copy some static files and templates from parm module. But you don't need to care about them now.</p>
 <p>For 0.9 version, it'll also copy a demo pages such as : index.md, introduction.md, so you can directly run <code>parm make</code> and see the result.</p>
 <h2 id="title_1-3">Writing TOC<a class="anchor" href="#title_1-3">&para;</a></h2>
 <p>Next, you can start to convert the docs. Because parm support table of content(TOC), so you can write your topic content in <code>index.md</code> file. For 0.9 version, it'll already created a index.md for you, so you can just open and edit it.</p>
 <p>The content just like:</p>
-<pre class="prettyprint"><code>## Introduction
+<pre class="prettyprint "><code>## Introduction
 
 {% toc max_depth=2 %}
 file1.md
@@ -84,14 +84,14 @@ file2.md
 <p>You can put multiple toc section in index.md, and also give a H2 subject for each.</p>
 <h2 id="title_1-4">Build<a class="anchor" href="#title_1-4">&para;</a></h2>
 <p>And you can run:</p>
-<pre class="prettyprint"><code>parm make</code></pre>
+<pre class="prettyprint "><code>parm make</code></pre>
 <p>to start converting.</p>
 <p>And when the convert finished, the result will be output to <code>html</code> default. You can also change it with <code>-d</code> parameter, just like:</p>
-<pre class="prettyprint"><code>parm make -d output_directory</code></pre>
+<pre class="prettyprint "><code>parm make -d output_directory</code></pre>
 <p>and the result will be outputed to  <code>output_directory</code>.</p>
 <h2 id="title_1-5">Convert reStructuredText to Markdown<a class="anchor" href="#title_1-5">&para;</a></h2>
 <p>parm also supports convert reStructuredText format to Markdown format. Just enter your doc directory, and execute below command:</p>
-<pre class="prettyprint"><code>parm rst2md &lt;output_directory&gt;</code></pre>
+<pre class="prettyprint "><code>parm rst2md &lt;output_directory&gt;</code></pre>
 <p>But you known, reStructuredText format is rich than markdown, so I expand some new style for Markdown format in <a href="https://github.com/limodou/par" class="outter">par</a> project. But there are still some styles unsupported by par, so you need to change them manually.</p>
 <p>And if you want to convert reStructuredText to Markdown, you should install <code>docutils</code> first.</p>
 <p>Just try it, hope you enjoy it.</p>
@@ -103,7 +103,7 @@ file2.md
 <p>For 0.9 version, parm has already supported disqus, so when you created conf.py it'll ask you the disqus account name, and the name will be saved in conf.py, so you can edit it later. And steps below will not need, but you should know how to config it if you want to change it later.</p>
 <p>You should sign in disqus first, and then you'll get two paragraphs, one is html code, the other is js code. For example:</p>
 <p><strong>html code</strong></p>
-<pre class="prettyprint"><code>&lt;div id="disqus_thread" style="margin:20px;"&gt;&lt;/div&gt;
+<pre class="prettyprint "><code>&lt;div id="disqus_thread" style="margin:20px;"&gt;&lt;/div&gt;
  &lt;script type="text/javascript"&gt;
      /* * * CONFIGURATION VARIABLES: EDIT BEFORE PASTING INTO YOUR WEBPAGE * * */
      var disqus_shortname = 'YOUR_SITE_SHORT_NAME'; // required: replace example with your forum shortname
@@ -118,7 +118,7 @@ file2.md
  &lt;noscript&gt;Please enable JavaScript to view the &lt;a href="http://disqus.com/?ref_noscript"&gt;comments powered by Disqus.&lt;/a&gt;&lt;/noscript&gt;
  &lt;a href="http://disqus.com" class="dsq-brlink"&gt;comments powered by &lt;span class="logo-disqus"&gt;Disqus&lt;/span&gt;&lt;/a&gt;</code></pre>
 <p><strong>js code</strong></p>
-<pre class="prettyprint"><code>&lt;script type="text/javascript"&gt;
+<pre class="prettyprint "><code>&lt;script type="text/javascript"&gt;
    /* * * CONFIGURATION VARIABLES: EDIT BEFORE PASTING INTO YOUR WEBPAGE * * */
    var disqus_shortname = 'YOUR_SITE_SHORT_NAME'; // required: replace example with your forum shortname
 
@@ -133,7 +133,7 @@ file2.md
 <p>And you should replace two <code>YOUR_SITE_SHORT_NAME</code> according your account of disqus.</p>
 <p>For 0.9 version, you can just replace <code>disqus</code> config variable, it's enough.</p>
 <p>Above codes is already saved in <code>conf.py</code>, for example:</p>
-<pre class="prettyprint"><code>#disqus
+<pre class="prettyprint "><code>#disqus
 disqus_text = '''
 ...&lt;first paragraph&gt;
 '''
@@ -144,21 +144,21 @@ disqus_js = '''
 <h3 id="title_1-7-2">Change layout.html<a class="anchor" href="#title_1-7-2">&para;</a></h3>
 <p>Open the template file <code>your_parm_project/templates/layout.html</code> and change two places:</p>
 <p>After</p>
-<pre class="prettyprint"><code>&lt;div class="source"&gt;
+<pre class="prettyprint "><code>&lt;div class="source"&gt;
     &lt;i class="icon-download"&gt;&lt;/i&gt;{{&lt;&lt; source}}
 &lt;/div&gt;</code></pre>
 <p>add:</p>
-<pre class="prettyprint"><code>&lt;!-- disqus --&gt;
+<pre class="prettyprint "><code>&lt;!-- disqus --&gt;
 {{&lt;&lt; conf.disqus_text}}</code></pre>
 <p>And before</p>
-<pre class="prettyprint"><code>&lt;/body&gt;</code></pre>
+<pre class="prettyprint "><code>&lt;/body&gt;</code></pre>
 <p>add:</p>
-<pre class="prettyprint"><code>{{&lt;&lt; conf.disqus_js}}</code></pre>
+<pre class="prettyprint "><code>{{&lt;&lt; conf.disqus_js}}</code></pre>
 <p>When after above works, execute <code>parm make -d output_directory</code> again.</p>
 <p>For 0.9 version, above code is already existed in <code>layout.html</code> template.</p>
 <h2 id="title_1-8">Change Index Introduction Info<a class="anchor" href="#title_1-8">&para;</a></h2>
 <p>Introduction is a pagagraph to show the project title and summary infos, you can change it in conf.py:</p>
-<pre class="prettyprint"><code>introduction = u'''
+<pre class="prettyprint "><code>introduction = u'''
 &lt;h1 class="ui header"&gt;%s
 &lt;a class="ui black label"&gt;%s&lt;/a&gt;
 &lt;/h1&gt;
@@ -166,15 +166,15 @@ disqus_js = '''
 ''' % (project, version)</code></pre>
 <h2 id="title_1-9">About theme<a class="anchor" href="#title_1-9">&para;</a></h2>
 <p>For 0.8 version, parm is already support two themes: bootstrap, semantic. But I prefer the semantic, because I made more care about it. If you want to change the theme, you can just change :</p>
-<pre class="prettyprint"><code>theme = 'semantic'</code></pre>
+<pre class="prettyprint "><code>theme = 'semantic'</code></pre>
 <h2 id="title_1-10">Menu Navigation<a class="anchor" href="#title_1-10">&para;</a></h2>
 <p>Default menu navigation has only home entry, you can change it in conf.py according the description:</p>
-<pre class="prettyprint"><code>menus = [
+<pre class="prettyprint "><code>menus = [
     ('home', 'Home', 'index.html'),
 ]</code></pre>
 <h2 id="title_1-11">How to exclude files<a class="anchor" href="#title_1-11">&para;</a></h2>
 <p>In 0.9 version, after you've initialized parm project, there should be an exclude.txt file, you can change it to exclude the files or directories which you don't want to copy to output directory. One pattern could be in one line. The pattern just like filename matching pattern, for example, these are available patterns:</p>
-<pre class="prettyprint"><code>conf.py
+<pre class="prettyprint "><code>conf.py
 *.pyc
 templates</code></pre>
 <h2 id="title_1-12">How to host your docs in github pages<a class="anchor" href="#title_1-12">&para;</a></h2>
@@ -184,19 +184,100 @@ templates</code></pre>
 <li><code>git rm -rf .</code></li>
 <li>create docs in your repo, and write your docs</li>
 <li><p>render html to doc directory, for example the directory will be:</p>
-<pre class="prettyprint"><code>project(master)\
+<pre class="prettyprint "><code>project(master)\
    docs\  &lt;------you are here
 project-doc(gh-pages)\</code></pre>
-<pre class="prettyprint"><code>parm make -d ../../yourproject-doc</code></pre></li>
+<pre class="prettyprint "><code>parm make -d ../../yourproject-doc</code></pre></li>
 <li>in yourproject-doc, <code>git add .</code></li>
 <li><code>git commit -a -m "init doc"</code></li>
 <li><code>git push origin gh-pages</code></li>
 <li>Visit your doc in <code>http://yourname.github.io/yourproject</code></li>
 </ol>
 <p>You could also see the documentation <a href="https://help.github.com/articles/creating-project-pages-manually" class="outter">https://help.github.com/articles/creating-project-pages-manually</a> to understand how to use <code>gh-pages</code>.</p>
-<h2 id="title_1-13">License<a class="anchor" href="#title_1-13">&para;</a></h2>
+<h2 id="title_1-13">Markdown Extensions<a class="anchor" href="#title_1-13">&para;</a></h2>
+<p>Parm add some markdown extension, the TOC support is one of them, others are:</p>
+<h3 id="title_1-13-3">Code Comment<a class="anchor" href="#title_1-13-3">&para;</a></h3>
+<p>The Syntax like this:</p>
+<pre class="prettyprint "><code>{% code-comment target=element %}
+key : value
+key : value
+{% endcode-comment %}</code></pre>
+<p>For <code>target</code> will be the target element selector, it could be <code>&lt;pre&gt;</code> or element id.</p>
+<p>And <code>key</code> can be lineno or keywords defined in code, and this will display an label and when you move mouse on it, it'll display a tip the content comes from <code>value</code>.</p>
+<p>For example:</p>
+<p>First defined your code like this:</p>
+<pre class="prettyprint "><code>```id=test,class=linenums
+from os import path
+path.join('a', 'b')
+```</code></pre>
+<p>Then define code comment like this:</p>
+<pre class="prettyprint "><code>{% code-comment target=test %}
+path : path submodule
+2 : line 2
+{% endcode-comment %}</code></pre>
+<p>And the result should be:</p>
+<p><img src="static/code-comment.png"/>
+</p>
+<p>So you can see a popup will shown when your mourse hover specified lineno or keyword.</p>
+<h3 id="title_1-13-4">include file<a class="anchor" href="#title_1-13-4">&para;</a></h3>
+<p>Sometimes you need to show some codes, one way you can type them in document directly, using <code>```</code>, .etc. But in Parm, you can also include code from a source file, so this feature will be very handy, and even the code is changed, you don't need to care about the code sync, just recreate the doc again.  And you can use <code>include</code> to do this thing.</p>
+<p>The basic syntax of <code>include</code> tag should be:</p>
+<pre class="prettyprint "><code>{% include file=filename, lines=lines_range, language=lanaguage, class=class %}
+lines_content
+{% endinclude %}</code></pre>
+<dl>
+<dt>file (must)</dt>
+<dd><p>source filename, it's path will be relative with current markdown doc file</p>
+</dd>
+<dt>lines (optional)</dt>
+<dd><p>defines the range of lines in source file, it can be several ranges like this:</p>
+<pre class="prettyprint "><code>1-20 30-</code></pre>
+<p>Above means the line 1<= lineno <= 20 and 30 <= lineno will be included.</p>
+<p>So if you ommit <code>lines</code> at all, the whole file will be included.</p>
+<pre class="prettyprint "><code>2 5</code></pre>
+<p>It is also right syntax. Just they are the simple line patterns.</p>
+</dd>
+<dt>language (optional)</dt>
+<dd><p>Specify the language.</p>
+</dd>
+<dt>class (optional)</dt>
+<dd><p>Extra <code>class</code> attribute will be add to <code>&lt;pre&gt;</code> tag. If you want Parm show lineno, you should use <code>class=linenums</code> . This class used in google highlight js lib.</p>
+</dd>
+<dt>lines_content (optional)</dt>
+<dd><p>If you don't want to use lineno specifing the range of code lines, you can also use regular expression, so just defined it in lines_content.</p>
+<p>The format is:</p>
+<pre class="prettyprint "><code>begin_regular_expression...begin_regular_expression</code></pre>
+<p>The <code>...</code> is used to separate <code>begin</code> regular expression and <code>end</code> regular expression. Only one of them could be ommitted. And the line that matching <code>begin</code> or  <code>end</code> pattern will be included in the output, so if you want to skip them,  you can add <code>!</code> at the end of the pattern.</p>
+<p>For example, the file content is:</p>
+<pre class="prettyprint "><code>$(function(){
+    $('.div').on('click', function(e){
+        e.preventDefault();
+        $.ajax({
+            url:'/test',
+            dataType:'json',
+            success:function(result){
+                show_message(result);
+            }
+        });
+    });
+});</code></pre>
+<pre class="prettyprint "><code>{% include file=test.js %}
+\$\('\.div'\)...\$\.ajax
+{% endinclude %}</code></pre>
+<p>will show the lines like:</p>
+<pre class="prettyprint "><code>    $('.div').on('click', function(e){
+        e.preventDefault();
+        $.ajax({</code></pre>
+<p>But,</p>
+<pre class="prettyprint "><code>{% include file=test.js %}
+\$\('\.div'\)!...\$\.ajax!
+{% endinclude %}</code></pre>
+<p>will only show the lines like:</p>
+<pre class="prettyprint "><code>        e.preventDefault();</code></pre>
+</dd>
+</dl><h2 id="title_1-14">License<a class="anchor" href="#title_1-14">&para;</a></h2>
 <p>This software is released under BSD license.</p>
-<h2 id="title_1-14">DEMO<a class="anchor" href="#title_1-14">&para;</a></h2>
+<h2 id="title_1-15">DEMO<a class="anchor" href="#title_1-15">&para;</a></h2>
 <p>You can see: <a href="http://limodou.github.io/parm" class="outter">http://limodou.github.io/parm</a> or <a href="http://limodou.github.io/uliweb-doc" class="outter">http://limodou.github.io/uliweb-doc</a></p>
 
         

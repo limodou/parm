@@ -1,8 +1,8 @@
 Parm Introduction
 ===================
 
-Convert par favorit markdown syntax to html document, also supports
-twitter bootstrap.
+Convert par favorit markdown syntax to html document, supports semantic-ui and
+bootstrap css framework.
 
 ## Installation
 
@@ -287,6 +287,157 @@ templates
 You could also see the documentation https://help.github.com/articles/creating-project-pages-manually
 to understand how to use `gh-pages`.
 
+## Markdown Extensions
+
+Parm add some markdown extension, the TOC support is one of them, others are:
+
+### Code Comment
+
+The Syntax like this:
+
+```
+{% code-comment target=element %}
+key : value
+key : value
+{% endcode-comment %}    
+```
+
+For `target` will be the target element selector, it could be `<pre>` or element id.
+
+And `key` can be lineno or keywords defined in code, and this will display an label
+and when you move mouse on it, it'll display a tip the content comes from `value`.
+
+For example:
+
+First defined your code like this:
+
+<code>
+```id=test,class=linenums
+from os import path
+path.join('a', 'b')
+```
+</code>
+
+Then define code comment like this:
+
+```
+{% code-comment target=test %}
+path : path submodule
+2 : line 2
+{% endcode-comment %}
+```
+
+And the result should be:
+
+![](static/code-comment.png)
+
+So you can see a popup will shown when your mourse hover specified lineno or keyword.
+
+
+### include file
+
+Sometimes you need to show some codes, one way you can type them in document directly, using
+<code>```</code>, .etc. But in Parm, you can also include code from a source file,
+so this feature will be very handy, and even the code is changed, you don't need
+to care about the code sync, just recreate the doc again. 
+And you can use `include` to do this thing.
+
+The basic syntax of `include` tag should be:
+
+```
+{% include file=filename, lines=lines_range, language=lanaguage, class=class %}
+lines_content
+{% endinclude %}
+```
+
+file (must)
+:   source filename, it's path will be relative with current markdown doc file
+
+lines (optional)
+:   defines the range of lines in source file, it can be several ranges like this:
+
+    ```
+    1-20 30-
+    ```
+    
+    Above means the line 1<= lineno <= 20 and 30 <= lineno will be included.
+    
+    So if you ommit `lines` at all, the whole file will be included.
+    
+    ```
+    2 5
+    ```
+    
+    It is also right syntax. Just they are the simple line patterns.
+    
+language (optional)
+:   Specify the language. 
+
+class (optional)
+:   Extra `class` attribute will be add to `<pre>` tag. If you want Parm show
+    lineno, you should use `class=linenums` . This class used in google highlight
+    js lib.
+
+lines_content (optional)
+:   If you don't want to use lineno specifing the range of code lines, you can also
+    use regular expression, so just defined it in lines_content.
+    
+    The format is:
+    
+    ```
+    begin_regular_expression...begin_regular_expression
+    ```
+    
+    The `...` is used to separate `begin` regular expression and `end` regular expression.
+    Only one of them could be ommitted. And the line that matching `begin` or 
+    `end` pattern will be included in the output, so if you want to skip them, 
+    you can add `!` at the end of the pattern.
+    
+    For example, the file content is:
+    
+    ```
+    $(function(){
+        $('.div').on('click', function(e){
+            e.preventDefault();
+            $.ajax({
+                url:'/test',
+                dataType:'json',
+                success:function(result){
+                    show_message(result);
+                }
+            });
+        });
+    });
+    ```
+    
+    ```
+    {% include file=test.js %}
+    \$\('\.div'\)...\$\.ajax
+    {% endinclude %}
+    ```
+    
+    will show the lines like:
+    
+    ```
+        $('.div').on('click', function(e){
+            e.preventDefault();
+            $.ajax({
+    ```
+    
+    But,
+    
+    ```
+    {% include file=test.js %}
+    \$\('\.div'\)!...\$\.ajax!
+    {% endinclude %}
+    ```
+    
+    will only show the lines like:
+    
+    ```
+            e.preventDefault();
+    ```
+    
 ## License
 
 This software is released under BSD license.
