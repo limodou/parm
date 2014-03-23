@@ -81,6 +81,6 @@ $(function(){
     $('.icon.help').popup();    
     
     //goto top
-    $('#markdown-content').UItoTop({ easingType: 'easeOutQuart', text:'<i class="up icon"></i>' });
+    $('#markdown-content').UItoTop({scrollSpeed: 500, text:'<i class="up icon"></i>' });
     
 });
