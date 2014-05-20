@@ -1,3 +1,5 @@
+from __future__ import print_function
+from __future__ import unicode_literals
 import sys
 sys.path.insert(0, '..')
 from par.md import parseHtml
@@ -10,7 +12,7 @@ def test_include_1():
     ... {% endinclude %}
     ... '''
     >>> blocks = {'include':include}
-    >>> print parseHtml(text, '%(body)s', block_callback=blocks)
+    >>> print (parseHtml(text, '%(body)s', block_callback=blocks))
     <BLANKLINE>
     <pre class="linenums"><code class="language-python">$(function(){
         $('.div').on('click', function(e){
@@ -30,7 +32,7 @@ def test_include_2():
     ... {% endinclude %}
     ... '''
     >>> blocks = {'include':include}
-    >>> print parseHtml(text, '%(body)s', block_callback=blocks)
+    >>> print (parseHtml(text, '%(body)s', block_callback=blocks))
     <BLANKLINE>
     <pre><code>$(function(){
         $('.div').on('click', function(e){
@@ -55,7 +57,7 @@ def test_include_3():
     ... {% endinclude %}
     ... '''
     >>> blocks = {'include':include}
-    >>> print parseHtml(text, '%(body)s', block_callback=blocks)
+    >>> print (parseHtml(text, '%(body)s', block_callback=blocks))
     <BLANKLINE>
     <pre><code>    $('.div').on('click', function(e){
             e.preventDefault();
@@ -79,7 +81,7 @@ def test_include_4():
     ... {% endinclude %}
     ... '''
     >>> blocks = {'include':include}
-    >>> print parseHtml(text, '%(body)s', block_callback=blocks)
+    >>> print (parseHtml(text, '%(body)s', block_callback=blocks))
     <BLANKLINE>
     <pre><code>$(function(){
         $('.div').on('click', function(e){
@@ -96,7 +98,7 @@ def test_include_5():
     ... {% endinclude %}
     ... '''
     >>> blocks = {'include':include}
-    >>> print parseHtml(text, '%(body)s', block_callback=blocks)
+    >>> print (parseHtml(text, '%(body)s', block_callback=blocks))
     <BLANKLINE>
     <pre><code>$(function(){
         $('.div').on('click', function(e){
@@ -116,7 +118,7 @@ def test_include_6():
     ... {% endinclude %}
     ... '''
     >>> blocks = {'include':include}
-    >>> print parseHtml(text, '%(body)s', block_callback=blocks)
+    >>> print (parseHtml(text, '%(body)s', block_callback=blocks))
     <BLANKLINE>
     <pre><code>    $('.div').on('click', function(e){
             e.preventDefault();
@@ -133,7 +135,7 @@ def test_include_7():
     ... {% endinclude %}
     ... '''
     >>> blocks = {'include':include}
-    >>> print parseHtml(text, '%(body)s', block_callback=blocks)
+    >>> print (parseHtml(text, '%(body)s', block_callback=blocks))
     <BLANKLINE>
     <pre><code>...
             e.preventDefault();
@@ -149,7 +151,7 @@ def test_include_8():
     ... {% endinclude %}
     ... '''
     >>> blocks = {'include':include}
-    >>> print parseHtml(text, '%(body)s', block_callback=blocks)
+    >>> print (parseHtml(text, '%(body)s', block_callback=blocks))
     <BLANKLINE>
     <pre><code>...
     &lt;script&gt;

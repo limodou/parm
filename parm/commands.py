@@ -1,3 +1,11 @@
+from __future__ import print_function
+from __future__ import absolute_import
+from __future__ import unicode_literals
+from future.builtins import input
+from future.builtins import str
+from future import standard_library
+standard_library.install_hooks()
+from future.builtins import object
 ##################################################################
 # This module is desired by Django
 ##################################################################
@@ -5,6 +13,7 @@ import sys, os
 from optparse import make_option, OptionParser, IndentedHelpFormatter
 import logging
 import inspect
+from future.utils import with_metaclass
 
 log = logging
 
@@ -41,13 +50,13 @@ def get_answer(message, answers='Yn', default='Y', quit=''):
         answers = answers + quit
         
     message = message + '(' + '/'.join(answers) + ')[' + default + ']:'
-    ans = raw_input(message).strip().upper()
+    ans = input(message).strip().upper()
     if default and not ans:
         ans = default.upper()
     while ans not in answers.upper():
-        ans = raw_input(message).strip().upper()
+        ans = input(message).strip().upper()
     if quit and ans == quit.upper():
-        print "Command be cancelled!"
+        print("Command be cancelled!")
         sys.exit(1)
     return ans
 
@@ -61,7 +70,7 @@ def get_input(prompt, default=None, choices=None, option_value=None):
     
     choices = choices or []
     while 1:
-        r = raw_input(prompt+' ').strip()
+        r = input(prompt+' ').strip()
         if not r and default is not None:
             return default
         if choices:
@@ -108,11 +117,11 @@ def register_command(kclass):
     __commands__[kclass.name] = kclass
 
 def call(prog_name, version, modules=None, args=None):
-    from commands import execute_command_line
+    from .commands import execute_command_line
     
     modules = modules or []
     
-    if isinstance(args, (unicode, str)):
+    if isinstance(args, str):
         import shlex
         args = shlex.split(args)
     
@@ -126,9 +135,7 @@ class CommandMetaclass(type):
                 option_list.extend(c.option_list)
         cls.option_list = option_list
         
-class Command(object):
-    __metaclass__ = CommandMetaclass
-    
+class Command(with_metaclass(CommandMetaclass)):
     option_list = ()
     help = ''
     args = ''
@@ -185,7 +192,7 @@ class Command(object):
     def execute(self, args, options, global_options):
         try:
             self.handle(options, global_options, *args)
-        except CommandError, e:
+        except CommandError as e:
             log.exception(e)
             sys.exit(1)
 
@@ -252,7 +259,7 @@ class CommandManager(Command):
         """
         usage = ['',"Type '%s help <subcommand>' for help on a specific subcommand." % self.prog_name,'']
         usage.append('Available subcommands:')
-        commands = self.get_commands().keys()
+        commands = list(self.get_commands().keys())
         commands.sort()
         for cmd in commands:
             usage.append('  %s' % cmd)
@@ -303,7 +310,7 @@ class CommandManager(Command):
             
         if len(args) == 0:
             if global_options.version:
-                print self.get_version()
+                print(self.get_version())
                 sys.exit(1)
             else:
                 print_help(global_options)

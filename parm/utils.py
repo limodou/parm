@@ -1,7 +1,12 @@
+from __future__ import print_function
+from future.builtins import str
+from future import standard_library
+standard_library.install_hooks()
+from future.builtins import object
 import os, sys
 import re
 import logging
-import cPickle
+import pickle
 import inspect
 
 log = logging
@@ -24,7 +29,7 @@ def import_mod_attr(path):
     Import string format module, e.g. 'uliweb.orm' or an object
     return module object and object
     """
-    if isinstance(path, (str, unicode)):
+    if isinstance(path, str):
         module, func = path.rsplit('.', 1)
         mod = __import__(module, fromlist=['*'])
         f = getattr(mod, func)
@@ -94,7 +99,7 @@ def extract_file(module, path, dist, verbose=False, replace=True):
     if replace or not f:
         shutil.copy2(inf, dfile)
         if verbose:
-            print 'Copy %s to %s' % (inf, dfile)
+            print('Copy %s to %s' % (inf, dfile))
   
 def extract_dirs(mod, path, dst, verbose=False, exclude=None, exclude_ext=None, recursion=True, replace=True):
     """
@@ -111,7 +116,7 @@ def extract_dirs(mod, path, dst, verbose=False, exclude=None, exclude_ext=None, 
     if not os.path.exists(dst):
         os.makedirs(dst)
         if verbose:
-            print 'Make directory %s' % dst
+            print('Make directory %s' % dst)
     for r in pkg.resource_listdir(mod, path):
         if r in exclude or r in default_exclude:
             continue
@@ -190,7 +195,7 @@ def copy_dir(src, dst, verbose=False, check=False, processor=None):
         os.makedirs(dst)
 
     if verbose:
-        print "Processing %s" % src
+        print("Processing %s" % src)
         
     for r in os.listdir(src):
         if r in ['.svn', '_svn', '.git']:
@@ -212,7 +217,7 @@ def copy_dir(src, dst, verbose=False, check=False, processor=None):
                     a = _md5(fpath)
                     b = _md5(df)
                     if a != b:
-                        print ("Error: Target file %s is already existed, and "
+                        print("Error: Target file %s is already existed, and "
                             "it not same as source one %s, so copy failed" % (fpath, dst))
                 else:
                     if processor:
@@ -220,7 +225,7 @@ def copy_dir(src, dst, verbose=False, check=False, processor=None):
                             continue
                     shutil.copy2(fpath, dst)
                     if verbose:
-                        print "Copy %s to %s" % (fpath, dst)
+                        print("Copy %s to %s" % (fpath, dst))
                     
             else:
                 if processor:
@@ -228,7 +233,7 @@ def copy_dir(src, dst, verbose=False, check=False, processor=None):
                         continue
                 shutil.copy2(fpath, dst)
                 if verbose:
-                    print "Copy %s to %s" % (fpath, dst)
+                    print("Copy %s to %s" % (fpath, dst))
 
 def copy_dir_with_check(dirs, dst, verbose=False, check=True, processor=None):
 #    log = logging.getLogger('uliweb')
@@ -238,12 +243,6 @@ def copy_dir_with_check(dirs, dst, verbose=False, check=True, processor=None):
             continue
 
         copy_dir(d, dst, verbose, check, processor)
-
-def check_apps_dir(apps_dir):
-    log = logging
-    if not os.path.exists(apps_dir):
-        print >>sys.stderr, "[Error] Can't find the apps_dir [%s], please check it out" % apps_dir
-        sys.exit(1)
 
 def is_pyfile_exist(dir, pymodule):
     path = os.path.join(dir, '%s.py' % pymodule)
@@ -261,14 +260,14 @@ def wraps(src):
             from uliweb import application
             if application:
                 env = application.get_view_env()
-                for k, v in env.iteritems():
-                    src.func_globals[k] = v
+                for k, v in env.items():
+                    src.__globals__[k] = v
                 
-                src.func_globals['env'] = env
+                src.__globals__['env'] = env
             return des(*args, **kwargs)
         
         f.__name__ = src.__name__
-        f.func_globals.update(src.func_globals)
+        f.__globals__.update(src.__globals__)
         f.__doc__ = src.__doc__
         f.__module__ = src.__module__
         f.__dict__.update(src.__dict__)
@@ -284,29 +283,9 @@ def timeit(func):
         begin = time.time()
         ret = func(*args, **kwargs)
         end = time.time()
-        print ("%s.%s [%s]s" % (func.__module__, func.__name__, end-begin))
+        print(("%s.%s [%s]s" % (func.__module__, func.__name__, end-begin)))
         return ret
     return f
-
-def safe_unicode(s, encoding='utf-8'):
-    from uliweb.i18n.lazystr import LazyString
-    
-    if isinstance(s, unicode):
-        return s
-    elif isinstance(s, LazyString):
-        return unicode(s)
-    else:
-        return unicode(str(s), encoding)
-
-def safe_str(s, encoding='utf-8'):
-    from uliweb.i18n.lazystr import LazyString
-
-    if isinstance(s, unicode):
-        return s.encode(encoding)
-    elif isinstance(s, LazyString):
-        return unicode(s).encode(encoding)
-    else:
-        return str(s)
 
 def get_var(key):
     def f():
@@ -334,7 +313,7 @@ def simple_value(v, encoding='utf-8', none=False):
         return v.strftime('%H:%M:%S')
     elif isinstance(v, decimal.Decimal):
         return str(v)
-    elif isinstance(v, unicode):
+    elif isinstance(v, str):
         return v.encode(encoding)
     elif isinstance(v, (tuple, list)):
         s = []
@@ -343,7 +322,7 @@ def simple_value(v, encoding='utf-8', none=False):
         return s
     elif isinstance(v, dict):
         d = {}
-        for k, v in v.iteritems():
+        for k, v in v.items():
             d[simple_value(k)] = simple_value(v, encoding, none)
         return d
     elif v is None:
@@ -368,7 +347,7 @@ def str_value(v, encoding='utf-8', bool_int=True, none='NULL'):
         return v.strftime('%H:%M:%S')
     elif isinstance(v, decimal.Decimal):
         return str(v)
-    elif isinstance(v, unicode):
+    elif isinstance(v, str):
         return v.encode(encoding)
     elif v is None:
         return none
@@ -431,21 +410,21 @@ def date_in(d, dates):
 class Serial(object):
     @classmethod
     def load(self, s):
-        return cPickle.loads(s)
+        return pickle.loads(s)
     
     @classmethod
     def dump(self, v):
-        return cPickle.dumps(v, cPickle.HIGHEST_PROTOCOL)
+        return pickle.dumps(v, pickle.HIGHEST_PROTOCOL)
 
-import urlparse
+import future.moves.urllib.parse as urllib_parse
 class QueryString(object):
     def __init__(self, url):
         self.url = url
         self.scheme, self.netloc, self.script_root, qs, self.anchor = self.parse()
-        self.qs = urlparse.parse_qs(qs, True)
+        self.qs = urllib_parse.parse_qs(qs, True)
         
     def parse(self):
-        return urlparse.urlsplit(self.url)
+        return urllib_parse.urlsplit(self.url)
     
     def __getitem__(self, name):
         return self.qs.get(name, [])
@@ -462,10 +441,10 @@ class QueryString(object):
         return self
 
     def __str__(self):
-        import urllib
+        import urllib.request, urllib.parse, urllib.error
         
-        qs = urllib.urlencode(self.qs, True)
-        return urlparse.urlunsplit((self.scheme, self.netloc, self.script_root, qs, self.anchor))
+        qs = urllib.parse.urlencode(self.qs, True)
+        return urllib_parse.urlunsplit((self.scheme, self.netloc, self.script_root, qs, self.anchor))
     
 def query_string(url, replace=True, **kwargs):
     q = QueryString(url)
@@ -480,13 +459,6 @@ def camel_to_(s):
     s1 = re.sub('(.)([A-Z][a-z]+)', r'\1_\2', s)
     return re.sub('([a-z0-9])([A-Z])', r'\1_\2', s1).lower()
     
-def application_path(path):
-    """
-    Join application project_dir and path
-    """
-    from uliweb import application
-    return os.path.join(application.project_dir, path)
-
 def get_uuid(type=4):
     """
     Get uuid value

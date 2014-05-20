@@ -1,9 +1,12 @@
-#! /usr/bin/env python
-#coding=utf-8
+from future.builtins import str
+from future import standard_library
+standard_library.install_hooks()
+from future.builtins import object
+from future.utils import exec_
 
 import re
 import os
-import StringIO
+import io
 import cgi
 
 __templates_temp_dir__ = 'tmp/templates_temp'
@@ -141,7 +144,7 @@ def eval_vars(vs, vars, env):
     if isinstance(vs, (tuple, list)):
         return [eval_vars(x, vars, env) for x in vs]
     elif isinstance(vs, dict):
-        return dict([(x, eval_vars(y, vars, env)) for x, y in vs.iteritems()])
+        return dict([(x, eval_vars(y, vars, env)) for x, y in vs.items()])
     else:
         return eval(vs, env, vars)
 
@@ -365,15 +368,12 @@ class Out(object):
     encoding = 'utf-8'
     
     def __init__(self):
-        self.buf = StringIO.StringIO()
+        self.buf = io.StringIO()
         
     def _str(self, text):
-        if not isinstance(text, (str, unicode)):
-            text = str(text)
-        if isinstance(text, unicode):
-            return text.encode(self.encoding)
-        else:
-            return text
+        if not isinstance(text, str):
+            text = str(text, 'utf8')
+        return text
 
     def write(self, text, escape=True):
         s = self._str(text)
@@ -418,7 +418,7 @@ class Template(object):
         self.begin_tag = begin_tag or BEGIN_TAG
         self.end_tag = end_tag or END_TAG
         
-        for k, v in __nodes__.iteritems():
+        for k, v in __nodes__.items():
             if hasattr(v, 'init'):
                 v.init(self)
         
@@ -435,7 +435,7 @@ class Template(object):
     def set_filename(self, filename):
         fname = get_templatefile(filename, self.dirs, self.default_template)
         if not fname:
-            raise TemplateException, "Can't find the template %s" % filename
+            raise TemplateException("Can't find the template %s" % filename)
         self.filename = fname
         self.original_filename = filename
     
@@ -459,7 +459,7 @@ class Template(object):
         for i in get_tag(self.begin_tag, self.end_tag).split(text):
             if i:
                 if len(self.stack) == 0:
-                    raise TemplateException, "The 'end' tag is unmatched, please check if you have more '{{end}}'"
+                    raise TemplateException("The 'end' tag is unmatched, please check if you have more '{{end}}'")
                 top = self.stack[-1]
                 #process multiline comment
                 if i.startswith(self.begin_tag+'##'):
@@ -539,11 +539,12 @@ class Template(object):
                     
         if extend:
             self._parse_extend(extend)
-        if self.encoding:
-            pre = '#coding=%s\n' % self.encoding
-        else:
-            pre = ''
-        return reindent(pre + str(self.content))
+        # if self.encoding:
+        #     pre = '#coding=%s\n' % self.encoding
+        # else:
+        #     pre = ''
+#        return reindent(pre + str(self.content))
+        return reindent(str(self.content))
     
     def _parse_template(self, content, var):
         if var in self.vars:
@@ -585,11 +586,11 @@ class Template(object):
             self.env.update(kwargs)
             fname = get_templatefile(filename, self.dirs, skip=self.filename, skip_original=self.original_filename)
             if not fname:
-                raise TemplateException, "Can't find the template %s" % filename
+                raise TemplateException("Can't find the template %s" % filename)
             
             self.depend_files.append(fname)
             
-            f = open(fname, 'rb')
+            f = open(fname, 'r')
             text, begin_tag, end_tag = self.get_text(f.read(), inherit_tags=False)
             f.close()
             t = Template(text, self.vars, self.env, self.dirs, begin_tag=begin_tag, end_tag=end_tag)
@@ -612,11 +613,11 @@ class Template(object):
             self.env.update(kwargs)
             fname = get_templatefile(filename, self.dirs, skip=self.filename, skip_original=self.original_filename)
             if not fname:
-                raise TemplateException, "Can't find the template %s" % filename
+                raise TemplateException("Can't find the template %s" % filename)
             
             self.depend_files.append(fname)
             
-            f = open(fname, 'rb')
+            f = open(fname, 'r')
             text, begin_tag, end_tag = self.get_text(f.read(), inherit_tags=False)
             f.close()
             t = Template(text, self.vars, self.env, self.dirs, begin_tag=begin_tag, end_tag=end_tag)
@@ -633,7 +634,7 @@ class Template(object):
         if self.use_temp:
             f = get_temp_template(self.filename)
             if os.path.exists(f):
-                fin = file(f, 'r')
+                fin = open(f, 'r')
                 modified = False
                 files = [self.filename]
                 line = fin.readline()
@@ -653,7 +654,7 @@ class Template(object):
                     return True, f, text
         
         if self.filename and not self.text:
-            self.text, self.begin_tag, self.end_tag = self.get_text(file(self.filename, 'rb').read())
+            self.text, self.begin_tag, self.end_tag = self.get_text(open(self.filename, 'r').read())
         return False, self.filename, self.parse()
         
     def get_text(self, text, inherit_tags=True):
@@ -681,7 +682,7 @@ class Template(object):
         if not use_temp_flag and self.use_temp:
             f = get_temp_template(filename)
             try:
-                fo = file(f, 'wb')
+                fo = open(f, 'w')
                 fo.write('#uliweb-template-files:%s\n' % ' '.join(self.depend_files))
                 fo.write(code)
                 fo.close()
@@ -718,12 +719,12 @@ class Template(object):
         
         e.update(self.exec_env)
         
-        if isinstance(code, (str, unicode)):
+        if isinstance(code, str):
             if self.compile:
                 code = self.compile(code, filename, 'exec', e)
             else:
                 code = compile(code, filename, 'exec')
-        exec code in e
+        exec_(code, e)
         text = out.getvalue()
         
         for f in self.callbacks:

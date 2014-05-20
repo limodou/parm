@@ -6,14 +6,18 @@
 #
 # license: BSD
 #
+from __future__ import print_function
+from __future__ import absolute_import
+from __future__ import unicode_literals
+from future.builtins import str, open
 import os, sys
 import re
 sys.path.insert(0, '.')
 from par.md import parseHtml
-from commands import call, register_command, Command, get_answer, get_input
+from .commands import call, register_command, Command, get_answer, get_input
 from optparse import make_option
-import template
-from utils import log
+from . import template
+from .utils import log
 import shutil
 from copy import deepcopy
 
@@ -21,7 +25,7 @@ __author__ = 'limodou'
 __author_email__ = 'limodou@gmail.com'
 __url__ = 'https://github.com/limodou/parm'
 __license__ = 'BSD'
-__version__ = '1.3'
+__version__ = '1.4'
 
 #import parm project config module
 try:
@@ -42,7 +46,7 @@ class InitCommand(Command):
     help = "Init a parm project environment. It'll create a config.py file."
     
     def handle(self, options, global_options, *args):
-        from utils import extract_dirs, pkg, extract_file
+        from .utils import extract_dirs, pkg, extract_file
         from shutil import copy
         
         if os.path.exists('conf.py'):
@@ -53,7 +57,7 @@ class InitCommand(Command):
         d = {}
         
         d['project'] = getattr('conf', 'project', 'Parm')
-        d['copyright'] = getattr('conf', 'copyright', '2013, Limodou')
+        d['copyright'] = getattr('conf', 'copyright', '2014, Limodou')
         d['version'] = getattr('conf', 'version', __version__)
         d['theme'] = getattr(conf, 'theme', 'semantic')
         d['template_dirs'] = getattr(conf, 'template_dirs', 'templates')
@@ -85,29 +89,29 @@ class InitCommand(Command):
             
             conf_file = pkg.resource_filename('parm', 'templates/env/conf.py.txt')
             text = template.template_file(conf_file, d).replace('\r\n', '\n')
-            f = open('conf.py', 'wb')
+            f = open('conf.py', 'w')
             f.write(text)
             f.close()
         
         run = False
         if os.path.exists(d['template_dirs']):
-            print "Template directory [%s] is already existed! If you've changed them, please deal with manually, otherwise the content will be overwritten." % d['template_dirs']
+            print("Template directory [%s] is already existed! If you've changed them, please deal with manually, otherwise the content will be overwritten." % d['template_dirs'])
             if get_answer("Overwrite template files") == 'Y':
                 run = True
         else:
             run = True
         
         if run:
-            print 'Copy %s to ./%s' % ('theme/%s/templates' % d['theme'], d['template_dirs'])
+            print('Copy %s to ./%s' % ('theme/%s/templates' % d['theme'], d['template_dirs']))
             extract_dirs('parm', 'templates/theme/%s/templates' % d['theme'], 
                 d['template_dirs'])
                 
         if get_answer("Copy init files [index.md*]") == 'Y':
             for f in ['index.md', 'introduction.md', 'exclude.txt']:
                 if os.path.exists(f):
-                    print '%s is already existed, so just skip it' % f
+                    print('%s is already existed, so just skip it' % f)
                 else:
-                    print 'Copy templates/env/%s to ./%s' % (f, f)
+                    print('Copy templates/env/%s to ./%s' % (f, f))
                     extract_file('parm', 'templates/env/%s' % f, '.')
         
 register_command(InitCommand)
@@ -126,8 +130,8 @@ class MakeCommand(Command):
     r_id = re.compile(r'id="([^"]*)"')
     
     def handle(self, options, global_options, *args):
-        from utils import extract_dirs, copy_dir, walk_dirs, import_attr
-        from md_ext import new_code_comment, toc, include
+        from .utils import extract_dirs, copy_dir, walk_dirs, import_attr
+        from .md_ext import new_code_comment, toc, include
         from functools import partial
         from shutil import copy2
 
@@ -137,15 +141,15 @@ class MakeCommand(Command):
             
         #make output directory
         if not os.path.exists(options.directory):
-            print 'Make directories [%s]' % options.directory
+            print('Make directories [%s]' % options.directory)
             os.makedirs(options.directory)
             
         #get theme config
         theme = getattr(conf, 'theme', 'semantic')
-        print 'Using theme [%s]' % theme
+        print('Using theme [%s]' % theme)
         
         #copy static files
-        print 'Copy %s to %s' % ('theme/%s/static' % theme, os.path.join(options.directory, 'static'))
+        print('Copy %s to %s' % ('theme/%s/static' % theme, os.path.join(options.directory, 'static')))
         extract_dirs('parm', 'templates/theme/%s/static' % theme, 
             os.path.join(options.directory, 'static'))
             
@@ -207,10 +211,10 @@ class MakeCommand(Command):
                     h = headers.setdefault(path, [])
                     title = self.parse_headers(path, data['body'], h)
                     if title:
-                        data['title'] = unicode(title, 'utf8') + ' - ' + conf.project 
+                        data['title'] = title + ' - ' + conf.project
                     else:
                         if fname != conf.master_doc:
-                            print 'Error: Heading 1 not found in file %s' % path
+                            print('Error: Heading 1 not found in file %s' % path)
                             continue
                         else:
                             data['title'] = conf.project
@@ -224,8 +228,8 @@ class MakeCommand(Command):
                     template_file = conf.templates.get(fname, conf.templates.get('*', 'default.html'))
                     hfilename = os.path.join(options.directory, fname + '.html').replace('\\', '/')
                     fix_dir(hfilename)
-                    with open(hfilename, 'wb') as fh:
-                        print 'Convert %s to %s' % (path, hfilename)
+                    with open(hfilename, 'w') as fh:
+                        print('Convert %s to %s' % (path, hfilename))
                         fh.write(template.template_file(template_file, data, dirs=[template_dirs]))
                         copy2(path, os.path.join(options.directory, path))
                     output_files[fname] = hfilename
@@ -234,10 +238,10 @@ class MakeCommand(Command):
                 if os.path.isdir(path):
                     dpath = os.path.join(dst_dir, path)
                     if not os.path.exists(dpath):
-                        print 'Makedir %s' % os.path.join(dst_dir, path)
+                        print('Makedir %s' % os.path.join(dst_dir, path))
                         os.makedirs(dpath)
                 else:
-                    print 'Copy %s to %s' % (path, os.path.join(dst_dir, path))
+                    print('Copy %s to %s' % (path, os.path.join(dst_dir, path)))
                     shutil.copy(path, os.path.join(dst_dir, path))
                 
         prev_next_template_top = """{{if prev:}}<div class="chapter-prev chapter-top">
@@ -254,7 +258,7 @@ class MakeCommand(Command):
 </div>{{pass}}"""
         
         for name, f in output_files.items():
-            text = open(f, 'rb').read()
+            text = open(f).read()
             
             x = relations.get(name, {})
             data = {}
@@ -271,7 +275,7 @@ class MakeCommand(Command):
             prev_next_text_down = template.template(prev_next_template_down, data)
             text = text.replace('<!-- prev_next_top -->', prev_next_text_top)
             text = text.replace('<!-- prev_next_down -->', prev_next_text_down)
-            with open(f, 'wb') as fh:
+            with open(f, 'w') as fh:
                 fh.write(text)
 
     def parse_headers(self, filename, text, headers):
@@ -313,8 +317,8 @@ class Rst2MdCommand(Command):
     def handle(self, options, global_options, *args):
         from docutils.core import publish_file
         import glob
-        import markdown_writer
-        from utils import walk_dirs
+        from . import markdown_writer
+        from .utils import walk_dirs
         
         source = os.getcwd()
         
@@ -328,7 +332,7 @@ class Rst2MdCommand(Command):
         for f in files:
             nf = os.path.join(options.directory, os.path.splitext(os.path.basename(f))[0] + '.md')
             if global_options.verbose:
-                print 'Convert %s...' % f
+                print('Convert %s...' % f)
             publish_file(source_path=f, 
                 destination_path=nf,
                 writer=markdown_writer.Writer())

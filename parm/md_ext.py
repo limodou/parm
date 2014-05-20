@@ -1,4 +1,7 @@
-from utils import log
+from __future__ import absolute_import
+from __future__ import unicode_literals
+from future.builtins import range, open
+from .utils import log
 import re
 import os
 
@@ -35,8 +38,8 @@ def code_comment(visitor, items):
                     title = k
                 v = visitor.parse_text(v.strip(), 'article')
                 d[k] = {'title':title, 'content':v}
-        if len(x['kwargs']) == 1 and x['kwargs'].keys()[0] != 'target':
-            key = x['kwargs'].keys()[0]
+        if len(x['kwargs']) == 1 and list(x['kwargs'].keys())[0] != 'target':
+            key = list(x['kwargs'].keys())[0]
         else:
             key = x['kwargs'].get('target', '')
         if key in data:
@@ -76,8 +79,8 @@ def new_code_comment(visitor, block):
                     title = k
                 v = visitor.parse_text(v.strip(), 'article')
                 d[k] = {'title':title, 'content':v}
-        if len(block['kwargs']) == 1 and block['kwargs'].keys()[0] != 'target':
-            key = block['kwargs'].keys()[0]
+        if len(block['kwargs']) == 1 and list(block['kwargs'].keys())[0] != 'target':
+            key = list(block['kwargs'].keys())[0]
         else:
             key = block['kwargs'].get('target', '')
         if key in data:
