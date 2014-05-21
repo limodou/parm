@@ -1,0 +1,22 @@
+{{extend "layout.html"}}
+
+{{block content}}
+<div class="ui page grid" id="introduction">
+    <div class="column">
+        {{<<introduction}}
+    </div>
+</div>
+
+<div class="ui page grid" id="markdown-content">
+  <div class="column">
+    {{<< body}}
+    {{<< defined('page_footer') or ''}}
+  </div>
+</div>
+
+<div class="ui page grid" id="footer">
+    <div class="column">
+    {{<< defined('footer') or ''}}
+    </div>
+</div>
+{{end}}

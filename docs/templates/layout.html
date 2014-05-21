@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html>
+<head>
+
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="">
+<meta name="author" content="">
+
+<link rel="stylesheet" href="{{=relpath}}/static/semantic/css/semantic.min.css"/>
+<link href="{{=relpath}}/static/asset/prettify.css" rel="stylesheet">
+<link href="{{=relpath}}/static/toc/toc.css" rel="stylesheet">
+<link rel="stylesheet" href="{{=relpath}}/static/parm.css"/>
+<link rel="stylesheet" href="{{=relpath}}/static/asset/{{=pre_css}}.css"/>
+<link rel="stylesheet" href="{{=relpath}}/static/ui.totop.css"/>
+{{for c in custom_css:}}
+<link rel="stylesheet" href="{{=c}}"/>
+{{pass}}
+<title>{{=title}}</title>
+</head>
+<body>
+
+{{
+def menu(current='home'):
+    for id, caption, link in menus:
+        if not (link.startswith('http://') or link.startswith('https://')):
+            link = '%s/%s' % (relpath, link)
+        pass
+        if id == current:
+            out.write('<a class="active item" href="%s">%s</a>' % (link, caption), escape=False)
+        else:
+            out.write('<a class="item" href="%s">%s</a>' % (link, caption), escape=False)
+        pass
+    pass
+pass
+}}
+
+<!-- Navbar
+================================================== -->
+<div class="navbar">
+  <div class="ui small secondary inverted borderless menu">
+    {{block menu}}
+    {{menu('home')}}
+    {{end}}
+    {{if search:}}
+        <div class="right menu">
+            {{<< search_html}}
+        </div>
+    {{pass}}
+    
+  </div>
+</div>
+
+{{block content}}
+<div class="ui divided grid">
+    <div class="four wide column" id="side-bar">
+        <div id="toc" class="content"></div>
+    </div> 
+    
+    <div class="twelve wide column" id="markdown-content">
+    
+        <!-- prev_next_top -->
+        
+        {{<< body}}
+        
+        <div class="ui blue inverted small label">
+            <i class="icon download"></i>{{<< source}}
+        </div>
+        <div class="ui blue inverted small label">
+            <i class="icon help link" data-html="<b>&larr;</b> Prev Chapter <b>&rarr;</b> Next Chapter<br/><b>h</b> Index Page"></i>
+        </div>
+        
+        
+    </div>
+</div>
+
+<div class="ui page grid">
+    <div class="column">
+    <!-- disqus -->
+    {{if conf.disqus:}}
+        {{<< conf.disqus_text}}
+    {{pass}}
+    </div>
+</div>
+
+<div class="ui page grid" id="footer">
+    <div class="column">
+    {{<< defined('footer') or ''}}
+    </div>
+</div>
+{{end}}
+
+<script>
+var relpath = '{{=relpath}}';
+</script>
+
+<script src="{{=relpath}}/static/jquery-1.7.2.min.js"></script>
+<script src="{{=relpath}}/static/semantic/javascript/semantic.min.js"></script>
+<script src="{{=relpath}}/static/asset/prettify.js"></script>
+<script src="{{=relpath}}/static/toc/toc.js"></script>
+<script src="{{=relpath}}/static/jquery.ui.totop.js"></script>
+<script src="{{=relpath}}/static/jquery.hotkeys.js"></script>
+<script src="{{=relpath}}/static/jquery.sticky-kit.min.js"></script>
+<script src="{{=relpath}}/static/docs.js"></script>
+<script src="{{=relpath}}/static/comment.js"></script>
+
+{{if conf.disqus:}}
+    {{<< conf.disqus_js}}
+{{pass}}
+
+{{if conf.search:}}
+    {{<< search_js}}
+{{pass}}
+
+</body>
+</html>
