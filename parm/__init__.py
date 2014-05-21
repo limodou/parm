@@ -25,7 +25,7 @@ __author__ = 'limodou'
 __author_email__ = 'limodou@gmail.com'
 __url__ = 'https://github.com/limodou/parm'
 __license__ = 'BSD'
-__version__ = '1.4'
+__version__ = '1.4.1'
 
 #import parm project config module
 try:
