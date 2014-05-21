@@ -98,10 +98,8 @@ def get_source_files(self):
     return filenames
 setattr(b.build_py, 'get_source_files', get_source_files)
 
-import parm
-
 setup(name='parm',
-    version=parm.__version__,
+    version='1.4',
     description="Markdown to html convertor tool",
     long_description=__doc__,
     classifiers=[
@@ -118,10 +116,10 @@ setup(name='parm',
     packages = ['parm'],
     platforms = 'any',
     keywords='markdown convertor',
-    author=parm.__author__,
-    author_email=parm.__author_email__,
-    url=parm.__url__,
-    license=parm.__license__,
+    author='limodou',
+    author_email='limodou@gmail.com',
+    url='https://github.com/limodou/parm',
+    license='BSD',
     include_package_data=True,
     zip_safe=False,
     entry_points = {
