@@ -1,8 +1,5 @@
 from __future__ import print_function
-from future.builtins import str
-from future import standard_library
-standard_library.install_hooks()
-from future.builtins import object
+from ._compat import string_types
 import os, sys
 import re
 import logging
@@ -29,7 +26,7 @@ def import_mod_attr(path):
     Import string format module, e.g. 'uliweb.orm' or an object
     return module object and object
     """
-    if isinstance(path, str):
+    if isinstance(path, string_types):
         module, func = path.rsplit('.', 1)
         mod = __import__(module, fromlist=['*'])
         f = getattr(mod, func)
@@ -45,12 +42,6 @@ def import_attr(func):
 def myimport(module):
     mod = __import__(module, fromlist=['*'])
     return mod
-
-def install(packages):
-    from pkg_resources import load_entry_point
-    
-    load = load_entry_point('setuptools', 'console_scripts', 'easy_install')
-    load(packages)
 
 class MyPkg(object):
     @staticmethod
@@ -188,7 +179,7 @@ def copy_dir(src, dst, verbose=False, check=False, processor=None):
             import md5
             a = md5.new()
             
-        a.update(file(filename, 'rb').read())
+        a.update(open(filename, 'rb').read())
         return a.digest()
     
     if not os.path.exists(dst):
@@ -244,264 +235,3 @@ def copy_dir_with_check(dirs, dst, verbose=False, check=True, processor=None):
 
         copy_dir(d, dst, verbose, check, processor)
 
-def is_pyfile_exist(dir, pymodule):
-    path = os.path.join(dir, '%s.py' % pymodule)
-    if not os.path.exists(path):
-        path = os.path.join(dir, '%s.pyc' % pymodule)
-        if not os.path.exists(path):
-            path = os.path.join(dir, '%s.pyo' % pymodule)
-            if not os.path.exists(path):
-                return False
-    return True
-    
-def wraps(src):
-    def _f(des):
-        def f(*args, **kwargs):
-            from uliweb import application
-            if application:
-                env = application.get_view_env()
-                for k, v in env.items():
-                    src.__globals__[k] = v
-                
-                src.__globals__['env'] = env
-            return des(*args, **kwargs)
-        
-        f.__name__ = src.__name__
-        f.__globals__.update(src.__globals__)
-        f.__doc__ = src.__doc__
-        f.__module__ = src.__module__
-        f.__dict__.update(src.__dict__)
-        return f
-    
-    return _f
-
-def timeit(func):
-    log = logging.getLogger('uliweb.app')
-    import time
-    @wraps(func)
-    def f(*args, **kwargs):
-        begin = time.time()
-        ret = func(*args, **kwargs)
-        end = time.time()
-        print(("%s.%s [%s]s" % (func.__module__, func.__name__, end-begin)))
-        return ret
-    return f
-
-def get_var(key):
-    def f():
-        from uliweb import settings
-        
-        return settings.get_var(key)
-    return f
-
-def get_choice(choices, value, default=None):
-    if callable(choices):
-        choices = choices()
-    return dict(choices).get(value, default)
-
-def simple_value(v, encoding='utf-8', none=False):
-    import datetime
-    import decimal
-    
-    if callable(v):
-        v = v()
-    if isinstance(v, datetime.datetime):
-        return v.strftime('%Y-%m-%d %H:%M:%S')
-    elif isinstance(v, datetime.date):
-        return v.strftime('%Y-%m-%d')
-    elif isinstance(v, datetime.time):
-        return v.strftime('%H:%M:%S')
-    elif isinstance(v, decimal.Decimal):
-        return str(v)
-    elif isinstance(v, str):
-        return v.encode(encoding)
-    elif isinstance(v, (tuple, list)):
-        s = []
-        for x in v:
-            s.append(simple_value(x, encoding, none))
-        return s
-    elif isinstance(v, dict):
-        d = {}
-        for k, v in v.items():
-            d[simple_value(k)] = simple_value(v, encoding, none)
-        return d
-    elif v is None:
-        if none:
-            return v
-        else:
-            return ''
-    else:
-        return v
-    
-def str_value(v, encoding='utf-8', bool_int=True, none='NULL'):
-    import datetime
-    import decimal
-    
-    if callable(v):
-        v = v()
-    if isinstance(v, datetime.datetime):
-        return v.strftime('%Y-%m-%d %H:%M:%S')
-    elif isinstance(v, datetime.date):
-        return v.strftime('%Y-%m-%d')
-    elif isinstance(v, datetime.time):
-        return v.strftime('%H:%M:%S')
-    elif isinstance(v, decimal.Decimal):
-        return str(v)
-    elif isinstance(v, str):
-        return v.encode(encoding)
-    elif v is None:
-        return none
-    elif isinstance(v, bool):
-        if bool_int:
-            if v:
-                return '1'
-            else:
-                return '0'
-        else:
-            return str(v)
-    else:
-        return str(v)
-
-__caches__ = {}
-def cache_get(key, func, _type='default'):
-    global __caches__
-    v = __caches__.setdefault(_type, {})
-    if key in v and v[key]:
-        return v[key]
-    else:
-        v[key] = func(key)
-        return v[key]
-    
-def norm_path(path):
-    return os.path.normcase(os.path.abspath(path))
-
-r_expand_path = re.compile('\$\{(\w+)\}')
-def expand_path(path):
-    """
-    Auto search some variables defined in path string, such as:
-        ${PROJECT}/files
-        ${app_name}/files
-    for ${PROJECT} will be replaced with uliweb application apps_dir directory
-    and others will be treated as a normal python package, so uliweb will
-    use pkg_resources to get the path of the package
-    """
-    from uliweb import application
-    
-    def replace(m):
-        txt = m.groups()[0]
-        if txt == 'PROJECT':
-            return application.apps_dir
-        else:
-            return pkg.resource_filename(txt, '')
-    return re.sub(r_expand_path, replace, path)
-
-def date_in(d, dates):
-    """
-    compare if d in dates. dates should be a tuple or a list, for example:
-        date_in(d, [d1, d2])
-    and this function will execute:
-        d1 <= d <= d2
-    and if d is None, then return False
-    """
-    if not d:
-        return False
-    return dates[0] <= d <= dates[1]
-
-class Serial(object):
-    @classmethod
-    def load(self, s):
-        return pickle.loads(s)
-    
-    @classmethod
-    def dump(self, v):
-        return pickle.dumps(v, pickle.HIGHEST_PROTOCOL)
-
-import future.moves.urllib.parse as urllib_parse
-class QueryString(object):
-    def __init__(self, url):
-        self.url = url
-        self.scheme, self.netloc, self.script_root, qs, self.anchor = self.parse()
-        self.qs = urllib_parse.parse_qs(qs, True)
-        
-    def parse(self):
-        return urllib_parse.urlsplit(self.url)
-    
-    def __getitem__(self, name):
-        return self.qs.get(name, [])
-    
-    def __setitem__(self, name, value):
-        self.qs[name] = [value]
-    
-    def set(self, name, value, replace=False):
-        v = self.qs.setdefault(name, [])
-        if replace:
-            self.qs[name] = [value]
-        else:
-            v.append(value)
-        return self
-
-    def __str__(self):
-        import urllib.request, urllib.parse, urllib.error
-        
-        qs = urllib.parse.urlencode(self.qs, True)
-        return urllib_parse.urlunsplit((self.scheme, self.netloc, self.script_root, qs, self.anchor))
-    
-def query_string(url, replace=True, **kwargs):
-    q = QueryString(url)
-    for k, v in kwargs.items():
-        q.set(k, v, replace)
-    return str(q)
-
-def camel_to_(s):
-    """
-    Convert CamelCase to camel_case
-    """
-    s1 = re.sub('(.)([A-Z][a-z]+)', r'\1_\2', s)
-    return re.sub('([a-z0-9])([A-Z])', r'\1_\2', s1).lower()
-    
-def get_uuid(type=4):
-    """
-    Get uuid value
-    """
-    import uuid
-    
-    name = 'uuid'+str(type)
-    u = getattr(uuid, name)
-    return u().hex
-
-def pretty_dict(d, leading=' ', newline='\n', indent=0, tabstop=4, process=None):
-    """
-    Output pretty formatted dict, for example:
-        
-        d = {"a":"b",
-            "c":{
-                "d":"e",
-                "f":"g",
-                }
-            }
-        
-    will output:
-        
-        a : 'b'
-        c : 
-            d : 'e'
-            f : 'g'
-        
-    """
-    for k, v in d.items():
-        if process:
-            k, v = process(k, v)
-        if isinstance(v, dict):
-            yield '%s%s : %s' % (indent*tabstop*leading, k, newline)
-            for x in pretty_dict(v, leading=leading, newline=newline, indent=indent+1, tabstop=tabstop):
-                yield x
-            continue
-        yield '%s%s : %s%s' % (indent*tabstop*leading, k, simple_value(v), newline)
-
-
-#if __name__ == '__main__':
-#    log.info('Info: info')
-#    try:
-#        1/0
-#    except:
-#        log.exception('1/0')

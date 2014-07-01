@@ -1,6 +1,11 @@
 Change Log
 =====================
 
+1.5 Version
+-----------------
+
+* Refactor with _compat.py
+
 1.4 Version
 -----------------
 

@@ -1,8 +1,5 @@
-from future.builtins import str
-from future import standard_library
-standard_library.install_hooks()
-from future.builtins import object
-from future.utils import exec_
+from __future__ import print_function, absolute_import, unicode_literals
+from ._compat import exec_, u, string_types
 
 import re
 import os
@@ -200,7 +197,7 @@ class BaseBlockNode(Node):
     def render(self):
         s = []
         for x in self.nodes:
-            s.append(str(x))
+            s.append(u(str(x)))
         return ''.join(s)
     
 class BlockNode(BaseBlockNode):
@@ -224,11 +221,11 @@ class BlockNode(BaseBlockNode):
         for x in self.nodes:
             if isinstance(x, BlockNode):
                 if x.name in self.content.root.block_vars:
-                    s.append(str(self.content.root.block_vars[x.name][-1]))
+                    s.append(u((self.content.root.block_vars[x.name][-1])))
                 else:
-                    s.append(str(x))
+                    s.append(u(str(x)))
             else:
-                s.append(str(x))
+                s.append(u(str(x)))
         return ''.join(s)
         
 class SuperNode(Node):
@@ -274,7 +271,7 @@ class Content(BaseBlockNode):
     def __str__(self):
         s = self.begin[:]
         for x in self.nodes:
-            s.append(str(x))
+            s.append(u(str(x)))
         s.extend(self.end)
         return ''.join(s)
     
@@ -371,9 +368,7 @@ class Out(object):
         self.buf = io.StringIO()
         
     def _str(self, text):
-        if not isinstance(text, str):
-            text = str(text, 'utf8')
-        return text
+        return u(text)
 
     def write(self, text, escape=True):
         s = self._str(text)
@@ -487,7 +482,7 @@ class Template(object):
                             top.add(node)
                             self.stack.append(node)
                         else:
-                            buf = str(node)
+                            buf = u(str(node))
                             if buf:
                                 top.add(buf)
                     elif name == 'super':
@@ -544,7 +539,7 @@ class Template(object):
         # else:
         #     pre = ''
 #        return reindent(pre + str(self.content))
-        return reindent(str(self.content))
+        return reindent(u(str(self.content)))
     
     def _parse_template(self, content, var):
         if var in self.vars:
@@ -554,7 +549,7 @@ class Template(object):
         
         #add v.__template__ support
         if hasattr(v, '__template__'):
-            text = str(v.__template__(var))
+            text = u(str(v.__template__(var)))
             if text:
                 t = Template(text, self.vars, self.env, self.dirs)
                 t.parse()
@@ -566,7 +561,7 @@ class Template(object):
 
     def _parse_text(self, content, var):
         try:
-            text = str(eval(var, self.env.to_dict(), self.vars))
+            text = u(str(eval(var, self.env.to_dict(), self.vars)))
         except:
             if self.skip_error:
                 text = ''
@@ -719,7 +714,7 @@ class Template(object):
         
         e.update(self.exec_env)
         
-        if isinstance(code, str):
+        if isinstance(code, string_types):
             if self.compile:
                 code = self.compile(code, filename, 'exec', e)
             else:

@@ -1,11 +1,5 @@
-from __future__ import print_function
-from __future__ import absolute_import
-from __future__ import unicode_literals
-from future.builtins import input
-from future.builtins import str
-from future import standard_library
-standard_library.install_hooks()
-from future.builtins import object
+from __future__ import print_function, absolute_import, unicode_literals
+from ._compat import input, with_metaclass, string_types
 ##################################################################
 # This module is desired by Django
 ##################################################################
@@ -13,7 +7,6 @@ import sys, os
 from optparse import make_option, OptionParser, IndentedHelpFormatter
 import logging
 import inspect
-from future.utils import with_metaclass
 
 log = logging
 
@@ -121,7 +114,7 @@ def call(prog_name, version, modules=None, args=None):
     
     modules = modules or []
     
-    if isinstance(args, str):
+    if isinstance(args, string_types):
         import shlex
         args = shlex.split(args)
     

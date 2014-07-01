@@ -6,10 +6,8 @@
 #
 # license: BSD
 #
-from __future__ import print_function
-from __future__ import absolute_import
-from __future__ import unicode_literals
-from future.builtins import str, open
+from __future__ import print_function, absolute_import, unicode_literals
+from ._compat import open
 import os, sys
 import re
 sys.path.insert(0, '.')
@@ -25,7 +23,7 @@ __author__ = 'limodou'
 __author_email__ = 'limodou@gmail.com'
 __url__ = 'https://github.com/limodou/parm'
 __license__ = 'BSD'
-__version__ = '1.4.1'
+__version__ = '1.5'
 
 #import parm project config module
 try:
