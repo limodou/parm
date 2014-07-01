@@ -52,7 +52,7 @@ if not PY2:
         if isinstance(s, str):
             return s
         else:
-            return s.decode(encoding)
+            return str(s)
 
     def b(s):
         if isinstance(s, bytes):
@@ -98,16 +98,16 @@ else:
         return cls
 
     def u(s, encoding='utf8'):
-        if isinstance(s, str):
-            return unicode(s, encoding)
-        else:
+        if isinstance(s, unicode):
             return s
+        else:
+            return unicode(str(s), encoding)
 
     def b(s, encoding='utf8'):
         if isinstance(s, unicode):
             return s.decode(encoding)
         else:
-            return s
+            return str(s)
 
     def exec_(code, globs=None, locs=None):
         """Execute code in a namespace."""
