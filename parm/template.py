@@ -1,5 +1,5 @@
 from __future__ import print_function, absolute_import, unicode_literals
-from ._compat import exec_, u, string_types
+from ._compat import exec_, u, string_types, open
 
 import re
 import os
@@ -391,7 +391,7 @@ class Template(object):
     def __init__(self, text='', vars=None, env=None, dirs=None, 
         default_template=None, use_temp=False, compile=None, skip_error=False, 
         encoding='utf-8', begin_tag=None, end_tag=None):
-        self.text = text
+        self.text = u(text)
         self.filename = None
         self.vars = vars or {}
         if not isinstance(env, Context):
