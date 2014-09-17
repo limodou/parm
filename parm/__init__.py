@@ -23,11 +23,13 @@ __author__ = 'limodou'
 __author_email__ = 'limodou@gmail.com'
 __url__ = 'https://github.com/limodou/parm'
 __license__ = 'BSD'
-__version__ = '1.5'
+__version__ = '1.5.1'
 
 #import parm project config module
 try:
     import conf
+    if not hasattr(conf, 'encoding'):
+        conf.encoding = 'utf8'
 except:
     conf = None
 
@@ -61,6 +63,7 @@ class InitCommand(Command):
         d['template_dirs'] = getattr(conf, 'template_dirs', 'templates')
         d['disqus'] = getattr(conf, 'disqus', '')
         d['domain'] = getattr(conf, 'domain', '')
+        d['encoding'] = getattr(conf, 'encoding', 'utf8')
         
         if has_conf:
             create = get_answer("Create config file", quit='q') == 'Y'
@@ -73,7 +76,8 @@ class InitCommand(Command):
             d['disqus'] = get_input("Disqus account name [%s]:" % d['disqus'], default=d['disqus'])
             d['search'] = get_answer("If you want to add search input") == 'Y'
             d['domain'] = get_input("Domain name used for search [%s]:" % d['domain'], default=d['domain'])
-            
+            d['encoding'] = get_input("Encoding of the MarkDown files [%s]:" % d['encoding'], default=d['encoding'])
+
             if d['theme'] == 'bootstrap':
                 d['tag_class'] = """
 'table':'table table-bordered',
@@ -188,7 +192,7 @@ class MakeCommand(Command):
                     files.append(path)
                     continue
                 
-                with open(path) as f:
+                with open(path, encoding=conf.encoding) as f:
                     
                     data = {}
                     data['conf'] = conf
@@ -226,7 +230,7 @@ class MakeCommand(Command):
                     template_file = conf.templates.get(fname, conf.templates.get('*', 'default.html'))
                     hfilename = os.path.join(options.directory, fname + '.html').replace('\\', '/')
                     fix_dir(hfilename)
-                    with open(hfilename, 'w') as fh:
+                    with open(hfilename, 'w', encoding=conf.encoding) as fh:
                         print('Convert %s to %s' % (path, hfilename))
                         fh.write(template.template_file(template_file, data, dirs=[template_dirs]))
                         copy2(path, os.path.join(options.directory, path))
@@ -256,7 +260,7 @@ class MakeCommand(Command):
 </div>{{pass}}"""
         
         for name, f in output_files.items():
-            text = open(f).read()
+            text = open(f, encoding=conf.encoding).read()
             
             x = relations.get(name, {})
             data = {}
@@ -273,7 +277,7 @@ class MakeCommand(Command):
             prev_next_text_down = template.template(prev_next_template_down, data)
             text = text.replace('<!-- prev_next_top -->', prev_next_text_top)
             text = text.replace('<!-- prev_next_down -->', prev_next_text_down)
-            with open(f, 'w') as fh:
+            with open(f, 'w', encoding=conf.encoding) as fh:
                 fh.write(text)
 
     def parse_headers(self, filename, text, headers):

@@ -9,6 +9,9 @@ You can change them to fit your needs.
 #available plugins
 plugins = []
 
+#encoding of md file
+encoding = '{{=encoding}}'
+
 # The suffix of source filenames.
 source_suffix = ['.md', '.markdown']
 

@@ -1,6 +1,12 @@
 Change Log
 =====================
 
+1.5.1 Version
+-----------------
+
+* Fix `open()` bug in windows platform, missing encoding parameter, default will by 'utf8'
+  and you can change it in `conf.py` for `encoding` variable.
+
 1.5 Version
 -----------------
 
