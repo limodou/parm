@@ -1,6 +1,21 @@
 Change Log
 =====================
 
+1.6 Version
+-----------------
+
+* Remove bootstrap theme
+* Add check and radio icon in list. you can define them like
+
+    ```
+    * [*] checkbox with checked
+      * <*> radio with checked
+    * [ ] checkbox without checked
+    * [] checkbox without checked
+    * < > radio without checked
+    * <> radio without checked
+    ```
+
 1.5.1 Version
 -----------------
 

@@ -99,7 +99,7 @@ def get_source_files(self):
 setattr(b.build_py, 'get_source_files', get_source_files)
 
 setup(name='parm',
-    version='1.5.1',
+    version='1.6',
     description="Markdown to html convertor tool",
     long_description=__doc__,
     classifiers=[

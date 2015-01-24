@@ -19,7 +19,7 @@ def code_comment(visitor, items):
             key : value
         
     """
-    from uliweb import json_dumps
+    from .utils import json_dumps
     
     txt = []
     data = {}
@@ -59,7 +59,7 @@ def new_code_comment(visitor, block):
         {% endcode-comment %}    
         
     """
-    from uliweb import json_dumps
+    from .utils import json_dumps
     
     if 'new' in block:
         

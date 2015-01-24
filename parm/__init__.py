@@ -23,7 +23,7 @@ __author__ = 'limodou'
 __author_email__ = 'limodou@gmail.com'
 __url__ = 'https://github.com/limodou/parm'
 __license__ = 'BSD'
-__version__ = '1.5.1'
+__version__ = '1.6'
 
 #import parm project config module
 try:
@@ -59,7 +59,8 @@ class InitCommand(Command):
         d['project'] = getattr('conf', 'project', 'Parm')
         d['copyright'] = getattr('conf', 'copyright', '2014, Limodou')
         d['version'] = getattr('conf', 'version', __version__)
-        d['theme'] = getattr(conf, 'theme', 'semantic')
+        #d['theme'] = getattr(conf, 'theme', 'semantic')
+        d['theme'] = 'semantic'
         d['template_dirs'] = getattr(conf, 'template_dirs', 'templates')
         d['disqus'] = getattr(conf, 'disqus', '')
         d['domain'] = getattr(conf, 'domain', '')
@@ -72,7 +73,7 @@ class InitCommand(Command):
             d['project'] = get_input("Project name [%s]:"%d['project'], default=d['project'])
             d['copyright'] = get_input("Copyright information [%s]:" % d['copyright'], default=d['copyright'])
             d['version'] = get_input("Version [%s]:" % d['version'], default=d['version'])
-            d['theme'] = get_input("Choice theme (bootstrap, semantic) [%s]:" % d['theme'], choices=['bootstrap', 'semantic'], default=d['theme'])
+#            d['theme'] = get_input("Choice theme (bootstrap, semantic) [%s]:" % d['theme'], choices=['bootstrap', 'semantic'], default=d['theme'])
             d['disqus'] = get_input("Disqus account name [%s]:" % d['disqus'], default=d['disqus'])
             d['search'] = get_answer("If you want to add search input") == 'Y'
             d['domain'] = get_input("Domain name used for search [%s]:" % d['domain'], default=d['domain'])
@@ -117,6 +118,25 @@ class InitCommand(Command):
                     extract_file('parm', 'templates/env/%s' % f, '.')
         
 register_command(InitCommand)
+
+from par.md import MarkdownHtmlVisitor
+
+class MDVisitor(MarkdownHtmlVisitor):
+    def visit_check_radio(self, node):
+        tag = []
+        _append = tag.append
+        _start = node.text.startswith
+        if _start('[*'):
+            _append('<i class="fa fa-check-square-o"')
+        elif _start('['):
+            _append('<i class="fa fa-square-o"')
+        elif _start('<*'):
+            _append('<i class="fa fa-dot-circle-o"')
+        else:
+            _append('<i class="circle-o"')
+        _append(' style="color:gray;"')
+        _append('\></i> ')
+        return ''.join(tag)
 
 class MakeCommand(Command):
     name = 'make'
@@ -202,7 +222,8 @@ class MakeCommand(Command):
                         '', 
                         conf.tag_class,
                         block_callback=blocks,
-                        filename=path)
+                        filename=path,
+                        visitor=MDVisitor)
                     page_nav = relations.get(fname, {})
                     data['prev'] = page_nav.get('prev', {})
                     data['next'] = page_nav.get('next', {})

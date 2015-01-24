@@ -28,7 +28,7 @@ tag_class = {
 pre_css = 'sons-of-obsidian'
 
 # The short X.Y version.
-version = '1.4'
+version = '1.6'
 
 # General information about the project.
 project = u'Parm'
