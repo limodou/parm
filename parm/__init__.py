@@ -23,7 +23,7 @@ __author__ = 'limodou'
 __author_email__ = 'limodou@gmail.com'
 __url__ = 'https://github.com/limodou/parm'
 __license__ = 'BSD'
-__version__ = '1.6'
+__version__ = '1.7'
 
 #import parm project config module
 try:
@@ -152,8 +152,9 @@ class MakeCommand(Command):
     r_id = re.compile(r'id="([^"]*)"')
     
     def handle(self, options, global_options, *args):
-        from .utils import extract_dirs, copy_dir, walk_dirs, import_attr
+        from .utils import extract_dirs, copy_dir, walk_dirs, import_attr, json_dumps
         from .md_ext import new_code_comment, toc, include
+        from .mermaid_ext import mermaid
         from functools import partial
         from shutil import copy2
 
@@ -192,6 +193,7 @@ class MakeCommand(Command):
         blocks['code-comment'] = new_code_comment
         blocks['toc'] = partial(toc, headers=headers, relations=relations)
         blocks['include'] = include
+        blocks['mermaid'] = mermaid
 
         #according theme import different blocks
         mod_path = 'par.%s_ext.blocks' % theme
@@ -216,6 +218,7 @@ class MakeCommand(Command):
                     
                     data = {}
                     data['conf'] = conf
+                    data['json_dumps'] = json_dumps
                     
                     #process markdown convert
                     data['body'] = parseHtml(f.read(), 

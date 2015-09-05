@@ -8,11 +8,17 @@
 <meta name="author" content="">
 
 <link rel="stylesheet" href="{{=relpath}}/static/semantic/css/semantic.min.css"/>
+<link rel="stylesheet" href="{{=relpath}}/static/font-awesome/css/font-awesome.css"/>
 <link href="{{=relpath}}/static/asset/prettify.css" rel="stylesheet">
 <link href="{{=relpath}}/static/toc/toc.css" rel="stylesheet">
 <link rel="stylesheet" href="{{=relpath}}/static/parm.css"/>
 <link rel="stylesheet" href="{{=relpath}}/static/asset/{{=pre_css}}.css"/>
 <link rel="stylesheet" href="{{=relpath}}/static/ui.totop.css"/>
+
+{{if 'mermaid' in conf.plugins:}}
+<link rel="stylesheet" href="{{=relpath}}/static/mermaid/mermaid.forest.css"/>
+{{pass}}
+
 {{for c in custom_css:}}
 <link rel="stylesheet" href="{{=c}}"/>
 {{pass}}
@@ -103,6 +109,11 @@ var relpath = '{{=relpath}}';
 <script src="{{=relpath}}/static/jquery.sticky-kit.min.js"></script>
 <script src="{{=relpath}}/static/docs.js"></script>
 <script src="{{=relpath}}/static/comment.js"></script>
+
+{{if 'mermaid' in conf.plugins:}}
+<script src="{{=relpath}}/static/mermaid/mermaid.min.js"></script>
+<script>mermaid.initialize({{=json_dumps(mermaid_init)}});</script>
+{{pass}}
 
 {{if conf.disqus:}}
     {{<< conf.disqus_js}}

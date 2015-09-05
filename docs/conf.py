@@ -7,7 +7,14 @@ You can change them to fit your needs.
 """
 
 #available plugins
-plugins = []
+#mermaid
+plugins = ['mermaid']
+
+#mermaid init
+mermaid_init = {'startOnLoad':True}
+
+#encoding of md file
+encoding = 'utf8'
 
 # The suffix of source filenames.
 source_suffix = ['.md', '.markdown']
@@ -28,12 +35,12 @@ tag_class = {
 pre_css = 'sons-of-obsidian'
 
 # The short X.Y version.
-version = '1.6'
+version = '1.7'
 
 # General information about the project.
 project = u'Parm'
 project_url = './index.html'
-copyright = u'2014, Limodou'
+copyright = u'2015, Limodou'
 introduction = u'''
 <h1 class="ui header">%s
 <a class="ui black label">%s</a>
@@ -103,7 +110,7 @@ disqus_js = '''<script type="text/javascript">
    </script>
 ''' % disqus
 
-search = True
+search = False
 domain = 'limodou.github.io/parm'
 search_html = """
 <div class="item">

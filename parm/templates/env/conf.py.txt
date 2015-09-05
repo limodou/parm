@@ -7,7 +7,11 @@ You can change them to fit your needs.
 """
 
 #available plugins
+#mermaid
 plugins = []
+
+#mermaid init
+mermaid_init = {'startOnLoad':True}
 
 #encoding of md file
 encoding = '{{=encoding}}'
