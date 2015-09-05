@@ -8,11 +8,17 @@
 <meta name="author" content="">
 
 <link rel="stylesheet" href="./static/semantic/css/semantic.min.css"/>
+<link rel="stylesheet" href="./static/font-awesome/css/font-awesome.css"/>
 <link href="./static/asset/prettify.css" rel="stylesheet">
 <link href="./static/toc/toc.css" rel="stylesheet">
 <link rel="stylesheet" href="./static/parm.css"/>
 <link rel="stylesheet" href="./static/asset/sons-of-obsidian.css"/>
 <link rel="stylesheet" href="./static/ui.totop.css"/>
+
+
+<link rel="stylesheet" href="./static/mermaid/mermaid.forest.css"/>
+
+
 
 <title>Parm</title>
 </head>
@@ -28,18 +34,6 @@
     <a class="active item" href="./index.html">Home</a>
     
     
-        <div class="right menu">
-            
-<div class="item">
-  <div class="ui icon input">
-    <form id="searchform">
-    <input name="q" type="text" placeholder="Search...">
-    </form>
-  </div>
-</div>
-
-        </div>
-    
     
   </div>
 </div>
@@ -49,7 +43,7 @@
     <div class="column">
         
 <h1 class="ui header">Parm
-<a class="ui black label">1.3</a>
+<a class="ui black label">1.7</a>
 </h1>
 <h2 class="ui header">Your project shows description here.</h2>
 
@@ -72,7 +66,7 @@
 <div class="ui page grid" id="footer">
     <div class="column">
     
-<p>Designed by Limodou, Copyright 2013, Limodou</p>
+<p>Designed by Limodou, Copyright 2015, Limodou</p>
 <p>CSS framework <a href="https://github.com/twitter/bootstrap">Bootstrap</a>, Markdown parser lib <a href="https://github.com/limodou/par">Par</a> and this page is created by <a href="https://github.com/limodou/parm">Parm</a> tool.</p>
 
     </div>
@@ -83,8 +77,8 @@
 var relpath = '.';
 </script>
 
-<script type="text/javascript" src="./static/jquery-1.7.2.min.js"></script>
-<script type="text/javascript" src="./static/semantic/javascript/semantic.min.js"></script>
+<script src="./static/jquery-1.7.2.min.js"></script>
+<script src="./static/semantic/javascript/semantic.min.js"></script>
 <script src="./static/asset/prettify.js"></script>
 <script src="./static/toc/toc.js"></script>
 <script src="./static/jquery.ui.totop.js"></script>
@@ -94,21 +88,11 @@ var relpath = '.';
 <script src="./static/comment.js"></script>
 
 
+<script src="./static/mermaid/mermaid.min.js"></script>
+<script>mermaid.initialize({"startOnLoad":true});</script>
 
 
-    
-<script type="text/javascript">
-$(function(){
-    var form = $('#searchform');
-    form.submit(function(e){
-        e.preventDefault();
-        var wq=$('input[name="q"]').val();
-        var link="http://www.google.com/search?q=site:limodou.github.io/parm "+wq;
-        window.open(link);
 
-    });
-});
-</script>
 
 
 

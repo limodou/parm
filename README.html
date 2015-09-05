@@ -8,11 +8,17 @@
 <meta name="author" content="">
 
 <link rel="stylesheet" href="./static/semantic/css/semantic.min.css"/>
+<link rel="stylesheet" href="./static/font-awesome/css/font-awesome.css"/>
 <link href="./static/asset/prettify.css" rel="stylesheet">
 <link href="./static/toc/toc.css" rel="stylesheet">
 <link rel="stylesheet" href="./static/parm.css"/>
 <link rel="stylesheet" href="./static/asset/sons-of-obsidian.css"/>
 <link rel="stylesheet" href="./static/ui.totop.css"/>
+
+
+<link rel="stylesheet" href="./static/mermaid/mermaid.forest.css"/>
+
+
 
 <title>Parm Introduction - Parm</title>
 </head>
@@ -27,18 +33,6 @@
     
     <a class="active item" href="./index.html">Home</a>
     
-    
-        <div class="right menu">
-            
-<div class="item">
-  <div class="ui icon input">
-    <form id="searchform">
-    <input name="q" type="text" placeholder="Search...">
-    </form>
-  </div>
-</div>
-
-        </div>
     
     
   </div>
@@ -93,11 +87,11 @@ file2.md
 <h2 id="title_1-5">Convert reStructuredText to Markdown<a class="anchor" href="#title_1-5">&para;</a></h2>
 <p>parm also supports convert reStructuredText format to Markdown format. Just enter your doc directory, and execute below command:</p>
 <pre class="prettyprint "><code>parm rst2md &lt;output_directory&gt;</code></pre>
-<p>But you known, reStructuredText format is rich than markdown, so I expand some new style for Markdown format in <a href="https://github.com/limodou/par" class="outter">par</a> project. But there are still some styles unsupported by par, so you need to change them manually.</p>
+<p>But you known, reStructuredText format is rich than markdown, so I expand some new style for Markdown format in <a class="outter" href="https://github.com/limodou/par">par</a> project. But there are still some styles unsupported by par, so you need to change them manually.</p>
 <p>And if you want to convert reStructuredText to Markdown, you should install <code>docutils</code> first.</p>
 <p>Just try it, hope you enjoy it.</p>
 <h2 id="title_1-6">About rst2md writer<a class="anchor" href="#title_1-6">&para;</a></h2>
-<p>I found there is a project <a href="https://github.com/cgwrench/rst2md" class="outter">https://github.com/cgwrench/rst2md</a> in github, and I changed the code from it in order to suit the style format of <code>par</code>. But I found rst2md seem not so matual enough.</p>
+<p>I found there is a project <a class="outter" href="https://github.com/cgwrench/rst2md">https://github.com/cgwrench/rst2md</a> in github, and I changed the code from it in order to suit the style format of <code>par</code>. But I found rst2md seem not so matual enough.</p>
 <h2 id="title_1-7">How to add disqus support<a class="anchor" href="#title_1-7">&para;</a></h2>
 <p>When initialized the parm project, it'll copy some templates and static files. You may want to add disqus support to each page. So let me show you how to do that.</p>
 <h3 id="title_1-7-1">Sign in Disqus and got embeded codes<a class="anchor" href="#title_1-7-1">&para;</a></h3>
@@ -194,7 +188,7 @@ project-doc(gh-pages)\</code></pre>
 <li><code>git push origin gh-pages</code></li>
 <li>Visit your doc in <code>http://yourname.github.io/yourproject</code></li>
 </ol>
-<p>You could also see the documentation <a href="https://help.github.com/articles/creating-project-pages-manually" class="outter">https://help.github.com/articles/creating-project-pages-manually</a> to understand how to use <code>gh-pages</code>.</p>
+<p>You could also see the documentation <a class="outter" href="https://help.github.com/articles/creating-project-pages-manually">https://help.github.com/articles/creating-project-pages-manually</a> to understand how to use <code>gh-pages</code>.</p>
 <h2 id="title_1-13">Markdown Extensions<a class="anchor" href="#title_1-13">&para;</a></h2>
 <p>Parm add some markdown extension, the TOC support is one of them, others are:</p>
 <h3 id="title_1-13-3">Code Comment<a class="anchor" href="#title_1-13-3">&para;</a></h3>
@@ -279,7 +273,7 @@ lines_content
 </dl><h2 id="title_1-14">License<a class="anchor" href="#title_1-14">&para;</a></h2>
 <p>This software is released under BSD license.</p>
 <h2 id="title_1-15">DEMO<a class="anchor" href="#title_1-15">&para;</a></h2>
-<p>You can see: <a href="http://limodou.github.io/parm" class="outter">http://limodou.github.io/parm</a> or <a href="http://limodou.github.io/uliweb-doc" class="outter">http://limodou.github.io/uliweb-doc</a></p>
+<p>You can see: <a class="outter" href="http://limodou.github.io/parm">http://limodou.github.io/parm</a> or <a class="outter" href="http://limodou.github.io/uliweb-doc">http://limodou.github.io/uliweb-doc</a></p>
 
         
         <div class="ui blue inverted small label">
@@ -303,7 +297,7 @@ lines_content
 <div class="ui page grid" id="footer">
     <div class="column">
     
-<p>Designed by Limodou, Copyright 2013, Limodou</p>
+<p>Designed by Limodou, Copyright 2015, Limodou</p>
 <p>CSS framework <a href="https://github.com/twitter/bootstrap">Bootstrap</a>, Markdown parser lib <a href="https://github.com/limodou/par">Par</a> and this page is created by <a href="https://github.com/limodou/parm">Parm</a> tool.</p>
 
     </div>
@@ -314,8 +308,8 @@ lines_content
 var relpath = '.';
 </script>
 
-<script type="text/javascript" src="./static/jquery-1.7.2.min.js"></script>
-<script type="text/javascript" src="./static/semantic/javascript/semantic.min.js"></script>
+<script src="./static/jquery-1.7.2.min.js"></script>
+<script src="./static/semantic/javascript/semantic.min.js"></script>
 <script src="./static/asset/prettify.js"></script>
 <script src="./static/toc/toc.js"></script>
 <script src="./static/jquery.ui.totop.js"></script>
@@ -325,21 +319,11 @@ var relpath = '.';
 <script src="./static/comment.js"></script>
 
 
+<script src="./static/mermaid/mermaid.min.js"></script>
+<script>mermaid.initialize({"startOnLoad":true});</script>
 
 
-    
-<script type="text/javascript">
-$(function(){
-    var form = $('#searchform');
-    form.submit(function(e){
-        e.preventDefault();
-        var wq=$('input[name="q"]').val();
-        var link="http://www.google.com/search?q=site:limodou.github.io/parm "+wq;
-        window.open(link);
 
-    });
-});
-</script>
 
 
 

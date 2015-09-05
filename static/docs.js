@@ -70,8 +70,10 @@ $(function(){
             $(this).find('div').html('&laquo;');
         }
     });
+
+    var headers = $('#index, #markdown-content').find('h1,h2,h3,h4,h5,h6');
      
-    $('#index, #markdown-content').find('h1,h2,h3,h4,h5,h6').hover(function(e){
+    headers.hover(function(e){
         $(this).find('a.anchor').css('color', '#c60f0f');
     }, function(e){
         $(this).find('a.anchor').css('color', 'white');
@@ -81,6 +83,6 @@ $(function(){
     $('.icon.help').popup();    
     
     //goto top
-    $('#markdown-content').UItoTop({ easingType: 'easeOutQuart', text:'<i class="up icon"></i>' });
+    $('#markdown-content').UItoTop({scrollSpeed: 500, text:'<i class="up icon"></i>' });
     
 });
