@@ -59,8 +59,8 @@ class InitCommand(Command):
         d['project'] = getattr('conf', 'project', 'Parm')
         d['copyright'] = getattr('conf', 'copyright', '2014, Limodou')
         d['version'] = getattr('conf', 'version', __version__)
-        #d['theme'] = getattr(conf, 'theme', 'semantic')
-        d['theme'] = 'semantic'
+        d['theme'] = getattr(conf, 'theme', 'bootstrap')
+        d['theme'] = 'bootstrap'
         d['template_dirs'] = getattr(conf, 'template_dirs', 'templates')
         d['disqus'] = getattr(conf, 'disqus', '')
         d['domain'] = getattr(conf, 'domain', '')
@@ -126,11 +126,11 @@ class MDVisitor(MarkdownHtmlVisitor):
         tag = []
         _append = tag.append
         _start = node.text.startswith
-        if _start('[*'):
+        if _start('[*') or _start('[X') or _start('[x'):
             _append('<i class="fa fa-check-square-o"')
         elif _start('['):
             _append('<i class="fa fa-square-o"')
-        elif _start('<*'):
+        elif _start('<*') or _start('<X') or _start('<x'):
             _append('<i class="fa fa-dot-circle-o"')
         else:
             _append('<i class="circle-o"')
@@ -145,6 +145,8 @@ class MakeCommand(Command):
     option_list = (
         make_option('-d', dest='directory', default='html',
             help='Output directory of converted files.'),
+        make_option('-c', dest='copy', action='store_true', default=False,
+                    help='Copy markdown to destination directory.'),
     )
     
     r_header = re.compile(r'<h(\d)(.*?)>(.*?)(<a.*?/a>)\s*</h\1>', re.IGNORECASE)
@@ -153,7 +155,7 @@ class MakeCommand(Command):
     
     def handle(self, options, global_options, *args):
         from .utils import extract_dirs, copy_dir, walk_dirs, import_attr, json_dumps
-        from .md_ext import new_code_comment, toc, include
+        from .md_ext import new_code_comment, toc, include, code
         from .mermaid_ext import mermaid
         from functools import partial
         from shutil import copy2
@@ -194,6 +196,7 @@ class MakeCommand(Command):
         blocks['toc'] = partial(toc, headers=headers, relations=relations)
         blocks['include'] = include
         blocks['mermaid'] = mermaid
+        blocks['include-code'] = code
 
         #according theme import different blocks
         mod_path = 'par.%s_ext.blocks' % theme
@@ -236,6 +239,7 @@ class MakeCommand(Command):
                     #parse header from text
                     h = headers.setdefault(path, [])
                     title = self.parse_headers(path, data['body'], h)
+                    data['subject'] = title
                     if title:
                         data['title'] = title + ' - ' + conf.project
                     else:
@@ -257,7 +261,9 @@ class MakeCommand(Command):
                     with open(hfilename, 'w', encoding=conf.encoding) as fh:
                         print('Convert %s to %s' % (path, hfilename))
                         fh.write(template.template_file(template_file, data, dirs=[template_dirs]))
-                        copy2(path, os.path.join(options.directory, path))
+                        #if not copy, md file will not be copied
+                        if options.copy:
+                            copy2(path, os.path.join(options.directory, path))
                     output_files[fname] = hfilename
                     
             else:
@@ -270,16 +276,16 @@ class MakeCommand(Command):
                     print('Copy %s to %s' % (path, os.path.join(dst_dir, path)))
                     shutil.copy(path, os.path.join(dst_dir, path))
                 
-        prev_next_template_top = """{{if prev:}}<div class="chapter-prev chapter-top">
+        prev_next_template_top = """{{if prev:}}<div class="chapter-prev chapter-top pull-left">
     <a prev-chapter href="{{<< prev['link']}}"><i class="icon-arrow-left"></i> {{=prev['title']}}</a>
 </div>{{pass}}
-{{if next:}}<div class="chapter-next chapter-top">
+{{if next:}}<div class="chapter-next chapter-top pull-right">
     <a next-chapter href="{{<< next['link']}}">{{=next['title']}} <i class="icon-arrow-right"></i></a>
 </div>{{pass}}"""
-        prev_next_template_down = """{{if prev:}}<div class="chapter-prev chapter-down">
+        prev_next_template_down = """{{if prev:}}<div class="chapter-prev chapter-down pull-left">
     <a prev-chapter href="{{<< prev['link']}}"><i class="icon-arrow-left"></i> {{=prev['title']}}</a>
 </div>{{pass}}
-{{if next:}}<div class="chapter-next chapter-down">
+{{if next:}}<div class="chapter-next chapter-down pull-right">
     <a next-chapter href="{{<< next['link']}}">{{=next['title']}} <i class="icon-arrow-right"></i></a>
 </div>{{pass}}"""
         

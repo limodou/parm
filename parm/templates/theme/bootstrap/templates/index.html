@@ -1,0 +1,24 @@
+{{extend "layout.html"}}
+
+{{block content}}
+<div class="jumbotron bs-docs-header">
+  <div class="container text-center">
+    <h1>{{=project}}</h1>
+    <p class="lead">{{<< description}}</p>
+    <a class="btn btn-outline-inverse btn-lg" href="{{=download_url}}" role="button">
+      <i class="fa fa-download"></i> Download ({{=version}})
+    </a>
+  </div>
+</div>
+
+<div class="container" id="markdown-content">
+    {{<< body}}
+    {{<< defined('page_footer') or ''}}
+</div>
+
+<div class="footer" id="footer">
+  <div class="container text-center">
+    {{<< defined('footer') or ''}}
+  </div>
+</div>
+{{end}}

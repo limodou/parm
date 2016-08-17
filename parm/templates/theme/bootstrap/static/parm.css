@@ -1,0 +1,149 @@
+html, body {margin:0;padding:0;height:100%;}
+.navbar {background-color:black;color:white;margin:0em;padding:4px;}
+a {text-decoration:none;}
+a:hover {text-decoration:underline;}
+.chapter-prev {position:absolute;left:10px;color:#ccc;-webkit-border-radius:4px;
+-moz-border-radius:4px;
+border-radius:4px;background-color:#eee;padding:4px 8px;
+opacity:0.5;
+filter:alpha(opacity=50);
+}
+.chapter-next {position:absolute;right:10px;color:#ccc;-webkit-border-radius:4px;
+-moz-border-radius:4px;
+border-radius:4px;background-color:#eee;padding:4px 8px;
+opacity:0.5;
+filter:alpha(opacity=50);
+}
+.chapter-prev a, .chapter-next a{color:#666;}
+.chapter-top{top:8px;}
+.chapter-down{bottom:5px;}
+.inline-tag {
+background-color: blue;
+color: white;
+padding: 1px 4px 2px;
+-webkit-border-radius: 3px;
+-moz-border-radius: 3px;
+border-radius: 3px;
+cursor: pointer;
+vertical-align: middle;
+}
+
+.footer {
+margin-top: 5px;
+padding: 15px;
+}
+
+body{font-family: "PT Serif",Georgia,Times,"Times New Roman",serif; font-size:1.2em;line-height:1.4em;}
+li {line-height: 1.5em;}
+
+#markdown-content {position:relative; padding-bottom:50px;padding-top:30px;}
+#markdown-content h2, #introduction h2{
+margin-bottom: 1em;
+border-bottom: 1px solid #ddd;
+line-height:40px;
+}
+h1 {line-height:80px;}
+dd {margin-left:30px;margin-top:5px;}
+dt {font-weight:bold;}
+blockquote {
+  background: #f9f9f9;
+  border-left: 10px solid #ccc;
+  margin: 1.5em 10px;
+  padding: 0.5em 10px;
+  quotes: "\201C""\201D""\2018""\2019";
+}
+blockquote:before {
+  color: #ccc;
+  content: open-quote;
+  font-size: 4em;
+  line-height: 0.1em;
+  margin-right: 0.25em;
+  vertical-align: -0.4em;
+}
+blockquote p {
+  display inline;
+}
+
+#markdown-content .floatleft {margin:4px;float:left;clear:left;padding-right: 20px;}
+#markdown-content .floatright {margin:4px;float:right;clear:right;padding-left: 20px;}
+#markdown-content .floatcenter {margin:4px;text-align:center;}
+
+#markdown-content h1, #wiki-content h2, #wiki-content h3, #wiki-content h4, 
+#markdown-content h5, #wiki-content h6 {clear:both;}
+#markdown-content .footnotes {margin-top:15px; padding-top:15px;border-top:2px solid #ddd;}
+
+#markdown-content a.anchor, #index a.anchor {
+    color: white;
+    font-size: 1em;
+    margin-left: 6px;
+    padding: 0 4px 0 4px;
+    text-decoration: none;
+    border: none;
+    background:none;
+}
+#markdown-content a.outter, #index a.outter{
+background: url(external-link-ltr-icon.png) center right no-repeat;
+padding-right: 13px;
+}
+
+#introduction {padding-top:25px;padding-bottom:25px;background-color:#00b5ae;}
+#introduction h1 {font-size:5em;color:white;}
+#introduction h2 {
+font-family: "Source Sans Pro", "Helvetica Neue", "Helvetica", "Arial", sans-serif;
+color:#CCE2FF;;
+font-weight: normal;
+margin: -10px 0 16px 0px;
+font-size: 1.75em;
+border-bottom: none;
+line-height: 1;
+}
+#footer {padding-top:25px;padding-bottom:25px;background-color:#00b5ae;color:white;}
+#footer a{text-decoration:none;color: rgba(255, 255, 255, 0.6);}
+#footer a:hover{text-decoration:underline;color:#f5a615;}
+
+
+code {
+padding: 2px 4px;
+color: #d14;
+background-color: #f7f7f9;
+border: 1px solid #e1e1e8;
+}
+code, pre {
+font-family: Monaco,Menlo,Consolas,"Courier New",monospace;
+font-size: 0.9em;
+color: #333;
+-webkit-border-radius: 3px;
+-moz-border-radius: 3px;
+border-radius: 3px;
+}
+pre {
+display: block;
+padding: 9.5px;
+margin: 0 0 10px;
+font-size: 1em;
+line-height: 20px;
+word-break: break-all;
+word-wrap: break-word;
+white-space: pre;
+white-space: pre-wrap;
+background-color: #f5f5f5;
+border: 1px solid #ccc;
+border: 1px solid rgba(0,0,0,0.15);
+-webkit-border-radius: 4px;
+-moz-border-radius: 4px;
+border-radius: 4px;
+}
+pre code {
+padding: 0;
+color: inherit;
+background-color: transparent;
+border: 0;
+}
+
+@media (max-width: 480px) {
+#side-bar {display:none;}
+#markdown-content {width:100%;}
+}
+
+#searchform input {background-color:gray;color:white;}
+.ui.popup p{margin:0;}

@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html>
+<head>
+
+<meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="">
+<meta name="author" content="">
+
+<link rel="stylesheet" href="{{=relpath}}/static/bootstrap/css/bootstrap.min.css"/>
+<link rel="stylesheet" href="{{=relpath}}/static/font-awesome/css/font-awesome.min.css"/>
+<link rel="stylesheet" href="{{=relpath}}/static/asset/prettify.css">
+<link rel="stylesheet" href="{{=relpath}}/static/asset/{{=pre_css}}.css"/>
+<link rel="stylesheet" href="{{=relpath}}/static/ui.totop.css"/>
+<link rel="stylesheet" href="{{=relpath}}/static/docs.css"/>
+<link rel="stylesheet" href="{{=relpath}}/static/custom.css"/>
+<link rel="stylesheet" href="{{=relpath}}/static/pikaday.css"/>
+
+{{if 'mermaid' in conf.plugins:}}
+<link rel="stylesheet" href="{{=relpath}}/static/mermaid/mermaid.forest.css"/>
+{{pass}}
+
+{{for c in custom_css:}}
+<link rel="stylesheet" href="{{=c}}"/>
+{{pass}}
+
+<script>
+var relpath = '{{=relpath}}';
+</script>
+
+<script src="{{=relpath}}/static/jquery.min.js"></script>
+<script src="{{=relpath}}/static/bootstrap/js/bootstrap.min.js"></script>
+<script src="{{=relpath}}/static/asset/prettify.js"></script>
+<script src="{{=relpath}}/static/jquery.ui.totop.js"></script>
+<script src="{{=relpath}}/static/jquery.hotkeys.js"></script>
+<script src="{{=relpath}}/static/docs.js"></script>
+<script src="{{=relpath}}/static/comment.js"></script>
+<script src="{{=relpath}}/static/riot+compiler.min.js"></script>
+<script src="{{=relpath}}/static/dataset.js"></script>
+<script src="{{=relpath}}/static/rtable.js"></script>
+<script src="{{=relpath}}/static/editor.js"></script>
+<script src="{{=relpath}}/static/tags/ex05.js"></script>
+<script src="{{=relpath}}/static/pikaday.js"></script>
+<script src="{{=relpath}}/static/pikaday.jquery.js"></script>
+
+{{if 'mermaid' in conf.plugins:}}
+<script src="{{=relpath}}/static/mermaid/mermaid.min.js"></script>
+<script>mermaid.initialize({{=json_dumps(mermaid_init)}});</script>
+{{pass}}
+
+{{if conf.disqus:}}
+    {{<< conf.disqus_js}}
+{{pass}}
+
+{{if conf.search:}}
+    {{<< search_js}}
+{{pass}}
+
+<title>{{=title}}</title>
+</head>
+<body>
+
+{{
+def menu(current='home'):
+    for id, caption, link in menus:
+        if not (link.startswith('http://') or link.startswith('https://')):
+            link = '%s/%s' % (relpath, link)
+        pass
+        if id == current:
+            out.write('<li class="active"><a href="{}">{}</a></li>'.format(link, caption), escape=False)
+        else:
+            out.write('<li><a href="{}">{}</a></li>'.format(link, caption), escape=False)
+        pass
+    pass
+pass
+}}
+
+<div class="navbar navbar-default" role="navigation">
+  <div class="container">
+
+    <!-- Collapsed navigation -->
+    <div class="navbar-header">
+
+      <!-- Expander button -->
+      <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+        <span class="sr-only">Toggle navigation</span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+
+      <!-- Main title -->
+      <a class="navbar-brand" href="index.html">{{=project}}</a>
+    </div>
+
+    <!-- Expanded navigation -->
+    <div class="navbar-collapse collapse">
+
+      <!-- Main navigation -->
+      <ul class="nav navbar-nav">
+      {{block menu}}
+        {{menu('home')}}
+      {{end}}
+      </ul>
+
+      <ul class="nav navbar-nav navbar-right">
+        <li>
+          <a href="https://github.com/limodou/rgrid">
+            <i class="fa fa-github"></i>
+            rGrid
+          </a>
+        </li>
+
+      </ul>
+    </div>
+  </div>
+</div>
+
+{{block content}}
+<div class="container-fluid">
+  <div class="row">
+    <div class="col-md-3" id="side-bar">
+      <div id="toc" class="content"></div>
+    </div>
+
+    <div class="col-md-9" role="main" id="markdown-content">
+      <!-- prev_next_top -->
+
+      {{<< body}}
+
+      {{##
+      <button class="btn btn-default btn-sm" style="margin-top:15px;">
+          <i class="fa fa-download"></i> {{<< source}}
+      </button>
+      ##}}
+
+    </div>
+  </div>
+</div>
+
+<div class="container">
+  <div class="row">
+    <div class="col-md-9 col-md-offset-3">
+      <!-- disqus -->
+      {{if conf.disqus:}}
+          {{<< conf.disqus_text}}
+      {{pass}}
+    </div>
+  </div>
+</div>
+
+<div class="footer" id="footer">
+  <div class="container text-center">
+    {{<< defined('footer') or ''}}
+  </div>
+</div>
+{{end}}
+
+
+</body>
+</html>

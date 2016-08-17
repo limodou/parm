@@ -1,5 +1,5 @@
 from __future__ import absolute_import, unicode_literals
-from ._compat import range, open
+from ._compat import range, open, u
 from .utils import log
 import re
 import os
@@ -86,11 +86,24 @@ def new_code_comment(visitor, block):
             data[key] = data[key].update(d)
         else:
             data[key] = d
-        txt.append(json_dumps(data))
+        txt.append(u(json_dumps(data)))
         txt.append('</script>')
         return '\n'.join(txt)
     else:
         return code_comment(visitor, block)
+
+def code(visitor, block):
+    """
+    Format:
+
+        {% code %}
+        code
+        {% endcode %}
+
+    """
+    from .utils import json_dumps
+
+    return block['body']
 
 def toc(visitor, block, headers=None, relations=None):
     """
