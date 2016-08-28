@@ -5,7 +5,7 @@ html {
 body {
   //padding-top: 51px;
   /* Margin bottom by footer height */
-  margin-bottom: 60px;
+  /* margin-bottom: 60px;*/
 }
 label {
   display: block;
@@ -312,7 +312,7 @@ border-bottom:1px solid gray
 
 #markdown-content {
 padding-bottom:80px;
-font-size:14px;
+font-size:1vw;
 }
 #markdown-content a.anchor, #index a.anchor {
     color: white;
@@ -336,4 +336,15 @@ padding:15px;
 }
 .navbar {
     margin-bottom: 0px;
+}
+#markdown-content dd {
+margin-left: 40px;
+}
+#markdown-content h2 {
+    margin-bottom: 1em;
+    border-bottom: 1px solid #ddd;
+    line-height: 40px;
+}
+#markdown-content img {
+max-width:100%;
 }
