@@ -1,6 +1,10 @@
 Change Log
 =====================
 
+1.8 Version
+-----------
+Add bootstrap 3 theme support
+
 1.7 Version
 -----------------
 
