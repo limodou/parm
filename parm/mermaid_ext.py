@@ -4,17 +4,17 @@ from .utils import log
 import re
 import os
 
-def mermaid(visitor, block):
+def graph(visitor, block):
     """
     Format:
         
-        {% mermaid %}
+        {% graph %}
         graph TD;
             A-->B;
             A-->C;
             B-->D;
             C-->D;
-        {% endmermaid %}
+        {% endgraph %}
         
     """
     from .utils import json_dumps

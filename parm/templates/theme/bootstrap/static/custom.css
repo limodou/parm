@@ -307,12 +307,11 @@ ul.nav li.main {
 
 #markdown-content h1 {
 padding-bottom:5px;
-border-bottom:1px solid gray
 }
 
 #markdown-content {
 padding-bottom:80px;
-font-size:1vw;
+font-size:1.1vw;
 }
 #markdown-content a.anchor, #index a.anchor {
     color: white;
@@ -348,3 +347,19 @@ margin-left: 40px;
 #markdown-content img {
 max-width:100%;
 }
+
+.chapter-prev {position:absolute;left:10px;color:#ccc;-webkit-border-radius:4px;
+-moz-border-radius:4px;
+border-radius:4px;background-color:#eee;padding:4px 8px;
+opacity:0.5;
+filter:alpha(opacity=50);
+}
+.chapter-next {position:absolute;right:10px;color:#ccc;-webkit-border-radius:4px;
+-moz-border-radius:4px;
+border-radius:4px;background-color:#eee;padding:4px 8px;
+opacity:0.5;
+filter:alpha(opacity=50);
+}
+.chapter-prev a, .chapter-next a{color:#666;}
+.chapter-top{top:8px;}
+.chapter-down{bottom:5px;}

@@ -156,7 +156,7 @@ class MakeCommand(Command):
     def handle(self, options, global_options, *args):
         from .utils import extract_dirs, copy_dir, walk_dirs, import_attr, json_dumps
         from .md_ext import new_code_comment, toc, include, code
-        from .mermaid_ext import mermaid
+        from .mermaid_ext import graph
         from functools import partial
         from shutil import copy2
 
@@ -195,7 +195,7 @@ class MakeCommand(Command):
         blocks['code-comment'] = new_code_comment
         blocks['toc'] = partial(toc, headers=headers, relations=relations)
         blocks['include'] = include
-        blocks['mermaid'] = mermaid
+        blocks['graph'] = graph
         blocks['include-code'] = code
 
         #according theme import different blocks
@@ -233,7 +233,7 @@ class MakeCommand(Command):
                     page_nav = relations.get(fname, {})
                     data['prev'] = page_nav.get('prev', {})
                     data['next'] = page_nav.get('next', {})
-                    data['relpath'] = '.' * (path.count('/')+1)
+                    data['relpath'] = self.fix_relpath(path)
                     data['source'] = '<a href="%s/%s">%s</a>' % (data['relpath'], path, conf.download_source)
                     
                     #parse header from text
@@ -277,16 +277,16 @@ class MakeCommand(Command):
                     shutil.copy(path, os.path.join(dst_dir, path))
                 
         prev_next_template_top = """{{if prev:}}<div class="chapter-prev chapter-top pull-left">
-    <a prev-chapter href="{{<< prev['link']}}"><i class="icon-arrow-left"></i> {{=prev['title']}}</a>
+    <a prev-chapter href="{{<< prev['link']}}"><i class="fa fa-long-arrow-left"></i> {{=prev['title']}}</a>
 </div>{{pass}}
 {{if next:}}<div class="chapter-next chapter-top pull-right">
-    <a next-chapter href="{{<< next['link']}}">{{=next['title']}} <i class="icon-arrow-right"></i></a>
+    <a next-chapter href="{{<< next['link']}}">{{=next['title']}} <i class="fa fa-long-arrow-right"></i></a>
 </div>{{pass}}"""
         prev_next_template_down = """{{if prev:}}<div class="chapter-prev chapter-down pull-left">
-    <a prev-chapter href="{{<< prev['link']}}"><i class="icon-arrow-left"></i> {{=prev['title']}}</a>
+    <a prev-chapter href="{{<< prev['link']}}"><i class="fa fa-long-arrow-left"></i> {{=prev['title']}}</a>
 </div>{{pass}}
 {{if next:}}<div class="chapter-next chapter-down pull-right">
-    <a next-chapter href="{{<< next['link']}}">{{=next['title']}} <i class="icon-arrow-right"></i></a>
+    <a next-chapter href="{{<< next['link']}}">{{=next['title']}} <i class="fa fa-long-arrow-right"></i></a>
 </div>{{pass}}"""
         
         for name, f in output_files.items():
@@ -296,11 +296,11 @@ class MakeCommand(Command):
             data = {}
             data['prev'] = x.get('prev', {})
             if data['prev']:
-                relpath = '.' * (data['prev']['link'].count('/')+1)
+                relpath = self.fix_relpath(data['prev']['link'])
                 data['prev']['link'] = relpath + '/' + data['prev']['link']
             data['next'] = x.get('next', {})
             if data['next']:
-                relpath = '.' * (data['next']['link'].count('/')+1)
+                relpath = self.fix_relpath(data['next']['link'])
                 data['next']['link'] = relpath + '/' + data['next']['link']
             
             prev_next_text_top = template.template(prev_next_template_top, data)
@@ -309,6 +309,16 @@ class MakeCommand(Command):
             text = text.replace('<!-- prev_next_down -->', prev_next_text_down)
             with open(f, 'w', encoding=conf.encoding) as fh:
                 fh.write(text)
+
+    def fix_relpath(self, path):
+        c = path.count('/')
+        if c == 0:
+            relpath = '.'
+        elif c == 1:
+            relpath = '..'
+        else:
+            relpath = '..' + '/..' * (c - 1)
+        return relpath
 
     def parse_headers(self, filename, text, headers):
         title = None

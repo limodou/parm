@@ -45,9 +45,12 @@ introduction = u'''
 <h2 class="ui header">Your project shows description here.</h2>
 ''' % (project, version)
 
-# You can add custom css files, just like
-# custom_css = ['/static/custom.css']
-custom_css = []
+# You can add custom css code
+# custom_css = """
+# element {font-size:14px;}
+# """
+custom_css = """
+"""
 
 # config menus
 # format: ('name', 'caption', 'link')

@@ -19,9 +19,11 @@
 <link rel="stylesheet" href="{{=relpath}}/static/mermaid/mermaid.forest.css"/>
 {{pass}}
 
+<style>
+    {{<< custom_css}}
+</style>
 {{for c in custom_css:}}
-<link rel="stylesheet" href="{{=c}}"/>
-{{pass}}
+
 <title>{{=title}}</title>
 </head>
 <body>

@@ -15,15 +15,14 @@
 <link rel="stylesheet" href="{{=relpath}}/static/ui.totop.css"/>
 <link rel="stylesheet" href="{{=relpath}}/static/docs.css"/>
 <link rel="stylesheet" href="{{=relpath}}/static/custom.css"/>
-<link rel="stylesheet" href="{{=relpath}}/static/pikaday.css"/>
 
 {{if 'mermaid' in conf.plugins:}}
 <link rel="stylesheet" href="{{=relpath}}/static/mermaid/mermaid.forest.css"/>
 {{pass}}
 
-{{for c in custom_css:}}
-<link rel="stylesheet" href="{{=c}}"/>
-{{pass}}
+<style>
+    {{<< custom_css}}
+</style>
 
 <script>
 var relpath = '{{=relpath}}';
@@ -36,13 +35,6 @@ var relpath = '{{=relpath}}';
 <script src="{{=relpath}}/static/jquery.hotkeys.js"></script>
 <script src="{{=relpath}}/static/docs.js"></script>
 <script src="{{=relpath}}/static/comment.js"></script>
-<script src="{{=relpath}}/static/riot+compiler.min.js"></script>
-<script src="{{=relpath}}/static/dataset.js"></script>
-<script src="{{=relpath}}/static/rtable.js"></script>
-<script src="{{=relpath}}/static/editor.js"></script>
-<script src="{{=relpath}}/static/tags/ex05.js"></script>
-<script src="{{=relpath}}/static/pikaday.js"></script>
-<script src="{{=relpath}}/static/pikaday.jquery.js"></script>
 
 {{if 'mermaid' in conf.plugins:}}
 <script src="{{=relpath}}/static/mermaid/mermaid.min.js"></script>
@@ -91,7 +83,7 @@ pass
       </button>
 
       <!-- Main title -->
-      <a class="navbar-brand" href="index.html">{{=project}}</a>
+      <a class="navbar-brand" href="{{=relpath}}/index.html">{{=project}}</a>
     </div>
 
     <!-- Expanded navigation -->
