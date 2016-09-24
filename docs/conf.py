@@ -8,7 +8,7 @@ You can change them to fit your needs.
 
 #available plugins
 #mermaid
-plugins = ['mermaid']
+plugins = []
 
 #mermaid init
 mermaid_init = {'startOnLoad':True}
@@ -35,12 +35,12 @@ tag_class = {
 pre_css = 'sons-of-obsidian'
 
 # The short X.Y version.
-version = '1.7'
+version = '1.9'
 
 # General information about the project.
 project = u'Parm'
 project_url = './index.html'
-copyright = u'2015, Limodou'
+copyright = u'2016, Limodou'
 introduction = u'''
 <h1 class="ui header">%s
 <a class="ui black label">%s</a>
@@ -48,9 +48,12 @@ introduction = u'''
 <h2 class="ui header">Your project shows description here.</h2>
 ''' % (project, version)
 
-# You can add custom css files, just like
-# custom_css = ['/static/custom.css']
-custom_css = []
+# You can add custom css code
+# custom_css = """
+# element {font-size:14px;}
+# """
+custom_css = """
+"""
 
 # config menus
 # format: ('name', 'caption', 'link')

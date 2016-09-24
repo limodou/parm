@@ -437,7 +437,32 @@ lines_content (optional)
     ```
             e.preventDefault();
     ```
-    
+
+### mermaid graph
+
+[mermaid](https://knsv.github.io/mermaid) is a tool which can produce flowcharts, sequence diagrams,
+and Gant diagrams. Parm support this tool, so you can write mermaid syntax like this:
+
+```
+{% graph %}
+graph TD
+    B["fa:fa-twitter for peace"]
+    B-->C[fa:fa-ban forbidden]
+    B-->D(fa:fa-spinner);
+    B-->E(A fa:fa-camera-retro perhaps?);
+{% endgraph %}
+```
+
+The output will just like:
+
+{% graph %}
+graph TD
+    B["fa:fa-twitter for peace"]
+    B-->C[fa:fa-ban forbidden]
+    B-->D(fa:fa-spinner);
+    B-->E(A fa:fa-camera-retro perhaps?);
+{% endgraph %}
+
 ## License
 
 This software is released under BSD license.

@@ -23,7 +23,7 @@ __author__ = 'limodou'
 __author_email__ = 'limodou@gmail.com'
 __url__ = 'https://github.com/limodou/parm'
 __license__ = 'BSD'
-__version__ = '1.8'
+__version__ = '1.9'
 
 #import parm project config module
 try:
@@ -73,7 +73,7 @@ class InitCommand(Command):
             d['project'] = get_input("Project name [%s]:"%d['project'], default=d['project'])
             d['copyright'] = get_input("Copyright information [%s]:" % d['copyright'], default=d['copyright'])
             d['version'] = get_input("Version [%s]:" % d['version'], default=d['version'])
-#            d['theme'] = get_input("Choice theme (bootstrap, semantic) [%s]:" % d['theme'], choices=['bootstrap', 'semantic'], default=d['theme'])
+            d['theme'] = get_input("Choice theme (bootstrap, semantic) [%s]:" % d['theme'], choices=['bootstrap', 'semantic'], default=d['theme'])
             d['disqus'] = get_input("Disqus account name [%s]:" % d['disqus'], default=d['disqus'])
             d['search'] = get_answer("If you want to add search input") == 'Y'
             d['domain'] = get_input("Domain name used for search [%s]:" % d['domain'], default=d['domain'])

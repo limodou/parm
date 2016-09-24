@@ -1,6 +1,13 @@
 Change Log
 =====================
 
+1.9 Version
+-----------
+Upgrade mermaid to newest version
+Change mermaid tag name to graph, and it'll be enabled automatically
+Fix relpath not right bug
+Change custom_css as string type
+
 1.8 Version
 -----------
 Add bootstrap 3 theme support

@@ -6,3 +6,4 @@ _svn
 *.pyc
 *.bak
 *.txt
+.DS_Store
